@@ -1,12 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;// add controller namespace
+namespace App\Http\Controllers;
+
+// add controller namespace
+use App\Components\Customer\Exceptions\StatusChangeDeniedException;
+use App\Components\Customer\Services\CustomerService;
 use App\Models\CustomerAddress;
 use  Auth;//add auth facade to access authorised users
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller as BaseController;// addbase controller class
+//use Illuminate\Routing\Controller as BaseController;// addbase controller class
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 use View;
 use App\Models\Customer;//import customer model
 use App\Models\CustomerGroup;//import custoemr group
@@ -16,19 +21,141 @@ use App\Models\PaymentTerm;//import payment term model
 use App\Models\ValueList;//import value list model
 use App\Models\Taxcode;//import taxcode model
 use App\Models\OrderHistory;
-use App\Models\OrderStatus;
 use App\Models\Order;//import order model
 use App\Models\Product;//import order model
 
-class CustomerController extends BaseController {
+class CustomerController extends Controller
+{
+    private $customerService;
+    public $layout = 'layouts.default';
 
-    public function __construct(){
+    public function __construct(CustomerService $service)
+    {
         $this->middleware('auth');
-        //change default filter to middleware
-         // has_role('customers',1);
+
+        $this->customerService = $service;
     }
 
-    public $layout = 'layouts.default';
+    public function index()
+    {
+        $contents = $this->customerService->getAllCustomersByCompanyId(return_company_id());
+
+        return view('customers.index', $contents);
+    }
+
+    public function getShow(int $id)
+    {
+        $contents = $this->customerService->getOneCustomerById($id);
+
+        return view('customers.show', $contents);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $rules = array(
+            'customer_name' => 'Required|Between:1,150',
+            'customer_name_localized' => 'Between:1,50',
+            'currency_code' => 'required|alpha|between:3,3',
+            'status' => 'Required|Between:1,50',
+            'telephone_1' => 'between:1,50',
+            'telephone_2' => 'between:1,50',
+            'fax' => 'between:1,50',
+            'currency_code' => 'required|between:3,3'
+        );
+
+        try {
+            $input = $request->all();
+            $validation = Validator::make($input, $rules);
+
+            if ($validation->fails()) {
+                return $this->respondWithErrors('customer/getShow/' . $id, $validation->Messages());
+            }
+
+            $this->customerService->update($id, $input, $request->get('status'));
+            return Redirect::to('customer/getShow/' . $id)
+                ->with('flash_success', 'Operation success');
+        } catch (StatusChangeDeniedException $e) {
+            return Redirect::to('customer/getShow/' . $id)
+                ->with('flash_error', 'Operation failed - Status change denied')
+                ->withErrors($validation->Messages())
+                ->withInput();
+
+        } catch (Throwable $e) {
+            $this->respondWithErrors('customer/getShow/' . $id);
+        }
+    }
+
+    public function getContactEdit(int $id)
+    {
+        $contents = $this->customerService->getContactById($id);
+
+        return view('customers.edit_customer_contact', $contents);
+    }
+
+    public function postContactEdit(Request $request, int $id)
+    {
+        $rules = array(
+            'id' => 'Required|integer',
+            'customer_id' => 'required|integer',
+            'contact_name' => 'required',
+            'contact_email' => 'email',
+            'reset_password' => 'nullable|min:10'
+        );
+
+        try {
+            $input = $request->all();
+            $validation = Validator::make($input, $rules);
+
+            if ($validation->fails()) {
+                return $this->respondWithErrors('/customer/contact-edit/' . $id, $validation->Messages());
+            }
+
+            $customerId = $this->customerService->updateContactById($id, $input);
+
+            return Redirect::to('/customer/getShow/' . $customerId)
+                ->with('flash_success', 'Operation success');
+        } catch (Throwable $e) {
+            $this->respondWithErrors('customer/getShow/' . $id);
+        }
+    }
+
+    public function getAddressEdit(int $id)
+    {
+        $contents = $this->customerService->getAddressById($id);
+
+        return view('customers.edit_customer_address', $contents);
+    }
+
+    public function postAddressEdit(Request $request, int $id)
+    {
+        $rules = array(
+            'id' => 'required|integer',
+            'customer_id' => 'Required|Between:1,50',
+            'description' => 'Required|Between:1,50',
+            'address1' => 'Required|Between:1,50',
+            'address2' => 'nullable|Between:1,50',
+            'city' => 'Required|Between:1,50',
+            'postal_code' => 'Between:1,50',
+            'province' => 'Required|Between:1,50',
+            'country' => 'Required|Between:1,50'
+        );
+
+        try {
+            $input = $request->all();
+            $validation = Validator::make($input, $rules);
+
+            if ($validation->fails()) {
+                return $this->respondWithErrors('/customer/address-edit/' . $id, $validation->Messages());
+            }
+
+            $customerId = $this->customerService->updateAddressById($id, $input);
+
+            return Redirect::to('/customer/getShow/' . $customerId)
+                ->with('flash_success', 'Operation success');
+        } catch (Throwable $e) {
+            $this->respondWithErrors('customer/getShow/' . $id);
+        }
+    }
 
     public function anyDatatable(){
         $customers = Customer::select(
@@ -60,21 +187,6 @@ class CustomerController extends BaseController {
 			}
 		}
 		return $total;
-	}
-
-
-	public function getIndex() {
-		$customers = Customer::where('customers.company_id',return_company_id())->get();
-
-		$outstanding_balance_currency_code = "USD";
-		$outstanding_balance_amount = 0; //$this->_getOutstandingBalance($outstanding_balance_currency_code);
-    //change view returning syntax
-    return view('customers.index',compact('customers','outstanding_balance_currency_code','outstanding_balance_amount'));
-        // $this->layout->content = View::make('customers.index')
-        //     ->with('outstanding_balance_currency_code', $outstanding_balance_currency_code)
-        //     ->with('outstanding_balance_amount', $outstanding_balance_amount)
-        //     ->with('customers', $customers)
-        // ;
 	}
 
 	public function postCreate() {
@@ -141,7 +253,7 @@ class CustomerController extends BaseController {
 			}
 		}
         foreach($customer_products as $product_id=>$products){
-          $product = Product::find($product_id);  
+          $product = Product::find($product_id);
         }
         $created_user = User::find($customer->created_by)->pluck('username');
         $updated_user = User::find($customer->created_by)->pluck('username');
@@ -171,117 +283,6 @@ class CustomerController extends BaseController {
 			// ->with('years',$years)
 			// ->with('customer_products',$customer_products)
       //   ;
-	}
-
-	public function getShow($id) {
-	    $customer = Customer::where('id',$id)->first();
-
-        $select_groups   = CustomerGroup::where('company_id',return_company_id())
-            ->pluck('group','id')
-        ;
-
-	    $select_users = User::where('company_id',return_company_id())->pluck('username','id');
-	    $select_contacts = CustomerContact::where('customer_id',$customer->id)->pluck('contact_name','id');
-
-
-        if($customer->company_id != return_company_id()){
-            die("Access violation. Click <a href='/'>here</a> to get back.");
-        }
-
-
-		$select_payment_terms  = PaymentTerm::orderBy('name', 'asc')->pluck('name','name');
-		$select_currency_codes = ValueList::where('uid','=','CURRENCY_CODES')->orderBy('name', 'asc')->pluck('name','name');
-		$select_taxcodes  	   = Taxcode::orderBy('sort_no', 'asc')->pluck('name','id');
-        // $outstanding_currency = '';//pending
-		$outstanding_currency  = User::Leftjoin('companies','users.company_id','=','companies.id')->where('users.id',Auth::user()->id)->pluck('companies.currency_code');
-    // print_R($outstanding_currency[0]);die;
-		$outstandings 		   = $customer->getOutstandingMoney($outstanding_currency[0]);
-     // print_r("hlo".$outstandings);die;
-        // $overdue_currency = '';//pending
-		$overdue_currency  = User::Leftjoin('companies','users.company_id','=','companies.id')->where('users.id',Auth::user()->id)->pluck('companies.currency_code');
-		$overdue 		= $customer->getOverdueMoney($outstanding_currency[0]);
-    // print_r("hlo".$overdue);die;
-    $created_by_user = User::select('username')->where('created_by',$customer->created_by)->first();
-    $updated_by_user = User::select('username')->where('updated_by',$customer->created_by)->first();
-        // echo "<pre>";
-        // print_r($select_payment_terms);die;
-
-   //      $this->layout->content = View::make('customers.show')
-			// ->with('select_currency_codes', $select_currency_codes)
-			// ->with('select_payment_terms',$select_payment_terms)
-			// ->with('select_taxcodes',$select_taxcodes)
-			// ->with('select_groups',$select_groups)
-			// ->with('select_users',$select_users)
-			// ->with('select_contacts',$select_contacts)
-   //          ->with('customer',$customer)
-			// ->with('outstandings',$outstandings)
-			// ->with('outstanding_currency',$outstanding_currency)
-			// ->with('overdue',$overdue)
-			// ->with('overdue_currency',$overdue_currency)
-
-   //      ;
-        return view('customers.show',compact('select_currency_codes','select_payment_terms','select_taxcodes','select_groups','select_users','select_contacts','customer','outstandings','overdue','overdue_currency','created_by_user','updated_by_user','outstanding_currency'));
-	}
-
-	public function update(Request $request, $id) {
-        $rules = array(
-            'customer_name' => 'Required|Between:1,150',
-            'customer_name_localized' => 'Between:1,50',
-            'currency_code' => 'required|alpha|between:3,3',
-            'status' => 'Required|Between:1,50',
-            'telephone_1' => 'between:1,50',
-            'telephone_2' => 'between:1,50',
-            'fax' => 'between:1,50',
-            'currency_code' => 'required|between:3,3'
-        );
-        $input = $request->all();
-
-        $validation = Validator::make($input, $rules);
-
-        if($validation->fails()){
-            return Redirect::to('customer/getShow/'.$id)
-                ->with('flash_error','Operation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-            $customer = Customer::findOrFail($id);
-
-			if($customer->status != $request->get('status')){
-				if(!has_role('customers_change_status')){
-					return Redirect::to('customer/getShow/'.$id)
-						->with('flash_error','Operation failed - Status change denied')
-						->withErrors($validation->Messages())
-						->withInput();
-				}
-			}
-
-            $customer->fill($input);
-
-			$bill_to = "";
-			if($customer->address1 != ""){
-				$bill_to .= $customer->address1;
-				$bill_to .= "\n";
-			}
-			if($customer->address2!= ""){
-				$bill_to .= $customer->address2;
-				$bill_to .= "\n";
-			}
-			if($customer->postal_code != "" || $customer->city != ""){
-				$bill_to .= $customer->postal_code . " " . $customer->city;
-				$bill_to .= "\n";
-			}
-			if($customer->province != ""){
-				$bill_to .= $customer->province . ",";
-			}
-			if($customer->country != ""){
-				$bill_to .= $customer->country;
-			}
-			$customer->bill_to = $bill_to;
-
-            $customer->save();
-            return Redirect::to('customer/getShow/'.$id)
-                ->with('flash_success','Operation success');
-        }
 	}
 
 	public function postDestroy($id) {
@@ -318,57 +319,6 @@ class CustomerController extends BaseController {
 		}
 	}
 
-	public function getContactEdit($id) {
-		$customer_contact = CustomerContact::findOrFail($id);
-		$customer = Customer::findOrFail($customer_contact->customer_id);
-
-		$select_payment_terms  = ValueList::where('uid','=','PAYMENT_TERMS')->orderBy('name', 'asc')->pluck('name','name');
-		$select_currency_codes = ValueList::where('uid','=','CURRENCY_CODES')->orderBy('name', 'asc')->pluck('name','name');
-
-        return view('customers.edit_customer_contact',compact('select_currency_codes','select_payment_terms','customer','customer_contact'));
-	}
-
-	public function postContactEdit(Request $request, $id) {
-		$customer_contact = CustomerContact::findOrFail($id);
-		$customer = Customer::findOrFail($customer_contact->customer_id);
-
-        $rules = array(
-            'id' => 'Required|integer',
-            'customer_id' => 'required|integer',
-            'contact_name' => 'required',
-            'contact_email' => 'email',
-            'reset_password' => 'nullable|min:10'
-        );
-        $input = $request->all();
-        $validation = Validator::make($input, $rules);
-
-        if($validation->fails()){
-            return Redirect::to('/customer/contact-edit/'.$id)
-                ->with('flash_error','Operation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-
-            $new_password = "";
-            if($request->has('reset_password')){
-                $new_password = $request->get('reset_password');
-                if($new_password != ""){
-                    $new_password = Hash::make($new_password);
-                }
-            }
-            unset($input['reset_password']);
-
-            $customer_contact->fill($input);
-            if($new_password != ""){
-                $customer_contact->password = $new_password;
-            }
-            $customer_contact->save();
-
-            return Redirect::to('/customer/getShow/'.$customer->id)
-                ->with('flash_success','Operation success');
-        }
-	}
-
 	public function postContactDelete($contact_id) {
         $contact = CustomerContact::findOrFail($contact_id);
         $customer_id = $contact->customer_id;
@@ -403,49 +353,6 @@ class CustomerController extends BaseController {
 			return Redirect::to('customer/getShow/'.$customer_id)
 				->with('flash_success','Operation success');
 		}
-	}
-
-	public function getAddressEdit($id) {
-		$customer_address = CustomerAddress::findOrFail($id);
-		$customer = Customer::findOrFail($customer_address->customer_id);
-
-		$select_payment_terms  = ValueList::where('uid','=','PAYMENT_TERMS')->orderBy('name', 'asc')->pluck('name','name');
-		$select_currency_codes = ValueList::where('uid','=','CURRENCY_CODES')->orderBy('name', 'asc')->pluck('name','name');
-
-        return view('customers.edit_customer_address',compact('select_currency_codes','select_payment_terms','customer','customer_address'));
-	}
-
-	public function postAddressEdit(Request $request, $id) {
-		$customer_address = CustomerAddress::findOrFail($id);
-		$customer = Customer::findOrFail($customer_address->customer_id);
-
-        $rules = array(
-			'id' => 'required|integer',
-			'customer_id' => 'Required|Between:1,50',
-			'description' => 'Required|Between:1,50',
-            'address1' => 'Required|Between:1,50',
-            'address2' => 'nullable|Between:1,50',
-            'city' => 'Required|Between:1,50',
-            'postal_code' => 'Between:1,50',
-            'province' => 'Required|Between:1,50',
-            'country' => 'Required|Between:1,50'
-        );
-
-        $input = $request->all();
-        $validation = Validator::make($input, $rules);
-
-        if($validation->fails()){
-            return Redirect::to('/customer/address-edit/'.$id)
-                ->with('flash_error','Operation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-            $customer_address->fill($input);
-            $customer_address->save();
-
-            return Redirect::to('/customer/getShow/'.$customer->id)
-                ->with('flash_success','Operation success');
-        }
 	}
 
 	public function postAddressDelete($address_id) {

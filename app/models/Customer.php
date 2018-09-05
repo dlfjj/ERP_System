@@ -59,11 +59,11 @@ class Customer extends Model {
 	protected $guarded = array();
 
 	public function contacts() {
-		return $this->hasMany('App\Models\CustomerContact');
+		return $this->hasMany(CustomerContact::class);
 	}
 
 	public function addresses() {
-		return $this->hasMany('App\Models\CustomerAddress');
+		return $this->hasMany(CustomerAddress::class);
 	}
 
 	public function invoices(){

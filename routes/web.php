@@ -40,7 +40,7 @@ Route::group(['prefix' => 'customer'], function () {
     Route::get('/postDuplicate','CustomerController@postDuplicate');
     Route::get('/getProducts/{id}','CustomerController@getProducts');*/
 
-    Route::get('getIndex','CustomerController@getIndex');
+    Route::get('getIndex','CustomerController@index');
     Route::get('create','CustomerController@postCreate');
     Route::get('getShow/{id}','CustomerController@getShow');
     Route::get('contact-edit/{id}','CustomerController@getContactEdit');

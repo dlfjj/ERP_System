@@ -98,6 +98,15 @@ function print_pdf($url,$filename,$save_to_path = ""){
 	exit;
 }
 
+function currentUserId()
+{
+    return Auth::user()->id;
+}
+
+function currentUserCompanyId(){
+    return Auth::user()->company_id;
+}
+
 function print_pdf_landscape($url,$filename,$save_to_path = ""){
 	require 'pdfcrowd.php';
 	try {
