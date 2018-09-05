@@ -77,7 +77,7 @@ php artisan serve
 
 ## Authors
 
-* **JIAJIE FAN** - *Project Director* - [PurpleBooth](https://github.com/dlfjj)
+* **JIAJIE FAN** - *Project Director* - [dlfjj](https://github.com/dlfjj)
 
 
 ## License
