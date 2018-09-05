@@ -56,8 +56,6 @@ Then create a database in MySQL follow the .env.example and mysql. file (send me
 jacky@americandunange.com
 ```
 
-### Break down into end to end tests
-
 After configuring database and .env file
 
 ```
