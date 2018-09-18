@@ -1,8 +1,10 @@
 <?php
-namespace App\Models; //change name space
+
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;//change softdelete  facade
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Vendor extends Model {
 	use SoftDeletes;
 
@@ -53,8 +55,6 @@ class Vendor extends Model {
 		});
 	}
 
-
-
 	protected $dates = ['deleted_at'];
 
 	protected $guarded = array();
@@ -90,6 +90,4 @@ class Vendor extends Model {
 	public function products() {
 		return $this->hasMany('App\Models\ProductVendor');
 	}
-
-
 }

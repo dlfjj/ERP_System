@@ -12,15 +12,25 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function respondWithErrors(string $url, array $messages = [])
+    public function redirectWithErrors(string $url, array $messages = [], array $with = [])
     {
-        if(empty($messages)){
-            $messages = ['Unknow Error, Please tyr again later.'];
+        if(empty($with)) {
+            $with = ['flash_error','Operation failed'];
+        }
+
+        if(empty($messages)) {
+            $messages = ['Un-know Error, Please try again later.'];
         }
 
         return Redirect::to($url)
-            ->with('flash_error','Operation failed')
+            ->with($with)
             ->withErrors($messages)
             ->withInput();
+    }
+
+    public function redirectWithSuccessMessage(string $url)
+    {
+        return Redirect::to($url)
+            ->with('flash_success','Operation succeeded');
     }
 }

@@ -11,7 +11,7 @@
 			<a href="/customers/" title="">Customers</a>
 		</li>
 		<li class="current">
-			<a href="/customers/show/{{$customer->id}}" title="">Details</a>
+			<a href="/customers/{{$customer->id}}" title="">Details</a>
 		</li>
 	</ul>
 
@@ -48,8 +48,8 @@
 			</div>
 			<div class="widget-content">
 
-				{!! Form::open(array('url' => "/customer/address-edit/$customer_address->id", 'enctype' => 'multipart/form-data', 'id' => 'main', 'method' => 'post', 'class' => 'orm-horizontal row-border form-validate', 'autocomplete' => 'off')) !!}
-
+				{!! Form::open(array('url' => "/customers/$customer->id/addresses/$customer_address->id", 'enctype' => 'multipart/form-data', 'id' => 'main', 'method' => 'PATCH', 'class' => 'orm-horizontal row-border form-validate', 'autocomplete' => 'off')) !!}
+				{{csrf_field()}}
 					<div class="form-group">
 						<div class="col-md-12">
 							<div class="row">

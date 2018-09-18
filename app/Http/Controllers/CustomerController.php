@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers;
 
-// add controller namespace
-use App\Components\Customer\Exceptions\StatusChangeDeniedException;
+use App\Components\Exceptions\StatusChangeDeniedException;
 use App\Components\Customer\Services\CustomerService;
 use App\Models\CustomerAddress;
-use  Auth;//add auth facade to access authorised users
+use  Auth;
 use Illuminate\Http\Request;
-//use Illuminate\Routing\Controller as BaseController;// addbase controller class
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
 use View;
-use App\Models\Customer;//import customer model
-use App\Models\CustomerGroup;//import custoemr group
-use App\Models\User;//import user  model
-use App\Models\CustomerContact;//import customer contact
-use App\Models\PaymentTerm;//import payment term model
-use App\Models\ValueList;//import value list model
-use App\Models\Taxcode;//import taxcode model
+use App\Models\Customer;
+use App\Models\CustomerGroup;
+use App\Models\User;
+use App\Models\CustomerContact;
+use App\Models\PaymentTerm;
+use App\Models\ValueList;
+use App\Models\Taxcode;
 use App\Models\OrderHistory;
-use App\Models\Order;//import order model
-use App\Models\Product;//import order model
+use App\Models\Order;
+use App\Models\Product;
 
 class CustomerController extends Controller
 {
@@ -43,7 +41,7 @@ class CustomerController extends Controller
         return view('customers.index', $contents);
     }
 
-    public function getShow(int $id)
+    public function show(int $id)
     {
         $contents = $this->customerService->getOneCustomerById($id);
 
@@ -68,31 +66,81 @@ class CustomerController extends Controller
             $validation = Validator::make($input, $rules);
 
             if ($validation->fails()) {
-                return $this->respondWithErrors('customer/getShow/' . $id, $validation->Messages());
+                return $this->redirectWithErrors('customers/' . $id, $validation->getMessageBag()->getMessages());
             }
 
             $this->customerService->update($id, $input, $request->get('status'));
-            return Redirect::to('customer/getShow/' . $id)
+            return Redirect::to('customers/' . $id)
                 ->with('flash_success', 'Operation success');
         } catch (StatusChangeDeniedException $e) {
-            return Redirect::to('customer/getShow/' . $id)
+            return Redirect::to('customers/' . $id)
                 ->with('flash_error', 'Operation failed - Status change denied')
-                ->withErrors($validation->Messages())
+                ->withErrors($validation->getMessageBag()->getMessages())
                 ->withInput();
 
         } catch (Throwable $e) {
-            $this->respondWithErrors('customer/getShow/' . $id);
+            $this->redirectWithErrors('customers/' . $id);
         }
     }
 
-    public function getContactEdit(int $id)
+    public function createNew() {
+        $contents = $this->customerService->getProductRelated(currentUserId(), currentUserCompanyId());
+
+        return view('customers.create', $contents);
+    }
+
+    public function store(Request $request){
+        $input = $request->all();
+
+        $rules = [
+            'customer_name' => 'Required|Between:1,150',
+            'customer_name_localized' => 'Between:1,50',
+            'currency_code' => 'required|alpha|between:3,3',
+            'status' => 'Required|Between:1,50',
+            'telephone_1' => 'between:1,50',
+            'telephone_2' => 'between:1,50',
+            'fax' => 'between:1,50',
+            'currency_code' => 'required|between:3,3',
+            'inv_address1' => 'required',
+            'inv_city' => 'required',
+            'inv_province' => 'required',
+            'inv_fax' => 'required',
+            'group_id' => 'required',
+            'status' => 'required',
+            'salesman_commission' => 'required',
+            'ff_name' => 'required',
+        ];
+
+        try {
+            $validation = Validator::make($input, $rules);
+
+            if ($validation->fails()) {
+                return $this->redirectWithErrors('customers/create', $validation->getMessageBag()->getMessages());
+            }
+
+            $customer = Customer::create($input);
+
+            return $this->redirectWithSuccessMessage('/customers/' . $customer->id);
+        } catch (StatusChangeDeniedException $e) {
+            return Redirect::to('customers/create')
+                ->with('flash_error', 'Operation failed - Status change denied')
+                ->withErrors($validation->getMessageBag()->getMessages())
+                ->withInput();
+
+        } catch (Throwable $e) {
+            dd($e);
+            $this->redirectWithErrors('customers/create');
+        }
+    }
+
+    public function getContact(int $id, int $contactId)
     {
-        $contents = $this->customerService->getContactById($id);
+        $contents = $this->customerService->getContactById($contactId);
 
         return view('customers.edit_customer_contact', $contents);
     }
 
-    public function postContactEdit(Request $request, int $id)
+    public function updateContact(Request $request, int $id, int $contactId)
     {
         $rules = array(
             'id' => 'Required|integer',
@@ -107,26 +155,26 @@ class CustomerController extends Controller
             $validation = Validator::make($input, $rules);
 
             if ($validation->fails()) {
-                return $this->respondWithErrors('/customer/contact-edit/' . $id, $validation->Messages());
+                return $this->redirectWithErrors('/customers/'.$id.'/contacts/' . $contactId, $validation->getMessageBag()->getMessages());
             }
 
-            $customerId = $this->customerService->updateContactById($id, $input);
+            $customerId = $this->customerService->updateContactById($contactId, $input);
 
-            return Redirect::to('/customer/getShow/' . $customerId)
+            return Redirect::to('/customers/' . $customerId)
                 ->with('flash_success', 'Operation success');
         } catch (Throwable $e) {
-            $this->respondWithErrors('customer/getShow/' . $id);
+            return $this->redirectWithErrors('customers/' . $id);
         }
     }
 
-    public function getAddressEdit(int $id)
+    public function getAddress(int $id, int $addressId)
     {
-        $contents = $this->customerService->getAddressById($id);
+        $contents = $this->customerService->getAddressById($addressId);
 
         return view('customers.edit_customer_address', $contents);
     }
 
-    public function postAddressEdit(Request $request, int $id)
+    public function updateAddress(Request $request, int $id, int $addressId)
     {
         $rules = array(
             'id' => 'required|integer',
@@ -145,17 +193,91 @@ class CustomerController extends Controller
             $validation = Validator::make($input, $rules);
 
             if ($validation->fails()) {
-                return $this->respondWithErrors('/customer/address-edit/' . $id, $validation->Messages());
+                return $this->redirectWithErrors('/customers/'.$id.'/addresss/' . $addressId, $validation->Messages());
             }
 
-            $customerId = $this->customerService->updateAddressById($id, $input);
+            $customerId = $this->customerService->updateAddressById($addressId, $input);
 
-            return Redirect::to('/customer/getShow/' . $customerId)
+            return Redirect::to('/customers/' . $customerId)
                 ->with('flash_success', 'Operation success');
         } catch (Throwable $e) {
-            $this->respondWithErrors('customer/getShow/' . $id);
+            $this->redirectWithErrors('customers/' . $id);
         }
     }
+
+    public function addContact(Request $request, int $id) {
+        $customer_id = $request->get('customer_id');
+        $rules = array(
+            'customer_id' => 'Required|Between:1,50',
+            'contact_name' => 'Required|Between:1,50',
+            'username' => 'Required|Email|Between:1,50',
+            'contact_mobile' => 'Between:1,50',
+            'contact_skype' => 'nullable|Between:1,50',
+            'position' => 'nullable|Between:1,50'
+        );
+        $input = $request->all();
+
+        $validation = Validator::make($input, $rules);
+        if($validation->fails()){
+            return Redirect::to('customers/'.$customer_id)
+                ->with('flash_error','Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+            $new_record = New CustomerContact;
+            $new_record->fill($input);
+            $new_record->save();
+
+            $this->redirectWithSuccessMessage('customers/'.$customer_id);
+        }
+    }
+
+    public function deleteContact(int $id, int $contactId) {
+        $contact = CustomerContact::findOrFail($contactId);
+        $customer_id = $contact->customer_id;
+        $contact->delete();
+
+        return $this->redirectWithSuccessMessage('customers/'.$customer_id);
+    }
+
+    public function addAddress(Request $request, int $id) {
+        $customer_id = $request->get('customer_id');
+        $rules = array(
+            'customer_id' => 'Required|Between:1,50',
+            'description' => 'Required|Between:1,50',
+            'address1' => 'Required|Between:1,50',
+            'address2' => 'nullable|Between:1,50',
+            'city' => 'Required|Between:1,50',
+            'postal_code' => 'Between:1,50',
+            'province' => 'Required|Between:1,50',
+            'country' => 'Required|Between:1,50'
+        );
+        $input = $request->all();
+        $validation = Validator::make($input, $rules);
+        if($validation->fails()){
+            return Redirect::to('customers/'.$customer_id)
+                ->with('flash_error','Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+            $new_record = New CustomerAddress;
+            $new_record->fill($input);
+            $new_record->save();
+            return Redirect::to('customers/'.$customer_id)
+                ->with('flash_success','Operation success');
+        }
+    }
+
+    public function deleteAddress(int $id, int $addressId) {
+        $address = CustomerAddress::findOrFail($addressId);
+        $customer_id = $address->customer_id;
+        $address->delete();
+        return Redirect::to('customers/'.$customer_id)
+            ->with('flash_success','Operation success');
+    }
+
+    /** ========================================================================================================== */
+    /** ========================================================================================================== */
 
     public function anyDatatable(){
         $customers = Customer::select(
@@ -172,7 +294,7 @@ class CustomerController extends Controller
 
         return Datatables::of($customers)
         ->remove_column('id')
-        ->add_column('operations','<ul class="table-controls"><li><a href="/customer/getShow/{{ $id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a> </li></ul>')
+        ->add_column('operations','<ul class="table-controls"><li><a href="/customers/{{ $id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a> </li></ul>')
         ->make();
     }
 
@@ -187,34 +309,6 @@ class CustomerController extends Controller
 			}
 		}
 		return $total;
-	}
-
-	public function postCreate() {
-        $customer = New Customer;
-        $customer->created_by = Auth::user()->id;
-        $customer->updated_by = Auth::user()->id;
-        $customer->company_id = return_company_id();
-        $customer->taxcode_id = 100;
-        $customer->currency_code = "USD";
-        $customer->save();
-
-        $id = $customer->id;
-        return Redirect::to('customer/getShow/'.$id)
-            ->with('flash_success','Operation success');
-	}
-
-	public function postDuplicate($id){
-		$original = Customer::findOrFail($id)->toArray();
-		$duplicate = new Customer();
-		$duplicate->fill($original);
-		$duplicate->customer_name = "";
-		$duplicate->id = null;
-		$duplicate->status = "Prospect";
-		$duplicate->save();
-
-        $id = $duplicate->id;
-        return Redirect::to('customer/getShow/'.$id)
-            ->with('flash_success','Operation success');
 	}
 
 	public function getProducts($id) {
@@ -288,78 +382,7 @@ class CustomerController extends Controller
 	public function postDestroy($id) {
         $customer = Customer::findOrFail($id);
         $customer->delete();
-        return Redirect::to('customer/')
-            ->with('flash_success','Operation success');
-	}
-
-	public function postContactAdd(Request $request) {
-		$customer_id = $request->get('customer_id');
-        $rules = array(
-			'customer_id' => 'Required|Between:1,50',
-            'contact_name' => 'Required|Between:1,50',
-            'username' => 'Required|Email|Between:1,50',
-            'contact_mobile' => 'Between:1,50',
-            'contact_skype' => 'nullable|Between:1,50',
-            'position' => 'nullable|Between:1,50'
-        );
-        $input = $request->all();
-
-        $validation = Validator::make($input, $rules);
-        if($validation->fails()){
-            return Redirect::to('customer/getShow/'.$customer_id)
-                ->with('flash_error','Operation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-			$new_record = New CustomerContact;
-            $new_record->fill($input);
-            $new_record->save();
-			return Redirect::to('customer/getShow/'.$customer_id)
-				->with('flash_success','Operation success');
-		}
-	}
-
-	public function postContactDelete($contact_id) {
-        $contact = CustomerContact::findOrFail($contact_id);
-        $customer_id = $contact->customer_id;
-        $contact->delete();
-        return Redirect::to('customer/getShow/'.$customer_id)
-            ->with('flash_success','Operation success');
-	}
-
-	public function postAddressAdd(Request $request) {
-		$customer_id = $request->get('customer_id');
-        $rules = array(
-			'customer_id' => 'Required|Between:1,50',
-			'description' => 'Required|Between:1,50',
-            'address1' => 'Required|Between:1,50',
-            'address2' => 'nullable|Between:1,50',
-            'city' => 'Required|Between:1,50',
-            'postal_code' => 'Between:1,50',
-            'province' => 'Required|Between:1,50',
-            'country' => 'Required|Between:1,50'
-        );
-        $input = $request->all();
-        $validation = Validator::make($input, $rules);
-        if($validation->fails()){
-            return Redirect::to('customer/getShow/'.$customer_id)
-                ->with('flash_error','Operation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-			$new_record = New CustomerAddress;
-            $new_record->fill($input);
-            $new_record->save();
-			return Redirect::to('customer/getShow/'.$customer_id)
-				->with('flash_success','Operation success');
-		}
-	}
-
-	public function postAddressDelete($address_id) {
-        $address = CustomerAddress::findOrFail($address_id);
-        $customer_id = $address->customer_id;
-        $address->delete();
-        return Redirect::to('customer/getShow/'.$customer_id)
+        return Redirect::to('customers/')
             ->with('flash_success','Operation success');
 	}
 

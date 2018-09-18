@@ -11,7 +11,7 @@
 			<a href="/customers/" title="">Customers</a>
 		</li>
 		<li class="current">
-			<a href="/customers/show/{{$customer->id}}" title="">Details</a>
+			<a href="/customers/{{$customer->id}}" title="">Details</a>
 		</li>
 	</ul>
 
@@ -48,7 +48,8 @@
 			</div>
 			<div class="widget-content">
 
-				{!! Form::open(array('url' => "/customer/contact-edit/$customer_contact->id", 'enctype' => 'multipart/form-data', 'id' => 'main', 'method' => 'post', 'class' => 'orm-horizontal row-border form-validate', 'autocomplete' => 'off')) !!}
+				{!! Form::open(array('url' => "/customers/$customer->id/contacts/$customer_contact->id", 'enctype' => 'multipart/form-data', 'id' => 'main', 'method' => 'PATCH', 'class' => 'orm-horizontal row-border form-validate', 'autocomplete' => 'off')) !!}
+				{{csrf_field()}}
 					<div class="form-group">
 						<div class="col-md-12">
 							<div class="row">
@@ -110,7 +111,7 @@
 					</div>
 					<div class="form-actions">
 						<input type="submit" value="SAVE" class="btn btn-success pull-right">
-						<a href="/customer/getShow/{{$customer->id}}" class="btn btn-default pull-right">CANCEL</a>
+						<a href="/customers/{{$customer->id}}" class="btn btn-default pull-right">CANCEL</a>
 					</div>
 				</div>
 			{!! Form::close() !!}

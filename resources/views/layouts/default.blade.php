@@ -247,7 +247,7 @@ $is_internet_explorer = false;
 			<!-- Top Left Menu -->
 			<ul class="nav navbar-nav navbar-left hidden-xs hidden-sm">
 				@section('page-module-menu')
-				<li>
+				<li class="text-center" style="font-size: 15px; background: #0f2452; margin-top:10px; padding-left: 10px; padding-right: 10px;">
 					AMERICAN DUNNAGE INC.
 				</li>
 				@show
@@ -468,7 +468,7 @@ $is_internet_explorer = false;
 
 				<!-- if(has_role('products')) -->
 				<li class="<?=($segment == 'products' ? "current" : "");?>">
-					<a href="/product/getIndex">
+					<a href="/products">
 						<i class="icon-folder-open-alt"></i>
 						Products
 					</a>
@@ -487,7 +487,7 @@ $is_internet_explorer = false;
 
 				<!-- if(has_role('customers')) -->
 				<li class="<?=($segment == 'customers' ? "current" : "");?>">
-					<a href="/customer/getIndex">
+					<a href="/customers">
 						<i class="icon-user"></i>
 						Customers
 					</a>
@@ -495,7 +495,7 @@ $is_internet_explorer = false;
 				<!-- endif -->
 				<!-- if(has_role('vendors')) -->
 				<li class="<?=($segment == 'vendors' ? "current" : "");?>">
-					<a href="/vendor/getIndex">
+					<a href="/vendors">
 						<i class="icon-user"></i>
 						Vendors
 					</a>
