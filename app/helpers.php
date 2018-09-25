@@ -1,5 +1,6 @@
 <?php
 use App\Models\ExchangeRate;// import Exchange rate model
+use App\Models\Order;
 use App\Models\OrderItem;//import OrderItem model
 use App\Models\Purchase;
 use App\Models\ChartOfAccount;
@@ -8,6 +9,8 @@ use Illuminate\Support\Facades\Cache;//add cache facade
 use App\models\Company;//import model class
 use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\DB;
+
 // use Auth;
 /*
 |--------------------------------------------------------------------------
@@ -589,38 +592,33 @@ function changelog($model){
     $changelog->save();
 }
 
+
+//some old syntax not used in Laravel 5.6 rewrite for the foreach loop
 function updateOrderStatus($order_id){
     $order = Order::findOrFail($order_id);
 
     // Loop trough Line Items and update their counters
     foreach($order->items as $order_item){
-        $order_item->amount_net 		= $order_item->quantity * $order_item->unit_price_net;
+        $order_item->amount_net = $order_item->quantity * $order_item->unit_price_net;
 
-        $order_item->unit_price_gross 	= return_gross_price($order_item->unit_price_net, $order->taxcode->percent);
-        $order_item->amount_gross 		= $order_item->quantity * $order_item->unit_price_gross;
+        $order_item->unit_price_gross = return_gross_price($order_item->unit_price_net, $order->taxcode->percent);
+        $order_item->amount_gross = $order_item->quantity * $order_item->unit_price_gross;
 
-        $order_item->tax 			= $order_item->unit_price_gross - $order_item->unit_price_net;
-        $order_item->tax_amount		= ($order_item->unit_price_gross - $order_item->unit_price_net) * $order_item->quantity;
-
-        if($order->container->code == '40hq'){
-            $order_item->pack_unit = $order_item->product->pack_unit_hq;
-            $order_item->units_per_pallette = $order_item->product->units_per_pallette_hq;
-        } else {
-            $order_item->pack_unit = $order_item->product->pack_unit;
-            $order_item->units_per_pallette = $order_item->product->units_per_pallette;
-        }
+        $order_item->tax = $order_item->unit_price_gross - $order_item->unit_price_net;
+        $order_item->tax_amount = ($order_item->unit_price_gross - $order_item->unit_price_net) * $order_item->quantity;
 
         if($order->container->code == '40hq'){
-            $order_item->cbm = ($order_item->product->carton_size_w_hq * $order_item->product->carton_size_d_hq * $order_item->product->carton_size_h_hq);
+            $order_item->pack_unit = $order_item->product->pluck('pack_unit_hq')->implode(',');
+            $order_item->units_per_pallette = $order_item->product->pluck('units_per_pallette_hq')->implode(',');
+            $order_item->cbm = ($order_item->product->pluck('carton_size_w_hq')->implode(',') * $order_item->product->pluck('carton_size_d_hq')->implode(',') * $order_item->product->pluck('carton_size_h_hq')->implode(','));
         } else {
-            $order_item->cbm = ($order_item->product->carton_size_w * $order_item->product->carton_size_d * $order_item->product->carton_size_h);
+            $order_item->pack_unit = $order_item->product->pluck('pack_unit')->implode(',');
+            $order_item->units_per_pallette = $order_item->product->pluck('units_per_pallette')->implode(',');
+            $order_item->cbm = ($order_item->product->pluck('carton_size_w')->implode(',') * $order_item->product->pluck('carton_size_d')->implode(',') * $order_item->product->pluck('carton_size_h')->implode(','));
         }
+
         $order_item->save();
     }
-
-
-    // End Loop
-
     $order->sub_total_net 		= $order->items->sum('amount_net');
     if($order->discount > 0){
         $order->sub_total_net 	= $order->sub_total_net - (($order->sub_total_net / 100) * $order->discount);
@@ -633,15 +631,6 @@ function updateOrderStatus($order_id){
 
     $order->tax_total 			= ($order->total_gross - $order->total_net);
 
-    //$order->total += $order->shipping_cost;
-
-    //$order->net_handling_amount  = return_net_price($order->gross_handling_amount, $order->taxcode_percent);
-    //$order->net_shipping_amount  = return_net_price($order->gross_shipping_amount, $order->taxcode_percent);
-
-    ///$order->gross_total 		= $order->gross_sub_total;
-    ///$order->gross_total     += $order->gross_handling_amount;
-    //$order->gross_total 	   += $order->gross_shipping_amount;
-    //$order->net_total 		= return_net_price($order->gross_total, $order->taxcode_percent);
 
     $order_total_cbm = Orderitem::where("order_id","=",$order->id)->sum('calc_cbm');
     $order_total_paid = DB::table('customer_payments')->where("order_id","=",$order->id)->sum('amount');
@@ -653,7 +642,6 @@ function updateOrderStatus($order_id){
     $order->open_amount = $order->total_gross - $order_total_paid;
     $order->calc_cbm = $order_total_cbm;
 
-    //$order->tax_total 		= $order->gross_total - $order->net_total;
     $order->save();
 }
 
@@ -1000,6 +988,9 @@ function logMsg($message,$severity="info",$module="general"){
 
     return true;
 }
+
+
+
 
 /*
 |--------------------------------------------------------------------------

@@ -98,13 +98,14 @@
                 ajax: '{!! route('orders/getdata') !!}',
                 columns: [
                     { data: 'id', name: 'id' },
-                    // { data: 'order_no', name: 'order_no' },
                     { data: 'name', name: 'name' },
                     { data: 'customer_order_number', name: 'customer_order_number' },
+                    { data: 'order_date', name: 'order_date' },
                     { data: 'customer_name', name: 'customer_name' },
                     { data: 'estimated_finish_date', name: 'estimated_finish_date' },
+
                     { data: 'total_gross', name: 'total_gross' },
-                    // {data: 'action', name: 'action', orderable: false, searchable: false}
+                    {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
             });
         });
