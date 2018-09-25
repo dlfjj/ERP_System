@@ -159,9 +159,13 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
 
         'Collective\Html\HtmlServiceProvider',
-        'Barryvdh\Debugbar\ServiceProvider'
+        'Barryvdh\Debugbar\ServiceProvider',
+        'Baum\Providers\BaumServiceProvider'
+
 
     ],
 
@@ -213,8 +217,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Input' => Illuminate\Support\Facades\Input::class,
-        'Form' => 'Collective\Html\FormFacade',
-        'Html' => 'Collective\Html\HtmlFacade',
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
         'SoftDeletes' => 'Illuminate\Database\Eloquent\SoftDeletes::class',
         'Debugbar' => 'Barryvdh\Debugbar\Facade',
 

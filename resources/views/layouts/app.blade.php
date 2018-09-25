@@ -1,3 +1,25 @@
+{{--This is unused template--}}
+<?php
+$uri_segment = Request::segment(1);
+$is_smartphone = false;
+$is_internet_explorer = false;
+
+/*
+	if (!Session::has('browser_name')){
+		$browser = get_browser();
+		Session::put('browser_name', $browser->browser);
+		Session::put('browser_version', $browser->version);
+		Session::put('browser_ismobiledevice', $browser->ismobiledevice);
+	}
+*/
+
+if(Session::get('browser_name') == 'Internet Explorer'){
+    App::abort(500, 'Unsupported Browser Error');
+}
+
+//	echo '<pre>'; print_r($browser); echo '</pre>'; die();
+
+?>
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -5,8 +27,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -19,6 +39,24 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- datatable styles -->
+    {{--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>--}}
+    {{--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />--}}
+    {{--<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>--}}
+    {{--<script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>--}}
+    {{--<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />--}}
+    {{--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>--}}
+    <script>
+        $(document).ready(function(){
+            "use strict";
+
+            App.init(); // Init layout and core plugins
+            Plugins.init(); // Init all plugins
+            FormComponents.init(); // Init all form-specific plugins
+        });
+    </script>
+
 </head>
 <body>
     <div id="app">
@@ -71,9 +109,27 @@
             </div>
         </nav>
 
-        <main class="py-4">
+
+        <main class="py-4 p-5">
             @yield('content')
         </main>
     </div>
+
+    <script>
+        $(window).unload(function(){
+            $("#dvLoading").show();
+            $('#dvLoading').fadeOut(116000);
+        });
+        $(window).load(function(){
+            $("#dvLoading").hide();
+        })
+    </script>
+
+
+    <script src="//code.jquery.com/jquery.js"></script>
+    <!-- DataTables -->
+    <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </body>
 </html>

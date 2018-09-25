@@ -1,5 +1,11 @@
 $(document).ready(function() {
 
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
     $(function() {
         $('input').keyup(function() {
          //       this.value = this.value.toLocaleUpperCase();
@@ -14,6 +20,7 @@ $(document).ready(function() {
 		$('input.btn').hide();
 		//$(this).find('input.btn').val('Wait...');
 	});
+
 
 	$( ".datepicker" ).datepicker({
 		defaultDate: +7,

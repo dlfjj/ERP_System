@@ -71,3 +71,18 @@ Route::group(['prefix' => 'vendors'], function () {
     Route::post('/{id}/contacts/{contactId}','VendorController@updateContact');
     Route::delete('/{id}/contacts/{contactId}','VendorController@deleteContact');
 });
+
+/** Expense */
+Route::resource('expenses','ExpenseController');
+
+/** Purchase */
+
+Route::get('purchases/getdata', 'PurchaseController@getPurchaseData')->name('purchase/getdata');
+Route::get('purchases/receive/{id}', 'PurchaseController@getReceive')->name('purchase.getReceive');
+Route::post('purchases/receive/{id}', 'PurchaseController@postReceive')->name('purchase.postReceive');
+Route::get('purchases/payments/{id}', 'PurchaseController@getPayments')->name('purchase.getPayments');
+Route::resource('purchases','PurchaseController');
+
+
+//Route::resource('/chart_of_accounts', 'ChartOfAccountController');
+//Route::resource('/value_lists', 'ValueListController');

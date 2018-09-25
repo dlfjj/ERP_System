@@ -21,10 +21,13 @@
 		<div class="page-title">
 			<h3>Dashboard</h3>
 			<span>Hello there!</span>
+            {{--<div id="app">--}}
+                {{--<test></test>--}}
+            {{--</div>--}}
 		</div>
 		<ul class="page-stats">
 			<li>
-				<div class="summary">
+                <div class="summary">
 					<!-- <php
 									 $img_path = "{{asset('app.public_folder')}}" . "global/companies/" . Auth::user()->company->company_logo;
 											// $img_path = Config::get('app.public_folder') . "global/companies/" . Auth::user()->company->company_logo;

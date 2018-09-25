@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Validator;
 use View;
 use App\Models\Vendor;
-use App\models\ValueList;
+use App\Models\ValueList;
 use App\Models\Taxcode;
 use App\Models\User;
 

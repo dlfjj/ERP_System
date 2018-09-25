@@ -1,21 +1,17 @@
 <?php
-
-namespace App\Models;
 use Baum\Node;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 /**
-* ChartOfAccount
+* MODEL
 */
-class ChartOfAccount extends Node {
+class MODEL extends Node {
 
   /**
    * Table name.
    *
    * @var string
    */
-  protected $table = 'chart_of_accounts';
+  protected $table = 'm_o_d_e_l_s';
 
   //////////////////////////////////////////////////////////////////////////////
 
@@ -62,7 +58,7 @@ class ChartOfAccount extends Node {
   //  *
   //  * @var string
   //  */
-  protected $orderColumn = "code";
+  // protected $orderColumn = null;
 
   // /**
   // * With Baum, all NestedSet-related fields are guarded from mass-assignment
@@ -99,48 +95,8 @@ class ChartOfAccount extends Node {
   // In the same way as Eloquent's model events, returning false from the
   // `moving` event handler will halt the operation.
   //
-  // Below is a sample `boot` method just for convenience, as an example of how
-  // one should hook into those events. This is the *recommended* way to hook
-  // into model events, as stated in the documentation. Please refer to the
-  // Laravel documentation for details.
-  //
-  // If you don't plan on using model events in your program you can safely
-  // remove all the commented code below.
-  //
-
-  // /**
-  //  * The "booting" method of the model.
-  //  *
-  //  * @return void
-  //  */
-  // protected static function boot() {
-  //   // Do not forget this!
-  //   parent::boot();
-
-  //   static::moving(function($node) {
-  //     // YOUR CODE HERE
-  //   });
-
-  //   static::moved(function($node) {
-  //     // YOUR CODE HERE
-  //   });
-  // }
-  //
-  public function getExpenses($currency_code,$date_start,$date_end){
-      $total    = 0;
-      $expenses = Money::select([
-            "date_created",
-            "currency_code",
-            "amount"
-          ])
-          ->where('account_id',$this->id)
-          ->where('date_created','>=',$date_start)
-          ->where('date_created','<=',$date_end)
-          ->get();
-      foreach($expenses as $expense){
-        $total += convert_currency($expense->currency_code,$currency_code,$expense->amount);
-      }
-      return $total;
-  }
+  // Please refer the Laravel documentation for further instructions on how
+  // to hook your own callbacks/observers into this events:
+  // http://laravel.com/docs/5.0/eloquent#model-events
 
 }
