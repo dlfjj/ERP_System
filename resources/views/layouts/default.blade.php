@@ -441,7 +441,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
                 <!-- if(has_role('orders')) -->
                 <li class="<?=($segment == 'orders' ? "current" : "");?>">
-                    <a href="/orders/getIndex">
+                    <a href="/orders">
                         <i class="icon-money"></i>
                         Orders
                     </a>

@@ -81,8 +81,12 @@ Route::get('purchases/getdata', 'PurchaseController@getPurchaseData')->name('pur
 Route::get('purchases/receive/{id}', 'PurchaseController@getReceive')->name('purchase.getReceive');
 Route::post('purchases/receive/{id}', 'PurchaseController@postReceive')->name('purchase.postReceive');
 Route::get('purchases/payments/{id}', 'PurchaseController@getPayments')->name('purchase.getPayments');
+Route::get('purchases/records/{id}', 'PurchaseController@getRecords')->name('purchase.getRecords');
 Route::resource('purchases','PurchaseController');
 
 
 //Route::resource('/chart_of_accounts', 'ChartOfAccountController');
 //Route::resource('/value_lists', 'ValueListController');
+/** Order */
+Route::get('orders/getdata', 'OrderController@getOrderData')->name('orders/getdata');
+Route::resource('orders', 'OrderController');

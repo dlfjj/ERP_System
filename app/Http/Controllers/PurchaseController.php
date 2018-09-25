@@ -293,7 +293,7 @@ class PurchaseController extends Controller
         // Update PO Status marker
         updatePurchaseStatus($purchase_id);
 
-        return Redirect::to("/purchases/receive/{$purchase_id}")
+        return redirect("/purchases/receive/{$purchase_id}")
             ->with('flash_success','Operation success');
     }
 
@@ -337,17 +337,36 @@ class PurchaseController extends Controller
         return view('purchases.payments',compact('select_status','select_vendor_contacts','select_payment_terms',
             'select_currency_codes','select_shipping_methods', 'select_shipping_terms','select_accounts','select_bank_accounts',
             'purchase','open_balance','vendor'));
-//        $this->layout->content = View::make('purchases.payments')
-//            ->with('select_status',$select_status)
-//            ->with('select_vendor_contacts',$select_vendor_contacts)
-//            ->with('select_payment_terms',$select_payment_terms)
-//            ->with('select_currency_codes',$select_currency_codes)
-//            ->with('select_shipping_methods',$select_shipping_methods)
-//            ->with('select_shipping_terms',$select_shipping_terms)
-//            ->with('select_accounts',$select_accounts)
-//            ->with('select_bank_accounts',$select_bank_accounts)
+
+    }
+
+    public function getRecords($id){
+        $purchase = Purchase::findOrFail($id);
+        $vendor   = Vendor::findOrFail($purchase->vendor_id);
+
+        $mail_to  = $purchase->vendor->email;
+        $mail_cc  = "";
+        $mail_bcc = Auth::user()->email;
+        $mail_subject = "PO #$purchase->id";
+        $mail_body = <<<EOT
+Hello $purchase->vendor_contact,
+
+please find your purchase order #$purchase->id attached.
+
+Let me know if you have any questions,
+EOT;
+        $mail_body .= "\n".$purchase->user->signature;
+
+//        $this->layout->module_title = "Details";
+//        $this->layout->module_sub_title = "Details";
+        return view('purchases.records',compact('mail_to','mail_cc','mail_bcc','mail_subject','mail_body','purchase','vendor'));
+//        $this->layout->content = View::make('purchases.history')
+//            ->with('mail_to',$mail_to)
+//            ->with('mail_cc',$mail_cc)
+//            ->with('mail_bcc',$mail_bcc)
+//            ->with('mail_subject',$mail_subject)
+//            ->with('mail_body',$mail_body)
 //            ->with('purchase',$purchase)
-//            ->with('open_balance',$open_balance)
 //            ->with('vendor',$vendor);
     }
 }

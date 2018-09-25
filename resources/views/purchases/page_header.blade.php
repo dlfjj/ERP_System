@@ -1,7 +1,7 @@
 <div class="page-header">
     <div class="page-title">
         @if(Request::segment(2) == "payments")
-            <a class="btn btn-success btn-lg" data-toggle="modal" href="#modal_expense" class=""><i class="icon-plus-sign"></i> Add Payment</a>
+            <a class="btn btn-success btn-lg" data-toggle="modal" href="#modal_expense" style="margin-top: 40px"><i class="icon-plus-sign"></i> Add Payment</a>
         @endif
 
         @if(Request::segment(2) == "show")
