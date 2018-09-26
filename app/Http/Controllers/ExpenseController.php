@@ -147,6 +147,8 @@ class ExpenseController extends Controller
 
             if($request->transaction_reference === NULL) {
                 $transaction_reference = '';
+            }else{
+                $transaction_reference = $request->transaction_reference;
             }
             $expense->transaction_reference = $transaction_reference;
             $expense->created_by = Auth::user()->id;

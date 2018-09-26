@@ -47,7 +47,7 @@ class OrderItem extends Model {
 					$changelog->field_name = $field_name;
 					$changelog->old_value  = $olddata;
 					$changelog->new_value  = $newdata;
-					$changelog->message    = "Changed {$field_name} from {$olddata} to {$newdata} for {$record->product->part_number}";
+					$changelog->message    = "Changed {$field_name} from {$olddata} to {$newdata} for {$record->product->pluck('part_number')->implode(',')}";
 					$changelog->save();
 				}
 			}

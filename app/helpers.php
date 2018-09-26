@@ -595,6 +595,7 @@ function changelog($model){
 
 //some old syntax not used in Laravel 5.6 rewrite for the foreach loop
 function updateOrderStatus($order_id){
+
     $order = Order::findOrFail($order_id);
 
     // Loop trough Line Items and update their counters

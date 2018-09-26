@@ -1,6 +1,6 @@
 <?php
 
-class OrderHistory1 extends Eloquent {
+class OrderHistory extends Eloquent {
 
 	protected $guarded = array();
 	protected $table = 'order_history';

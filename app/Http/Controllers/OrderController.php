@@ -3,18 +3,23 @@
 namespace App\Http\Controllers;
 use App\Models\Container;
 use App\Models\Customer;
+use App\Models\CustomerPayment;
 use App\Models\OrderItem;
 use App\Models\PaymentTerm;
 use App\Models\ShippingTerm;
 use App\Models\Taxcode;
 use App\Models\User;
 use App\Models\ValueList;
+use App\Models\ChartOfAccount;
+use App\Models\OrderStatus;
 use Yajra\Datatables\Datatables;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Product;
 use Auth;
 use Validator;
+use Illuminate\Support\Facades\Session;
+
 
 class OrderController extends Controller
 {
@@ -38,9 +43,7 @@ class OrderController extends Controller
         $outstanding_balance_amount = 0; //$this->_getOutstandingBalance($outstanding_balance_currency_code);
 
         return view('orders.index', compact('outstanding_balance_currency_code','outstanding_balance_amount'));
-//        $this->layout->content = View::make('orders.index')
-//            ->with('outstanding_balance_currency_code', $outstanding_balance_currency_code)
-//            ->with('outstanding_balance_amount', $outstanding_balance_amount);
+
     }
 
     public function getOrderData(){
@@ -66,6 +69,66 @@ class OrderController extends Controller
             ->make(true);
     }
 
+    public function getPayments($id) {
+        $order = Order::findOrFail($id);
+        $customer = Customer::findOrFail($order->customer_id);
+        if(Auth::user()->company_id != $order->company_id){
+            die("Access violation E01");
+        }
+
+        $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toHierarchy();
+        $select_accounts = printSelect($tree,13);
+
+        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
+        $select_customer_contacts = $customer->contacts->pluck('name','name');
+        $select_status = array(
+            "DRAFT" => "DRAFT",
+            "OPEN" => "OPEN",
+            "CLOSED" => "CLOSED",
+            "VOID" => "VOID"
+        );
+        $select_payment_methods = array(
+            "BANK TRANSFER" => "BANK TRANSFER",
+            "CHEQUE" => "CHEQUE",
+            "CASH" => "CASH"
+        );
+        return view('orders.payments',compact('select_status','select_payment_methods','select_customer_contacts',
+            'select_payment_terms', 'select_currency_codes', 'select_shipping_methods', 'select_shipping_terms', 'select_accounts',
+            'order','customer'));
+    }
+
+
+    public function getRecords($id)
+    {
+        $order = Order::findOrFail($id);
+
+        if (Auth::user()->company_id != $order->company_id) {
+            die("Access violation E01");
+        }
+        $customer = Customer::findOrFail($order->customer_id);
+
+        $select_status = OrderStatus::pluck('name', 'id');
+
+        $mail_to = "";
+        $mail_cc = "";
+        $mail_bcc = "";
+        $mail_subject = "Order #$order->order_no";
+        $mail_body = <<<EOT
+Hello {$order->customerContact->contact_name},
+
+please find your order confirmation #$order->order_no attached.
+
+Let me know if you have any questions,
+EOT;
+        $mail_body .= "\n"; //$order->user->signature;
+
+        return view('orders.records', compact('mail_to', 'mail_cc', 'mail_bcc', 'mail_subject', 'mail_body', 'order',
+            'customer', 'select_status'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -74,6 +137,68 @@ class OrderController extends Controller
     public function create()
     {
         //
+    }
+
+    public function postPayments(Request $request,  $id) {
+
+        $order = Order::findOrFail($id);
+        $rules = array(
+            'amount' => "required",
+            'date_created'   => "required",
+        );
+        $input = $request->all();
+        $validation = Validator::make($input, $rules);
+
+        $uid = Auth::user()->id;
+        $sup = Auth::user()->superior_id;
+
+        if($order->created_by != $uid){
+            if($order->customer->salesman_id != $uid){
+                if(!has_role('company_admin')){
+                    return redirect('orders/show/'.$id)
+                        ->with('flash_error','Permission Denied')
+                        ->withErrors($validation->Messages())
+                        ->withInput();
+                }
+            }
+        }
+
+        if($validation->fails()){
+            return redirect('orders/payments/'.$id)
+                ->with('flash_error','Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+            $payment = new CustomerPayment();
+            $payment->company_id = return_company_id();
+            $payment->order_id   = $order->id;
+            $payment->type       = "Bank";
+
+            if($payment->transaction_reference === NULL) {
+                $transaction_reference = '';
+            }else{
+                $transaction_reference = $request->input('transaction_reference');
+            }
+            if($payment->remark === NULL) {
+                $remark = '';
+            }else{
+                $remark = $request->input('remark');
+            }
+            $payment->transaction_reference = $transaction_reference;
+            $payment->currency_code = $request->input('currency_code','USD');
+            $payment->amount        = $request->input('amount');
+            $payment->bank_charges  = $request->input('bank_charges');
+            $payment->created_by    = Auth::user()->id;
+            $payment->account_id    = $request->input('account_id',13);
+            $payment->remark        = $remark;
+            $payment->date          = $request->input('date_created');
+            $payment->save();
+
+            updateOrderStatus($id);
+
+            return redirect('orders/payments/'.$id)
+                ->with('flash_success','Operation success');
+        }
     }
 
     /**
@@ -265,5 +390,20 @@ class OrderController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function deletePayment($id){
+
+        $record = CustomerPayment::findOrFail($id);
+        $order = Order::findOrFail($record->order_id);
+
+        $record->delete();
+
+        updateOrderStatus($order->id);
+
+        Session::flash('deleted_post','The post has been taken care of');
+
+        return redirect('orders/payments/'.$order->id)
+            ->with('flash_success','Operation success');
     }
 }

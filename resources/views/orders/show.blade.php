@@ -341,7 +341,7 @@
                                             <th class="cell-tight">P/U</th>
                                             <th class="cell-tight">CBM</th>
                                             <th class="cell-tight">Per Pallet</th>
-                                            <th class="cell-tight">Stock</th>
+                                            {{--<th class="cell-tight">Stock</th>--}}
                                             <th class="cell-tight">Qty</th>
                                             <th class="cell-tight">Nt. Price</th>
                                             <th class="cell-tight">Nt. Amount</th>
@@ -414,6 +414,69 @@
 
                                                     </tr>
                                                 @endforeach
+                                                <tr>
+                                                    <td colspan="9">{{ count($order->items) }} Line Items Total</td>
+                                                    <td>
+                                                        <input type="hidden" name="action" value="update_ois" />
+                                                        <input type="submit" value="SAVE" class="btn btn-xs btn-success pull-right">
+                                                    </td>
+                                                </tr>
+                                                @if($order->discount > 0)
+                                                    <tr>
+                                                        <td colspan="8" class="align-right">Discount</td>
+                                                        <td class="align-right">{{ $order->discount }}%</td>
+                                                        <td></td>
+                                                    </tr>
+                                                @endif
+
+                                                @if($order->discount > 0)
+                                                    <tr>
+                                                        <td colspan="8" class="align-right">Sub Total Net</td>
+                                                        <td class="align-right">{{ $order->sub_total_net }}</td>
+                                                        <td></td>
+                                                    </tr>
+                                                @else
+                                                    <tr>
+                                                        <td colspan="8" class="align-right">Sub Total Net</td>
+                                                        <td class="align-right">{{ $order->sub_total_net }}</td>
+                                                        <td></td>
+                                                    </tr>
+                                                @endif
+
+
+                                                @if($order->shipping_cost > 0)
+                                                    <tr>
+                                                        <td colspan="8" class="align-right">+ Freight Charge</td>
+                                                        <td class="align-right">{{ number_format($order->shipping_cost,2) }}</td>
+                                                        <td></td>
+                                                    </tr>
+                                                @endif
+                                                @if($order->taxcode->percent > 0)
+                                                    <tr>
+                                                        <td colspan="8" class="align-right">{{ $order->taxcode->name }}</td>
+                                                        <td class="align-right">{{ $order->tax_total }}</td>
+                                                        <td></td>
+                                                    </tr>
+                                                @endif
+                                                <tr>
+                                                    <td colspan="8" class="align-right">Total {{ $order->currency_code }}</td>
+                                                    <td class="align-right">{{ $order->total_gross }}</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="8" class="align-right">Paid til now</td>
+                                                    <td class="align-right">{{ $order->getPaidTillNow() }}</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="8" class="align-right">Open Balance</td>
+                                                    <td class="align-right">{{ $order->getOpenBalance() }}</td>
+                                                    <td></td>
+                                                </tr>
+                                            @else
+                                                <tr>
+                                                    <td colspan="10">Nothing found</td>
+                                                </tr>
                                             @endif
                                         </tbody>
                                     </table>

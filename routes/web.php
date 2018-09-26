@@ -89,4 +89,8 @@ Route::resource('purchases','PurchaseController');
 //Route::resource('/value_lists', 'ValueListController');
 /** Order */
 Route::get('orders/getdata', 'OrderController@getOrderData')->name('orders/getdata');
+Route::get('orders/payments/{id}', 'OrderController@getPayments')->name('order.getPayments');
+Route::post('orders/payments/{id}', 'OrderController@postPayments')->name('order.postPayments');
+Route::delete('orders/payments/{id}', 'OrderController@deletePayment')->name('order.deletePayment');
+Route::get('orders/records/{id}', 'OrderController@getRecords')->name('order.getRecords');
 Route::resource('orders', 'OrderController');
