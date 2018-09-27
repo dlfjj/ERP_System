@@ -12,8 +12,6 @@
     @include('orders.page_header')
 @stop
 
-
-
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -141,13 +139,13 @@
                     <h4><i class="icon-reorder"></i> order History</h4>
                 </div>
                 <div class="widget-content">
-                    <div class="tabbable box-tabs">
+                    <div class="tabbable">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#box_tab1" data-toggle="tab">General</a></li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="box_tab1">
-                                <table class="table table-hover">
+                            {{--<div class="tab-pane active" id="box_tab1">--}}
+                                <table class="table table-hover" id="email-record-table" style="width:100%;">
                                     <thead>
                                     <tr>
                                         <th>Timestamp</th>
@@ -159,42 +157,31 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {{--@if(count($order->history)>0)--}}
-                                        {{--@php--}}
-                                            {{--$order_history = App\Models\OrderHistory::where('order_id',$order->id)->get();--}}
-                                        {{--@endphp--}}
-                                        {{--@foreach($order_history as $history)--}}
-                                            {{--<tr class="order-form-row">--}}
-                                                {{--<td>{{$history->created_at}}</td>--}}
-                                                {{--<td>{{$history->username }}</td>--}}
-                                                {{--<td>{{$history->status->name }}</td>--}}
-                                                {{--<td>{{nl2br($history->comment) }}</td>--}}
-                                                {{--<td>--}}
-                                                    {{--@if($history->file_name != "")--}}
-                                                        {{--<a href="/orders/download/{{$history->id}}" class="" rel="{{ $history->id }}">Download</a>--}}
-                                                    {{--@endif--}}
-                                                {{--</td>--}}
-                                                {{--<td>--}}
-                                                    {{--@if($history->notify_customer == 1)--}}
-                                                        {{--Yes--}}
-                                                    {{--@else--}}
-                                                        {{--No--}}
-                                                    {{--@endif--}}
-                                                {{--</td>--}}
+                                        @if(count($order->history)>0)
+                                            @foreach($order_history as $history)
+                                                <tr class="order-form-row">
+                                                    <td>{{$history->created_at}}</td>
+                                                    <td>{{$history->username }}</td>
+                                                    <td>{{$history->status()->first()->name }}</td>
+                                                    <td>{!! ($history->comment) !!}</td>
+                                                    <td>
+                                                        @if($history->file_name != "")
+                                                            <a href="/orders/download/{{$history->id}}" class="" rel="{{ $history->id }}">Download</a>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($history->notify_customer == 1)
+                                                            Yes
+                                                        @else
+                                                            No
+                                                        @endif
+                                                    </td>
 
-                                            {{--</tr>--}}
-                                        {{--@endforeach--}}
-                                    {{--@else--}}
-                                        {{--<tr>--}}
-                                            {{--<td colspan="6">Nothing found</td>--}}
-                                        {{--</tr>--}}
-                                    {{--@endif--}}
+                                                </tr>
+                                            @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
-                                </form>
-                            </div>
-                            <div class="tab-pane" id="box_tab4">
-                            </div>
                         </div>
                     </div> <!-- /.tabbable portlet-tabs -->
                 </div> <!-- /.widget-content -->
@@ -205,7 +192,7 @@
 
     <div class="row">
         <div class="col-md-12 no-padding">
-{{--            <p class="record_status">Created: {{$order->created_at}} | Created by: {{User::find($order->created_by)->username}} | Updated: {{$order->updated_at}} | Updated by: {{User::find($order->updated_by)->username}}</p>--}}
+            <p class="record_status">Created: {{$order->created_at}} | Created by: {{$the_user_created_this_order}} | Updated: {{$order->updated_at}} | Updated by: {{ $the_user_updated_this_order }}</p>
         </div>
     </div>
 

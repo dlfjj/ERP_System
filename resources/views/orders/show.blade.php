@@ -284,7 +284,6 @@
                 </div>
             </div>
         </div>
-        {{--        {!! Form::close() !!}--}}
     </div>
 
     {{--order items--}}
@@ -386,9 +385,10 @@
                                                             @else
                                                                 {{$oi->product->pluck('units_per_pallette')->implode(',') }}
                                                             @endif
-                                                            {{--@php--}}
-                                                                {{--$price = $oi->product->getSalePrice($order,$customer);--}}
-                                                            {{--@endphp--}}
+{{--                                                                {{ getSalePrice($oi->product[0],$order,$customer) }}--}}
+                                                                @php
+                                                                    $price = getSalePrice( $oi->product[0],$order,$customer );
+                                                                @endphp
                                                         </td>
                                                         <td>
 {{--                                                            {{$oi->product->getStockOnHand() }}--}}

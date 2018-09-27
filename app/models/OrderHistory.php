@@ -1,4 +1,5 @@
 <?php
+use App\Models\OrderStatus;
 
 class OrderHistory extends Eloquent {
 

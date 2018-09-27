@@ -5,6 +5,9 @@ use App\Models\OrderItem;//import OrderItem model
 use App\Models\Purchase;
 use App\Models\ChartOfAccount;
 use App\Models\Setting;
+use App\Models\ProductPrice;
+use App\Models\ProductPriceOverride;
+use App\Models\CustomerGroup;
 use Illuminate\Support\Facades\Cache;//add cache facade
 use App\models\Company;//import model class
 use Illuminate\Support\Facades\Auth;
@@ -990,7 +993,67 @@ function logMsg($message,$severity="info",$module="general"){
     return true;
 }
 
+function getSalePrice(&$product,&$order,&$customer,$currency_code=null){
+    $container = $order->container;
+    $price = 0;
+    $product_id = $product->id;
+    $customer_id = $customer->id;
 
+
+    if($currency_code == null){
+        $currency_code = "USD";
+    }
+
+    // First Get the Base Price and the Group Price, add them together
+    if($order->container->base_price == '20'){
+        $price = $product->sales_base_20;
+        $base_price = $product->sales_base_20;
+
+        $group_prices = ProductPrice::where('product_id',$product_id)->where('customer_group_id', $customer->group_id)->first();
+        if($group_prices && is_numeric($group_prices->surcharge_20)){
+            $price /= $group_prices->surcharge_20;
+        } else {
+            // if there was no product price, get price from customer group
+            $customer_group_prices = CustomerGroup::where('id',$customer->group_id)->first();
+            if($container->base_price == '20'){
+                $group_surcharge = $customer_group_prices->surcharge_20;
+            } else {
+                $group_surcharge = 0;
+            }
+            $price /= $group_surcharge;
+        }
+    } elseif($container->base_price == '40'){
+        $price = $product->sales_base_40;
+        $base_price = $product->sales_base_40;
+
+        $group_prices = ProductPrice::where('product_id',$product_id)->where('customer_group_id', $customer->group_id)->first();
+        if($group_prices && is_numeric($group_prices->surcharge_40)){
+            $price /= $group_prices->surcharge_40;
+        } else {
+            // if there was no product price, get price from customer group
+            $customer_group_prices = CustomerGroup::where('id',$customer->group_id)->first();
+            if($container->base_price == '40'){
+                $group_surcharge = $customer_group_prices->surcharge_40;
+            } else {
+                $group_surcharge = 0;
+            }
+            $price /= $group_surcharge;
+        }
+    }
+
+    // Or, If there is an Override set on the product level, just use that price
+    $customer_override = ProductPriceOverride::where('customer_id',$customer_id)->where('product_id',$product_id)->first();
+    if($customer_override != NULL){
+        if($container->base_price == '20'){
+            $price_override = $customer_override->base_price_20;
+        } elseif($container->base_price == '40'){
+            $price_override = $customer_override->base_price_40;
+        }
+        $price = $price_override;
+    }
+
+    return convert_currency($order->company->currency_code,$currency_code,$price);
+}
 
 
 /*

@@ -111,13 +111,3 @@
         });
     </script>
 @endpush
-
-
-{{--'orders.id',--}}
-{{--'orders.order_no',--}}
-{{--'order_status.name',--}}
-{{--'orders.customer_order_number',--}}
-{{--'orders.order_date',--}}
-{{--'customers.customer_name',--}}
-{{--'orders.estimated_finish_date',--}}
-{{--'orders.total_gross',--}}

@@ -73,9 +73,6 @@
                     <h4><i class="icon-reorder"></i> Payment history</h4>
                 </div>
                 <div class="widget-content no-padding">
-                    {{--<form style="margin: 0px; padding: 0px;" action="/orders/{{$order->id}}/receive" method="POST">--}}
-{{--                        {!! Form::open(['method'=>'POST', 'action'=> ['OrderController@postPayments', $order->id], 'style'=>'margin: 0px; padding: 0px']) !!}--}}
-
                         <table class="table table-hover table-bordered table-highlight-head">
                             <thead>
                             <tr>
@@ -121,7 +118,6 @@
                                             {{$payment->bank_charges }}
                                         </td>
                                         <td class="align-center">
-{{--                                            <a href="/orders/payment-delete/{{$payment->id}}" class="btn btn-xs btn-danger conf">X</a>--}}
                                             {{ Form::submit('X', ['class' => 'btn btn-xs btn-danger']) }}
                                         </td>
                                     </tr>

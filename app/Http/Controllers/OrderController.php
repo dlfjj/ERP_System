@@ -12,10 +12,11 @@ use App\Models\User;
 use App\Models\ValueList;
 use App\Models\ChartOfAccount;
 use App\Models\OrderStatus;
+use App\OrderHistory;
+use App\Models\Product;
 use Yajra\Datatables\Datatables;
 use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\Product;
 use Auth;
 use Validator;
 use Illuminate\Support\Facades\Session;
@@ -125,9 +126,16 @@ Let me know if you have any questions,
 EOT;
         $mail_body .= "\n"; //$order->user->signature;
 
+//        get the data for order history section
+        $order_history = OrderHistory::where('order_id',$order->id)->get();
+        $the_user_created_this_order = User::find($order->created_by)->username;
+        $the_user_updated_this_order = User::find($order->updated_by)->username;
+
         return view('orders.records', compact('mail_to', 'mail_cc', 'mail_bcc', 'mail_subject', 'mail_body', 'order',
-            'customer', 'select_status'));
+            'customer', 'select_status','order_history','the_user_created_this_order','the_user_updated_this_order'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -291,6 +299,15 @@ EOT;
             "CLOSED" => "CLOSED",
             "VOID" => "VOID"
         );
+
+//        $test = new Product();
+//        return Product::getStockOnHand();
+//
+//        foreach($order->items as $oi){
+//
+//             return $oi->product->Product::getStockOnHand();
+//        }
+//        }
 
 
         return view('orders.show',compact('select_status','select_customer_contacts',

@@ -93,4 +93,6 @@ Route::get('orders/payments/{id}', 'OrderController@getPayments')->name('order.g
 Route::post('orders/payments/{id}', 'OrderController@postPayments')->name('order.postPayments');
 Route::delete('orders/payments/{id}', 'OrderController@deletePayment')->name('order.deletePayment');
 Route::get('orders/records/{id}', 'OrderController@getRecords')->name('order.getRecords');
+Route::get('orders/records/getdata', 'OrderController@getOrderRecordData')->name('orders/records/getdata');
+
 Route::resource('orders', 'OrderController');

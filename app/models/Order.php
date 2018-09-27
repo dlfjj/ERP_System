@@ -164,7 +164,7 @@ class Order extends Model {
 	}
 
 	public function history() {
-		return $this->hasMany('App\Models\OrderHistory1');
+		return $this->hasMany('App\OrderHistory');
 	}
 
 	public function getGrossTotal($currency_code="",$date=""){

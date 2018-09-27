@@ -327,12 +327,12 @@ class Product extends Model {
     }
 
     public function getSalePrice(&$order,&$customer,$currency_code=null){
-
         $container = $order->container;
         $product   = $this;
         $price = 0;
         $product_id = $this->id;
         $customer_id = $customer->id;
+
 
 		if($currency_code == null){
 			$currency_code = "USD";
