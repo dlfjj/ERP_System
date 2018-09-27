@@ -357,7 +357,7 @@
                                                 @foreach($order_items as $oi)
                                                     <tr class="order-form-row">
                                                         <td>
-                                                            {{$oi->line_no }}
+                                                            {{ $oi->line_no }}
                                                         </td>
                                                         <td>
                                                             <a href="/products/{{$oi->product->pluck('id')->implode(',')}}">{{$oi->product->pluck('product_code')->implode(',') }}</a>
@@ -386,12 +386,19 @@
                                                                 {{$oi->product->pluck('units_per_pallette')->implode(',') }}
                                                             @endif
 {{--                                                                {{ getSalePrice($oi->product[0],$order,$customer) }}--}}
-                                                                @php
-                                                                    $price = getSalePrice( $oi->product[0],$order,$customer );
-                                                                @endphp
+                                                                {{--@php--}}
+                                                                    {{--$price = getSalePrice( $oi->product[0],$order,$customer );--}}
+                                                                {{--@endphp--}}
                                                         </td>
                                                         <td>
-{{--                                                            {{$oi->product->getStockOnHand() }}--}}
+                                                            @php
+                                                                if ($oi->product->pluck('stock')->implode(',') == ""){
+                                                                    $stock = "0";
+                                                                }else{
+                                                                    $stock = $oi->product->pluck('stock')->implode(',');
+                                                                }
+                                                            @endphp
+                                                            {{ $stock }}
                                                         </td>
                                                         <td class="">
                                                             <input name="oi[{{$oi->id}}][quantity]" style="width: 50px; padding: 3px !important; border: 1px solid #CCC;" type="text" value="{{ $oi->quantity }}" />

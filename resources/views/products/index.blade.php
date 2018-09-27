@@ -33,7 +33,7 @@
 		<div class="page-title">
 			<!-- if(has_role('products_edit')) -->
 			<form class="form-inline" id="create" action="/product/getExport" method="POST"><!--remove product/create path and andd product/getExport-->
-				<!--  <a class="btn btn-success btn-lg form-submit-conf" href="javascript:void(0);" data-target-form="create"><i class="icon-plus-sign"></i> New Product</a> -->
+				<a class="btn btn-success btn-lg form-submit-conf" href="javascript:void(0);" data-target-form="create"><i class="icon-plus-sign"></i> New Product</a>
 			</form>
 			<!-- endif -->
 		</div>
@@ -42,56 +42,43 @@
 
 @section('content')
 
-	<script type="text/javascript" charset="utf-8">
-        /*
-        $(document).ready(function() {
-            $('table').dataTable( {
-                "bServerSide": true,
-                "sAjaxSource": "/products/dt-index",
-                "aoColumnDefs": [
-                    { "bSearchable": true, "bVisible": false, "aTargets": [ 3 ] }
-                ]
-            });
-        });
-        */
-	</script>
 
 	<div class="row">
 		<div class="col-md-12">
-			<div class="widget box">
-				<div class="widget-header">
-					<h4><i class="icon-reorder"></i> Product Index</h4>
-					<div class="toolbar no-padding">
-						<div class="btn-group">
-							<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
-						</div>
-					</div>
+			<div class="panel panel-default">
+				<div class="">
+					<div class="panel-heading"><i class="icon-reorder"></i> Product Index</div>
+					{{--<div class="toolbar no-padding">--}}
+						{{--<div class="btn-group">--}}
+							{{--<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
+						{{--</div>--}}
+					{{--</div>--}}
 				</div>
-				<div class="widget-content no-padding">
-					<table class="table table-striped table-bordered table-hover table-chooser datatable" id="product_table">
+				<div class="panel-body">
+					<table class="table table-hover table-bordered table-striped" id="product_table" style="width: 100%">
 						<thead>
 						<tr class="table_head" style="width:10px;">
 							<th class="cell-tight">Code</th>
 							<th class="cell-tight">Status</th>
 							<th class="cell-tight">MPN</th>
-							<th>Product Name</th>
-							<th>Sort No.</th>
-							<th>Stock</th>
-							<th>View</th>
+							<th class="cell-tight">Product Name</th>
+							<th class="cell-tight">Sort No.</th>
+							<th class="cell-tight">Stock</th>
+							<th class="cell-tight">View</th>
 						</tr>
 						</thead>
 						<tbody>
-						@foreach($products as $product)
-							<tr>
-								<td>{{$product->product_code}}</td>
-								<td>{{$product->status}}</td>
-								<td>{{$product->mpn}}</td>
-								<td>{{$product->product_name}}</td>
-								<td>{{$product->pricelist_sort}}</td>
-								<td>{{$product->stock}}</td>
-								<td><a href="/products/{{ $product->id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a></td>
-							</tr>
-						@endforeach
+						{{--@foreach($products as $product)--}}
+							{{--<tr>--}}
+								{{--<td>{{$product->product_code}}</td>--}}
+								{{--<td>{{$product->status}}</td>--}}
+								{{--<td>{{$product->mpn}}</td>--}}
+								{{--<td>{{$product->product_name}}</td>--}}
+								{{--<td>{{$product->pricelist_sort}}</td>--}}
+								{{--<td>{{$product->stock}}</td>--}}
+								{{--<td><a href="/products/{{ $product->id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a></td>--}}
+							{{--</tr>--}}
+						{{--@endforeach--}}
 						</tbody>
 					</table>
 
@@ -99,9 +86,32 @@
 			</div>
 		</div>
 	</div>
-	<script>
-        $(document).ready(function(){
-            $('product_table').dataTable();
-        })
-	</script>
+	{{--<script>--}}
+        {{--$(document).ready(function(){--}}
+            {{--$('product_table').dataTable();--}}
+        {{--})--}}
+	{{--</script>--}}
 @stop
+
+@push('scripts')
+	<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript">
+        // jquery getting data for purchase table
+        $(function() {
+            $('#product_table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route('products/getdata') !!}',
+                columns: [
+                    { data: 'product_code', name: 'product_code' },
+                    { data: 'status', name: 'status' },
+                    { data: 'mpn', name: 'mpn' },
+                    { data: 'product_name', name: 'product_name' },
+                    { data: 'pricelist_sort', name: 'pricelist_sort' },
+                    { data: 'stock', name: 'stock' },
+                    {data: 'action', name: 'action', orderable: false, searchable: false}
+                ]
+            });
+        });
+	</script>
+@endpush

@@ -357,16 +357,7 @@ Let me know if you have any questions,
 EOT;
         $mail_body .= "\n".$purchase->user->signature;
 
-//        $this->layout->module_title = "Details";
-//        $this->layout->module_sub_title = "Details";
         return view('purchases.records',compact('mail_to','mail_cc','mail_bcc','mail_subject','mail_body','purchase','vendor'));
-//        $this->layout->content = View::make('purchases.history')
-//            ->with('mail_to',$mail_to)
-//            ->with('mail_cc',$mail_cc)
-//            ->with('mail_bcc',$mail_bcc)
-//            ->with('mail_subject',$mail_subject)
-//            ->with('mail_body',$mail_body)
-//            ->with('purchase',$purchase)
-//            ->with('vendor',$vendor);
+
     }
 }

@@ -300,14 +300,6 @@ EOT;
             "VOID" => "VOID"
         );
 
-//        $test = new Product();
-//        return Product::getStockOnHand();
-//
-//        foreach($order->items as $oi){
-//
-//             return $oi->product->Product::getStockOnHand();
-//        }
-//        }
 
 
         return view('orders.show',compact('select_status','select_customer_contacts',

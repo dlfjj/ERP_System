@@ -6,6 +6,7 @@ use App\Components\Exceptions\StatusChangeDeniedException;
 use App\Components\Product\Exceptions\MPNAlreadyExistExceptions;
 use App\Components\Product\Services\ProductService;
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 use Throwable;
 use View;
 use App\Models\Product;
@@ -42,9 +43,21 @@ class ProductController extends Controller {
 
     public function index()
     {
+//        $products = $this->productService->getAllProductsByCompanyId(return_company_id());
+
+        return view('products.index');
+
+//        return view('products.index', ['products' => $products]);
+    }
+
+    public function getProductData(){
+
         $products = $this->productService->getAllProductsByCompanyId(return_company_id());
 
-        return view('products.index', ['products' => $products]);
+        return Datatables::of($products)
+            ->addColumn('action', function ($product) {
+                return '<a href="/products/'.$product->id.'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';})->make(true);
+
     }
 
     public function show($id)

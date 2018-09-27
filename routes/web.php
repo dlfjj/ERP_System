@@ -53,6 +53,7 @@ Route::group(['prefix' => 'customers'], function () {
 
 /** Products Related */
 Route::group(['prefix' => 'products'], function () {
+    Route::get('/getdata', 'ProductController@getProductData')->name('products/getdata');
     Route::get('/','ProductController@index');
     Route::get('/{id}','ProductController@show');
     Route::post('/{id}','ProductController@update');
@@ -94,5 +95,4 @@ Route::post('orders/payments/{id}', 'OrderController@postPayments')->name('order
 Route::delete('orders/payments/{id}', 'OrderController@deletePayment')->name('order.deletePayment');
 Route::get('orders/records/{id}', 'OrderController@getRecords')->name('order.getRecords');
 Route::get('orders/records/getdata', 'OrderController@getOrderRecordData')->name('orders/records/getdata');
-
 Route::resource('orders', 'OrderController');
