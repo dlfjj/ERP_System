@@ -33,7 +33,7 @@
 		<div class="page-title">
 			<!-- if(has_role('products_edit')) -->
 			<form class="form-inline" id="create" action="/product/getExport" method="POST"><!--remove product/create path and andd product/getExport-->
-				<a class="btn btn-success btn-lg form-submit-conf" href="javascript:void(0);" data-target-form="create"><i class="icon-plus-sign"></i> New Product</a>
+				<a class="btn btn-success form-submit-conf" href="javascript:void(0);" data-target-form="create"><i class="icon-plus-sign"></i> New Product</a>
 			</form>
 			<!-- endif -->
 		</div>
@@ -45,17 +45,12 @@
 
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+			<div class="panel panel-default" style="margin-bottom: 100px;">
 				<div class="">
 					<div class="panel-heading"><i class="icon-reorder"></i> Product Index</div>
-					{{--<div class="toolbar no-padding">--}}
-						{{--<div class="btn-group">--}}
-							{{--<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
-						{{--</div>--}}
-					{{--</div>--}}
 				</div>
 				<div class="panel-body">
-					<table class="table table-hover table-bordered table-striped" id="product_table" style="width: 100%">
+					<table class="table table-hover table-bordered table-striped" id="product_table" style="width: 100%;">
 						<thead>
 						<tr class="table_head" style="width:10px;">
 							<th class="cell-tight">Code</th>
@@ -68,17 +63,6 @@
 						</tr>
 						</thead>
 						<tbody>
-						{{--@foreach($products as $product)--}}
-							{{--<tr>--}}
-								{{--<td>{{$product->product_code}}</td>--}}
-								{{--<td>{{$product->status}}</td>--}}
-								{{--<td>{{$product->mpn}}</td>--}}
-								{{--<td>{{$product->product_name}}</td>--}}
-								{{--<td>{{$product->pricelist_sort}}</td>--}}
-								{{--<td>{{$product->stock}}</td>--}}
-								{{--<td><a href="/products/{{ $product->id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a></td>--}}
-							{{--</tr>--}}
-						{{--@endforeach--}}
 						</tbody>
 					</table>
 

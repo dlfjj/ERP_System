@@ -28,7 +28,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <title>{{Auth::user()->company->name}}</title>
 
     <!-- Bootstrap -->
-    <link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+    {{--<link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />--}}
 
     <!-- jQuery UI -->
     <!--<link href="plugins/jquery-ui/jquery-ui-1.10.2.custom.css" rel="stylesheet" type="text/css" />-->
@@ -37,7 +37,8 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <![endif]-->
 
     <!-- Theme -->
-    <link href="/assets/css/main.css" rel="stylesheet" type="text/css" />
+    {{--<link href="/assets/css/main.css" rel="stylesheet" type="text/css" />--}}
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
     <link href="/assets/css/plugins.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/responsive.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/icons.css" rel="stylesheet" type="text/css" />
@@ -55,11 +56,8 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <![endif]-->
 
     <!-- datatable styles -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css" />
-
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
 
 
     <style>
@@ -89,7 +87,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <script type="text/javascript" src="/assets/js/libs/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js"></script>
 
-    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    {{--<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>--}}
     <script type="text/javascript" src="/assets/js/libs/lodash.compat.min.js"></script>
 
     <script type="text/javascript" src="/js/global.js"></script>
@@ -142,7 +140,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <!-- Forms -->
     <script type="text/javascript" src="/plugins/uniform/jquery.uniform.min.js"></script>
     <script type="text/javascript" src="/plugins/select2/select2.min.js"></script>
-    <script type="text/javascript" src="/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
+    {{--<script type="text/javascript" src="/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>--}}
     <script type="text/javascript" src="/plugins/uniform/jquery.uniform.min.js"></script>
     <script type="text/javascript" src="/plugins/autosize/jquery.autosize.min.js"></script>
     <script type="text/javascript" src="/plugins/tagsinput/jquery.tagsinput.min.js"></script>
@@ -152,7 +150,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <script type="text/javascript" src="/plugins/datatables/tabletools/TableTools.min.js"></script>
     <script type="text/javascript" src="/plugins/datatables/colvis/ColVis.min.js"></script>
     <script type="text/javascript" src="/plugins/datatables/columnfilter/jquery.dataTables.columnFilter.js"></script>
-    <script type="text/javascript" src="/plugins/datatables/DT_bootstrap.js"></script>
+    {{--<script type="text/javascript" src="/plugins/datatables/DT_bootstrap.js"></script>--}}
 
     <!-- App -->
     <script type="text/javascript" src="/assets/js/app.js"></script>
@@ -225,9 +223,9 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         </ul> -->
 
         <!-- Logo -->
-        <a class="navbar-brand" href="/">
-            <p style="font-size: 11px; margin: 0px; padding: 0px;"></p>
-        </a>
+        {{--<a class="navbar-brand" href="/">--}}
+            {{--<p style="font-size: 11px; margin: 0px; padding: 0px;"></p>--}}
+        {{--</a>--}}
         <!-- /logo -->
 
         <!-- Sidebar Toggler -->
@@ -237,22 +235,12 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         <!-- Top Left Menu -->
         <ul class="nav navbar-nav navbar-left hidden-xs hidden-sm">
             @section('page-module-menu')
-                <li class="text-center" style="font-size: 15px; background: #0f2452; margin-top:10px; padding-left: 10px; padding-right: 10px;">
+                <li class="text-center">
+                {{--<li class="text-center" style="font-size: 15px; background: #0f2452; margin-top:10px; padding-left: 10px; padding-right: 10px;">--}}
                     AMERICAN DUNNAGE INC.
                 </li>
-        @show
-        <!-- <li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						Employees
-						<i class="icon-caret-down small"></i>
-					</a>
-					<ul class="dropdown-menu">
-						<li><a href="#"><i class="icon-user"></i> Example #1</a></li>
-						<li><a href="#"><i class="icon-calendar"></i> Example #2</a></li>
-						<li class="divider"></li>
-						<li><a href="#"><i class="icon-tasks"></i> Example #3</a></li>
-					</ul>
-				</li> -->
+            @show
+
         </ul>
         <!-- /Top Left Menu -->
 
@@ -346,83 +334,6 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         <div id="scrollbar">
             <div class="handle"></div>
         </div>
-
-        <div id="frame">
-            <ul class="project-list">
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-desktop"></i></span>
-                        <span class="title">Lorem ipsum dolor</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-compass"></i></span>
-                        <span class="title">Dolor sit invidunt</span>
-                    </a>
-                </li>
-                <li class="current">
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-male"></i></span>
-                        <span class="title">Consetetur sadipscing elitr</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-thumbs-up"></i></span>
-                        <span class="title">Sed diam nonumy</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-female"></i></span>
-                        <span class="title">At vero eos et</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-beaker"></i></span>
-                        <span class="title">Sed diam voluptua</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-desktop"></i></span>
-                        <span class="title">Lorem ipsum dolor</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-compass"></i></span>
-                        <span class="title">Dolor sit invidunt</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-male"></i></span>
-                        <span class="title">Consetetur sadipscing elitr</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-thumbs-up"></i></span>
-                        <span class="title">Sed diam nonumy</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-female"></i></span>
-                        <span class="title">At vero eos et</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:void(0);">
-                        <span class="image"><i class="icon-beaker"></i></span>
-                        <span class="title">Sed diam voluptua</span>
-                    </a>
-                </li>
-            </ul>
-        </div> <!-- /#frame -->
     </div> <!-- /#project-switcher -->
 </header> <!-- /.header -->
 

@@ -28,7 +28,7 @@
     <div class="page-header">
         <div class="page-title">
             @if(has_role('expenses_edit'))
-                <a class="btn btn-success btn-lg" data-toggle="modal" href="#modal_expense" style="margin-top: 20px;"><i class="icon-plus-sign"></i> Add Expense</a>
+                <a class="btn btn-success btn" data-toggle="modal" href="#modal_expense"><i class="icon-plus-sign"></i> Add Expense</a>
             @endif
         </div>
         <ul class="page-stats">

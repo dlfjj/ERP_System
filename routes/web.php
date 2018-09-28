@@ -57,6 +57,17 @@ Route::group(['prefix' => 'products'], function () {
     Route::get('/','ProductController@index');
     Route::get('/{id}','ProductController@show');
     Route::post('/{id}','ProductController@update');
+    Route::get('/getAttributes/{id}', 'ProductController@getAttributes');
+//    Route::get('/getPrices/{id}', 'ProductController@getPrices');
+//    Route::update('/getPrices/{id}', 'ProductController@updatePrices');
+    Route::resource('prices','PriceController')->except([
+        'index'
+    ]);
+    Route::get('/getImages/{id}', 'ProductController@getImages');
+    Route::get('/getDownloads/{id}', 'ProductController@getDownloads');
+    Route::get('/getStocks/{id}', 'ProductController@getStocks');
+    Route::get('/getSetup/{id}', 'ProductController@getSetup');
+    Route::get('/getSync/{id}', 'ProductController@getSync');
 });
 
 /** Vendors */

@@ -60,8 +60,50 @@ class ProductController extends Controller {
 
     }
 
+    public function getAttributes($id) {
+        $product = Product::findOrFail($id);
+        $attributes = ProductAttribute::where('product_id',$product->id)->orderBy('group','DESC')->orderBy('name','ASC')->get();
+        return view('products.attributes',compact('product','attributes'));
+        // $this->layout->content = View::make('products.attributes')
+        //     ->with('product',$product)
+        // ;
+    }
+
+//    public function getPrices($id,$product_customer_id=null) {
+//        $product = Product::findOrFail($id);
+//
+//        if($product_customer_id != null){
+//            $product_customer = ProductCustomer::findOrFail($product_customer_id);
+//        } else {
+//            $product_customer = null;
+//        }
+//
+//        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+//        $select_customers = Customer::where('company_id',return_company_id())
+//            ->where('status','=','ACTIVE')->orderBy('customer_name', 'asc')->pluck('customer_name','id');
+//
+//        $select_groups   = CustomerGroup::where('company_id',return_company_id())
+//            ->pluck('group','id')
+//        ;
+//        $group_prices = ProductPrice::where('product_id',$product->id)->where('company_id',return_company_id())->orderBy('customer_group_id','DESC')->get();
+//
+//        return view('products.prices',compact('product','product_customer','select_groups','select_customers','select_currency_codes','group_prices'));
+//    }
+
+
+
+
     public function show($id)
     {
+//        $product = Product::findOrFail($id);
+//
+//        return $product->priceOverrides->sortBy('customer_id')->first();
+//
+//        foreach($product->priceOverrides->sortBy('customer_id') as $customer){
+//        return $customer->customer;
+//    }
+
+
         $contents = $this->productService->getProductById($id);
 
         return view('products.show', $contents);
@@ -69,6 +111,7 @@ class ProductController extends Controller {
 
     public function update(Request $request, int $id)
     {
+
         $rules = array(
             'id' => 'required|integer|digits_between:1,6',
             'category_id' => 'required|integer|digits_between:1,6',
@@ -1295,42 +1338,8 @@ class ProductController extends Controller {
 
     }
 
-    public function getAttributes($id) {
-	    $product = Product::findOrFail($id);
-      $attributes = ProductAttribute::where('product_id',$product->id)->orderBy('group','DESC')->orderBy('name','ASC')->get();
-      return view('products.attributes',compact('product','attributes'));
-        // $this->layout->content = View::make('products.attributes')
-        //     ->with('product',$product)
-        // ;
-	}
 
-	public function getPrices($id,$product_customer_id=null) {
-	    $product = Product::findOrFail($id);
 
-	    if($product_customer_id != null){
-	    	$product_customer = ProductCustomer::findOrFail($product_customer_id);
-		} else {
-			$product_customer = null;
-		}
-
-		$select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-        $select_customers = Customer::where('company_id',return_company_id())
-            ->where('status','=','ACTIVE')->orderBy('customer_name', 'asc')->pluck('customer_name','id');
-
-        $select_groups   = CustomerGroup::where('company_id',return_company_id())
-            ->pluck('group','id')
-        ;
-          $group_prices = ProductPrice::where('product_id',$product->id)->where('company_id',return_company_id())->orderBy('customer_group_id','DESC')->get();
-        //
-        // $this->layout->content = View::make('products.prices')
-        //     ->with('product',$product)
-        //     ->with('product_customer',$product_customer)
-        //     ->with('select_groups',$select_groups)
-        //     ->with('select_customers',$select_customers)
-        //     ->with('select_currency_codes',$select_currency_codes)
-        //
-        return view('products.prices',compact('product','product_customer','select_groups','select_customers','select_currency_codes','group_prices'));
-	}
 
     public function postPrices($id){
         $product = Product::findOrFail($id);
@@ -1499,6 +1508,10 @@ class ProductController extends Controller {
                 ->with('flash_success','Operation success');
         }
 	}
+
+
+
+
 
 	public function postCustomersDelete($record_id) {
 		$product_customer = ProductCustomer::findOrFail($record_id);
