@@ -53,16 +53,19 @@ Route::group(['prefix' => 'customers'], function () {
 
 /** Products Related */
 Route::group(['prefix' => 'products'], function () {
+
+//    Route::post('attributes/postAttributes','AttributeController@postAttributes');
+    Route::resource('attributes', 'AttributeController')->except([
+        'index'
+    ]);
+    Route::resource('prices','PriceController')->except([
+        'index'
+    ]);
     Route::get('/getdata', 'ProductController@getProductData')->name('products/getdata');
     Route::get('/','ProductController@index');
     Route::get('/{id}','ProductController@show');
     Route::post('/{id}','ProductController@update');
-    Route::get('/getAttributes/{id}', 'ProductController@getAttributes');
-//    Route::get('/getPrices/{id}', 'ProductController@getPrices');
-//    Route::update('/getPrices/{id}', 'ProductController@updatePrices');
-    Route::resource('prices','PriceController')->except([
-        'index'
-    ]);
+
     Route::get('/getImages/{id}', 'ProductController@getImages');
     Route::get('/getDownloads/{id}', 'ProductController@getDownloads');
     Route::get('/getStocks/{id}', 'ProductController@getStocks');

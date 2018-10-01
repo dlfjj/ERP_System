@@ -21,6 +21,9 @@ class PriceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct(){
+        $this->middleware('auth');
+    }
     public function index()
     {
 
@@ -45,6 +48,7 @@ class PriceController extends Controller
      */
     public function store(Request $request)
     {
+        return $request;
         $rules = array(
             'select_groups' => 'required|integer|digits_between:1,6',
             'surcharge_20' => 'numeric|required|digits_between:1,5 0',

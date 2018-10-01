@@ -60,14 +60,14 @@ class ProductController extends Controller {
 
     }
 
-    public function getAttributes($id) {
-        $product = Product::findOrFail($id);
-        $attributes = ProductAttribute::where('product_id',$product->id)->orderBy('group','DESC')->orderBy('name','ASC')->get();
-        return view('products.attributes',compact('product','attributes'));
+//    public function getAttributes($id) {
+//        $product = Product::findOrFail($id);
+//        $attributes = ProductAttribute::where('product_id',$product->id)->orderBy('group','DESC')->orderBy('name','ASC')->get();
+//        return view('products.attributes',compact('product','attributes'));
         // $this->layout->content = View::make('products.attributes')
         //     ->with('product',$product)
         // ;
-    }
+//    }
 
 //    public function getPrices($id,$product_customer_id=null) {
 //        $product = Product::findOrFail($id);
@@ -102,8 +102,6 @@ class ProductController extends Controller {
 //        foreach($product->priceOverrides->sortBy('customer_id') as $customer){
 //        return $customer->customer;
 //    }
-
-
         $contents = $this->productService->getProductById($id);
 
         return view('products.show', $contents);
