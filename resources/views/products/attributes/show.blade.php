@@ -57,7 +57,7 @@
                                         {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn'] )  }}
                                         @if(has_role('products_edit'))
                                             {{--use ajax request to delete the row--}}
-                                                <button class="btn" id="deleteAttribute" data-id="{{ $attribute->id }}">REMOVE</button>
+                                            <button class="btn deleteAttribute" data-id="{{ $attribute->id }}">REMOVE</button>
 
                                         @endif
                                         {{ Form::hidden('action', "mass_update", array()) }}
@@ -106,7 +106,7 @@
 @stop
 @push('scripts')
     <script>
-        $("#deleteAttribute").click(function(){
+        $(".deleteAttribute").click(function(){
             var id = $(this).data("id");
             $.ajaxSetup({
                 headers: {
@@ -125,10 +125,13 @@
                     // url: "products/attributes/"+id,
                     success: function ()
                     {
-                        location.reload();
+
                     }
                 });
-            location.reload();
+        });
+
+        $(document).ajaxStop(function(){
+            window.location.reload();
         });
     </script>
 @endpush

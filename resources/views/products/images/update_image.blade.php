@@ -1,4 +1,4 @@
-@layout('layouts.default')
+@extends('layouts.default')
 
 @section('page-module-menu')
     @include('products.top_menu') 
@@ -21,7 +21,8 @@
 				<h4><i class="icon-reorder"></i> Set Product Prices</h4>
 			</div>
 			<div class="widget-content">
-				<form enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" action="" method="POST">
+                {!! Form::open(['method'=>'PATCH', 'action'=> ['ImageController@update', $attachment->id], 'class'=>'form-vertical row-border form-validate','id'=>'main','enctype'=>'multipart/form-data']) !!}
+
 					<div class="form-group">
 						<div class="row">
 							<div class="col-md-4">
@@ -31,23 +32,23 @@
                             </div>
 							<div class="col-md-4">
 								<label class="control-label">Upload / Replace</label>
-								<input type="file" name="file" data-style="fileinput">
-								<span class="help-block">Max size 2M</span>
+                                {!! Form::file('image_id', ['class'=>'form-controll']) !!}
+                                <span class="help-block">Max size 2M</span>
                             </div>
 							<div class="col-md-4 text-right">
-								<img src="/products/view-image/{{ $product->id }}/{{ $attachment->id }}" style="max-width: 100px;" /><br />
+								<img src="{{ URL::asset( return_company_id().'/products/'.$product->id.'/'.$attachment->picture) }}" style="max-width: 100px;" /><br />
 							</div>
 						</div>
                     </div>
 					<div class="form-group">
 						@if(has_role('products_edit'))
 							<div class="form-actions">
-								<input type="submit" value="Update" class="btn btn-sm btn-success pull-right">
+								<input type="submit" value="Update" class="btn btn-success pull-right">
 							</div>
 						@endif
 					</div>
 				</div>
-			</form>
+            {{ Form::close()  }}
 		</div>
 	</div>
 </div>

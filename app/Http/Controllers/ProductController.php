@@ -1286,154 +1286,7 @@ class ProductController extends Controller {
 			->with('flash_success','Operation success');
 	}
 
-    public function getAttributeDelete($id){
-        $attribute = ProductAttribute::findOrFail($id);
-        $product   = Product::findOrFail($attribute->product_id);
 
-        $attribute->delete();
-
-		return Redirect::to('/products/attributes/'.$product->id)
-			->with('flash_success','Operation success');
-    }
-
-
-    public function postAttributes($id){
-
-		$product = Product::findOrFail($id);
-		$action = Input::get('action');
-
-		if($action == "mass_update"){
-			$groups = Input::get('group');
-			$names   = Input::get('name');
-			$values = Input::get('value');
-
-			if(!is_array($groups)){ die("Data error"); }
-			foreach($groups as $attribute_id => $group){
-				$attribute = ProductAttribute::findOrFail($attribute_id);
-				$attribute->group = $group;
-				$attribute->name  = $names[$attribute_id];
-				$attribute->value = $values[$attribute_id];
-				$attribute->save();
-			}
-		} else {
-			$attribute = ProductAttribute::where('product_id',$product->id)
-				->where('group',Input::get('group'))
-				->where('name',Input::get('name'))
-				->first()
-			;
-			if(!$attribute){
-				$attribute = new ProductAttribute();
-				$attribute->product_id = $product->id;
-			}
-			$attribute->group = Input::get('group');
-			$attribute->name  = Input::get('name');
-			$attribute->value = Input::get('value');
-			$attribute->save();
-		}
-
-		return Redirect::to('/products/attributes/'.$product->id)
-			->with('flash_success','Operation success');
-
-    }
-
-
-
-
-    public function postPrices($id){
-        $product = Product::findOrFail($id);
-
-        $action = Input::get('action');
-
-        if($action == 'group_add'){
-            $rules = array(
-                'select_groups' => 'required|integer|digits_between:1,6',
-                'surcharge_20' => 'numeric|required|digits_between:1,50',
-                'surcharge_40' => 'numeric|required|digits_between:1,50',
-            );
-        } else if($action == 'update_base_price'){
-            $rules = array(
-                'base_price_20' => 'numeric|required|digits_between:1,50',
-                'base_price_40' => 'numeric|required|digits_between:1,50',
-            );
-        } else if($action == 'customer_specific_add'){
-            $rules = array(
-                'customer_id' => 'numeric|required|digits_between:1,50',
-            );
-        } else {
-            $rules = array(
-                'customer_id' => 'required|integer|digits_between:1,6',
-                'base_price_20' => 'numeric|required|digits_between:1,50',
-                'base_price_40' => 'numeric|required|digits_between:1,50',
-            );
-        }
-        $validation = Validator::make(Input::get(), $rules);
-
-        if($validation->fails()){
-            return Redirect::to('/products/prices/'.$id)
-                ->with('flash_error','Operation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-            $input = Input::get();
-
-            if($action == 'group_add'){
-                $group_price = ProductPrice::where('product_id',$product->id)
-                    ->where('customer_group_id', Input::get('select_groups'))
-                    ->first();
-                if(!$group_price){
-                    $group_price = new ProductPrice();
-                }
-                $group_price->product_id = $product->id;
-                $group_price->customer_group_id = Input::get('select_groups');
-                $group_price->surcharge_20 = Input::get('surcharge_20',1);
-                $group_price->surcharge_40 = Input::get('surcharge_40',1);
-                $group_price->company_id = return_company_id();
-                $group_price->save();
-            } else if($action == 'update_base_price'){
-
-				$history = PriceHistory::where('product_id',$product->id)
-					->where('created',date("Y-m-d"))
-					->first();
-				if(!$history){
-					$history = new PriceHistory();
-				}
-				$history->base_price_20 	= $product->base_price_20;
-				$history->base_price_40 	= $product->base_price_40;
-				$history->created 			= date("Y-m-d");
-				$history->product_id 		= $product->id;
-				$history->save();
-
-                $product->base_price_20 = Input::get('base_price_20');
-                $product->base_price_40 = Input::get('base_price_40');
-                $product->landed_20 = Input::get('landed_20');
-                $product->landed_40 = Input::get('landed_40');
-                $product->sales_base_20 = Input::get('sales_base_20');
-                $product->sales_base_40 = Input::get('sales_base_40');
-                $product->save();
-            } else if($action == 'customer_specific_add'){
-                $spec = new ProductCustomerSpecific();
-                $spec->product_id = $product->id;
-                $spec->customer_id = Input::get('customer_id');
-                $spec->save();
-            } else {
-                $customer_price = ProductPriceOverride::where('product_id',$product->id)
-                    ->where('customer_id',Input::get('customer_id'))
-                    ->first();
-                if(!$customer_price){
-                    $customer_price = new ProductPriceOverride();
-                }
-                $customer_price->product_id = $product->id;
-                $customer_price->base_price_20 = Input::get('base_price_20',1);
-                $customer_price->base_price_40 = Input::get('base_price_40',1);
-                $customer_price->customer_id = Input::get('customer_id');
-                $customer_price->company_id = return_company_id();
-                $customer_price->save();
-            }
-
-            return Redirect::to('/products/prices/'.$id)
-                ->with('flash_success','Operation success');
-        }
-    }
 
     public function getCustomerSpecificDelete($record_id){
         $spec = ProductCustomerSpecific::findOrFail($record_id);
@@ -1449,14 +1302,6 @@ class ProductController extends Controller {
             ->with('flash_success','Operation success');
     }
 
-    public function getPricesDelete($id){
-        $price = ProductPriceOverride::findOrFail($id);
-        $product_id  = $price->product_id;
-        $price->delete();
-
-        return Redirect::to('/products/prices/'.$product_id)
-            ->with('flash_success','Operation success');
-    }
 
 
     public function getPricesGroupDelete($id){
@@ -1918,15 +1763,15 @@ class ProductController extends Controller {
 		}
 	}
 
-    public function getImages($id){
-	    $product = Product::findOrFail($id);
-        $select_yesno = [0 => 'No', 1 => 'Yes'];
+//    public function getImages($id){
+//	    $product = Product::findOrFail($id);
+//        $select_yesno = [0 => 'No', 1 => 'Yes'];
 
 		//$download_folder = Config::get('app.file_folder');
 		//$extensions = array("txt");
 		//$downloads= find_recursive_images($download_folder,$extensions);
 
-        $images = ProductImage::where('product_id',$product->id)->get();
+//        $images = ProductImage::where('product_id',$product->id)->get();
 
         /*
 		foreach($downloads as $i => &$download){
@@ -1936,13 +1781,13 @@ class ProductController extends Controller {
 
 	    $linked_downloads = Product::find($id)->downloads;
         */
-        return view('products.images',compact('product','images','select_yesno'));
+//        return view('products.images',compact('product','images','select_yesno'));
         // $this->layout->content = View::make('products.images')
         //     ->with('product', $product)
         //     ->with('images', $images)
         //     ->with('select_yesno', $select_yesno)
         // ;
-    }
+//    }
 
 
     public function getDownloads($id){

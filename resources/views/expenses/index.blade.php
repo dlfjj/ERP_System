@@ -49,11 +49,6 @@
             <div class="widget box">
                 <div class="widget-header">
                     <h4><i class="icon-reorder"></i>Expense Index</h4>
-                    <div class="toolbar no-padding">
-                        <div class="btn-group">
-                            <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
-                        </div>
-                    </div>
                 </div>
                 <div class="widget-content no-padding">
                     <table class="table table-striped table-bordered table-hover table-chooser datatable" data-dataTable='{"bServerSide": true, "sAjaxSource": "/expenses/dt-index", "aaSorting": [[ 0, "desc" ]]}'>
@@ -172,6 +167,9 @@
             </div>
         </div>
     </div>
+
+
+
 
     <script>
         $(document).ready(function(){

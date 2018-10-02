@@ -54,11 +54,20 @@ Route::group(['prefix' => 'customers'], function () {
 /** Products Related */
 Route::group(['prefix' => 'products'], function () {
 
-//    Route::post('attributes/postAttributes','AttributeController@postAttributes');
+    Route::get('downloads/file-download/{image}','DownloadController@downloadFile');
+    Route::resource('downloads','DownloadController')->except([
+        'index'
+    ]);
     Route::resource('attributes', 'AttributeController')->except([
         'index'
     ]);
     Route::resource('prices','PriceController')->except([
+        'index'
+    ]);
+    Route::patch('images/mark-as-main-image/{image}','ImageController@getMarkAsMainImage');
+    Route::patch('images/unmark-as-main-image/{image}','ImageController@getUnmarkAsMainImage');
+    Route::get('images/image-download/{image}','ImageController@downloadImage');
+    Route::resource('images','ImageController')->except([
         'index'
     ]);
     Route::get('/getdata', 'ProductController@getProductData')->name('products/getdata');

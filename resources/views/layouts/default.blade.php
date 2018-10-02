@@ -27,8 +27,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{Auth::user()->company->name}}</title>
 
-    <!-- Bootstrap -->
-    {{--<link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />--}}
+
 
     <!-- jQuery UI -->
     <!--<link href="plugins/jquery-ui/jquery-ui-1.10.2.custom.css" rel="stylesheet" type="text/css" />-->
@@ -36,6 +35,8 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <link rel="stylesheet" type="text/css" href="plugins/jquery-ui/jquery.ui.1.10.2.ie.css"/>
     <![endif]-->
 
+    <!-- Bootstrap -->
+{{--<link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />--}}
     <!-- Theme -->
     {{--<link href="/assets/css/main.css" rel="stylesheet" type="text/css" />--}}
     <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
@@ -237,7 +238,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
             @section('page-module-menu')
                 <li class="text-center">
                 {{--<li class="text-center" style="font-size: 15px; background: #0f2452; margin-top:10px; padding-left: 10px; padding-right: 10px;">--}}
-                    AMERICAN DUNNAGE INC.
+                    {{--AMERICAN DUNNAGE INC.--}}
                 </li>
             @show
 

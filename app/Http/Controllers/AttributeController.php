@@ -182,7 +182,6 @@ class AttributeController extends Controller
         $product   = Product::findOrFail($attribute->product_id);
 
         $attribute->delete();
-
 //        redirect('/products/attributes/'.$product->id)->back();
 //            ->with('flash_success','Operation success');
     }
