@@ -551,17 +551,17 @@ class ProductController extends Controller {
             ->with('product',$product);
 	}
 
-	public function getStocks($id) {
-	    $product = Product::findOrFail($id);
-      $transactions = WarehouseTransaction::where('product_id',$product->id)
-          ->where('company_id',return_company_id())
-          ->orderBy('id', 'desc')->limit(100)->get();
-
-		$select_inventory_adjustment = ValueList::where('uid','=','inventory_adjustment')->orderBy('name', 'asc')->pluck('name','name');
-
-		$select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-		$select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
-		$select_package = ValueList::where('uid','=','package')->orderBy('name', 'asc')->pluck('name','name');
+//	public function getStocks($id) {
+//	    $product = Product::findOrFail($id);
+//      $transactions = WarehouseTransaction::where('product_id',$product->id)
+//          ->where('company_id',return_company_id())
+//          ->orderBy('id', 'desc')->limit(100)->get();
+//
+//		$select_inventory_adjustment = ValueList::where('uid','=','inventory_adjustment')->orderBy('name', 'asc')->pluck('name','name');
+//
+//		$select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+//		$select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
+//		$select_package = ValueList::where('uid','=','package')->orderBy('name', 'asc')->pluck('name','name');
 
         // $this->layout->content = View::make('products.stocks')
         //     ->with('product',$product)
@@ -570,8 +570,8 @@ class ProductController extends Controller {
         //     ->with('select_currency_codes',$select_currency_codes)
         //     ->with('select_inventory_adjustment',$select_inventory_adjustment)
         //     ;
-        return view("products.stocks",compact('transactions','product','select_uom','select_package','select_currency_codes','select_inventory_adjustment'));
-	}
+//        return view("products.stocks",compact('transactions','product','select_uom','select_package','select_currency_codes','select_inventory_adjustment'));
+//	}
 
     public function postStockAdjust($id){
         $rules = array(

@@ -54,6 +54,13 @@ Route::group(['prefix' => 'customers'], function () {
 /** Products Related */
 Route::group(['prefix' => 'products'], function () {
 
+
+    Route::resource('setup', 'SetupController')->except([
+        'index'
+    ]);
+    Route::resource('stock','StockController')->except([
+        'index'
+    ]);
     Route::get('downloads/file-download/{image}','DownloadController@downloadFile');
     Route::resource('downloads','DownloadController')->except([
         'index'
@@ -75,10 +82,10 @@ Route::group(['prefix' => 'products'], function () {
     Route::get('/{id}','ProductController@show');
     Route::post('/{id}','ProductController@update');
 
-    Route::get('/getImages/{id}', 'ProductController@getImages');
-    Route::get('/getDownloads/{id}', 'ProductController@getDownloads');
-    Route::get('/getStocks/{id}', 'ProductController@getStocks');
-    Route::get('/getSetup/{id}', 'ProductController@getSetup');
+//    Route::get('/getImages/{id}', 'ProductController@getImages');
+//    Route::get('/getDownloads/{id}', 'ProductController@getDownloads');
+//    Route::get('/getStocks/{id}', 'ProductController@getStocks');
+//    Route::get('/getSetup/{id}', 'ProductController@getSetup');
     Route::get('/getSync/{id}', 'ProductController@getSync');
 });
 

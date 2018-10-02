@@ -24,7 +24,6 @@ class ExpenseController extends Controller
      */
     public function __construct(){
         $this->middleware('auth');
-        // has_role('expenses',1);
     }
     public $layout = 'layouts.default';
 

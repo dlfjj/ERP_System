@@ -13,6 +13,8 @@ use App\models\Company;//import model class
 use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
+use App\Models\WarehouseTransaction;
+use App\Models\Product;
 
 // use Auth;
 /*
