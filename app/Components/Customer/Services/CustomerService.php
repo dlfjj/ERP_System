@@ -57,8 +57,8 @@ class CustomerService
         $outstandings 		   = $customer->getOutstandingMoney($outstanding_currency[0]);
         $overdue 		= $customer->getOverdueMoney($outstanding_currency[0]);
 
-        $created_by_user = User::select('username')->where('created_by', $customer->created_by)->first();
-        $updated_by_user = User::select('username')->where('updated_by', $customer->created_by)->first();
+        $created_by_user = User::find($customer->created_by)->username;
+        $updated_by_user = User::find($customer->updated_by)->username;;
 
         return array_merge(
             [

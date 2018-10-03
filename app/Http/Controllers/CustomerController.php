@@ -228,7 +228,8 @@ class CustomerController extends Controller
             $new_record->fill($input);
             $new_record->save();
 
-            $this->redirectWithSuccessMessage('customers/'.$customer_id);
+            return redirect()->back()->with('flash_success','Operation success');
+//            $this->redirectWithSuccessMessage('customers/'.$customer_id);
         }
     }
 
@@ -311,6 +312,7 @@ class CustomerController extends Controller
 		return $total;
 	}
 
+//	Product tab within the customer modules
 	public function getProducts($id) {
 	    $customer = Customer::findOrFail($id);
         $select_groups   = CustomerGroup::where('company_id',return_company_id())
@@ -349,8 +351,8 @@ class CustomerController extends Controller
         foreach($customer_products as $product_id=>$products){
           $product = Product::find($product_id);
         }
-        $created_user = User::find($customer->created_by)->pluck('username');
-        $updated_user = User::find($customer->created_by)->pluck('username');
+        $created_user = User::find($customer->created_by)->username;
+		$updated_user = User::find($customer->updated_by)->username;
 		$select_payment_terms  = PaymentTerm::orderBy('name', 'asc')->pluck('name','name');
 		$select_currency_codes = ValueList::where('uid','=','CURRENCY_CODES')->orderBy('name', 'asc')->pluck('name','name');
 		$select_taxcodes  	   = Taxcode::orderBy('sort_no', 'asc')->pluck('name','id');
@@ -361,22 +363,7 @@ class CustomerController extends Controller
 
 		$overdue_currency  = Auth::user()->company->currency_code;
 		$overdue 		= $customer->getOverdueMoney($outstanding_currency);
-    return view('customers.products',compact('select_currency_codes','select_payment_terms','select_taxcodes','select_groups','select_users','select_contacts','customer','outstandings','outstanding_currency ','overdue','overdue_currency','years','customer_products','product','created_user','updated_user'));
-      //   $this->layout->content = View::make('customers.products')
-			// ->with('select_currency_codes', $select_currency_codes)
-			// ->with('select_payment_terms',$select_payment_terms)
-			// ->with('select_taxcodes',$select_taxcodes)
-			// ->with('select_groups',$select_groups)
-			// ->with('select_users',$select_users)
-			// ->with('select_contacts',$select_contacts)
-      //       ->with('customer',$customer)
-			// ->with('outstandings',$outstandings)
-			// ->with('outstanding_currency',$outstanding_currency)
-			// ->with('overdue',$overdue)
-			// ->with('overdue_currency',$overdue_currency)
-			// ->with('years',$years)
-			// ->with('customer_products',$customer_products)
-      //   ;
+        return view('customers.products.show',compact('select_currency_codes','select_payment_terms','select_taxcodes','select_groups','select_users','select_contacts','customer','outstandings','outstanding_currency ','overdue','overdue_currency','years','customer_products','product','created_user','updated_user'));
 	}
 
 	public function postDestroy($id) {
@@ -412,32 +399,32 @@ class CustomerController extends Controller
 			->make();
     }
 
-	public function getHistory($id) {
-	    $customer = Customer::where('id',$id)->first();
+//	public function getHistory($id) {
+//	    $customer = Customer::where('id',$id)->first();
         // echo Auth::user()->company_id;die;
-       $orders_history = Order::Leftjoin('customers','orders.customer_id','=','customers.id')
-            ->Leftjoin('order_status','orders.status_id','=','order_status.id')
-            ->select(
-            array(
-                'orders.id',
-                'orders.order_no',
-                'order_status.name',
-                'orders.order_date',
-                'orders.customer_order_number',
-                'orders.currency_code',
-                'orders.total_gross',
-                'orders.total_paid'
-            ))
-            ->where("orders.customer_id",$id)
-            ->where('orders.company_id')->get();
+//       $orders_history = Order::Leftjoin('customers','orders.customer_id','=','customers.id')
+//            ->Leftjoin('order_status','orders.status_id','=','order_status.id')
+//            ->select(
+//            array(
+//                'orders.id',
+//                'orders.order_no',
+//                'order_status.name',
+//                'orders.order_date',
+//                'orders.customer_order_number',
+//                'orders.currency_code',
+//                'orders.total_gross',
+//                'orders.total_paid'
+//            ))
+//            ->where("orders.customer_id",$id)
+//            ->where('orders.company_id')->get();
             // echo "<pre>";
             // print_R($orders_history);die;
         // $this->layout->module_title = "";
         // $this->layout->module_sub_title = "";
-        return view('customers.history',compact('customer'));
+//        return view('customers.history',compact('customer'));
  //        $this->layout->content = View::make('customers.history')
  //            ->with('customer',$customer);
-	}
+//	}
 
 	public function getChangelog($id){
 	    $customer = Customer::findOrFail($id);

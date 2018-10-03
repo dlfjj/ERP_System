@@ -77,7 +77,7 @@
 								</div>
 								<div class="col-md-2">
 									<input type="text" name="province" class="form-control" value="{{ $customer_address->province}}">
-									<span class="help-block">Province</span>
+									<span class="help-block">State/Province</span>
 								</div>
 								<div class="col-md-2">
 									<input type="text" name="country" class="form-control" value="{{ $customer_address->country}}">
@@ -97,7 +97,7 @@
 					</div>
 					<div class="form-actions">
 						<input type="submit" value="SAVE" class="btn btn-success pull-right">
-						<a href="/customer/getShow/{{$customer->id}}" class="btn btn-default pull-right">CANCEL</a>
+						<a href="/customers/{{$customer->id}}" class="btn btn-default pull-right">CANCEL</a>
 					</div>
 				</div>
 			{!! Form::close() !!}

@@ -4,12 +4,7 @@
 
 @section('page-module-menu')
 
-    <li><a href="/customers/{{$customer->id}}">General</a></li>
-
-    <li><a href="#">History</a></li>
-    <!--customer/getHistory/$customer->id-->
-    <li><a href="#">Products</a></li>
-    <!--customer/getProducts/$customer->id-->
+    @include('customers.top_menu')
 
 @stop
 
@@ -131,7 +126,6 @@
 
         {!! Form::open(array("url"=>"/customers/$customer->id","method"=>"DELETE","class"=>"form-inline","id"=>"delete")) !!}
 
-        </form>
 
 
         <!--=== Vertical Forms ===-->
@@ -232,7 +226,7 @@
 
                             <div class="col-md-2">
 
-                                <label class="control-label">Province</label>
+                                <label class="control-label">State / Province</label>
 
                                 {!! Form::text('inv_province', $customer->inv_province, array("class"=>"form-control")) !!}
 
@@ -424,11 +418,14 @@
 
                         <div class="form-actions">
 
+
                             @if(has_role('customers_edit'))
 
                                 <input type="submit" value="SAVE" class="btn btn-sm btn-success pull-right">
-
                             @endif
+
+                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn pull-right'] )  }}
+
 
                         </div>
 
@@ -462,7 +459,7 @@
 
                         <div class="btn-group">
 
-                            <span class="btn btn-xs"><a data-toggle="modal" href="#modal_add_contact" class="">Add Contact</a></span>
+                            <a data-toggle="modal" href="#modal_add_contact" class=""><button class="btn btn-xs text-uppercase">Add Contact</button></a>
 
                         </div>
 
@@ -602,7 +599,7 @@
 
                         <div class="btn-group">
 
-                            <span class="btn btn-xs"><a data-toggle="modal" href="#modal_add_address" class="">Add Address</a></span>
+                            <a data-toggle="modal" href="#modal_add_address" class=""><button class="btn btn-xs text-uppercase">add address</button></a>
 
                         </div>
 
@@ -941,9 +938,35 @@
         </div>
 
     </div>
-
-
-
-
-
 @stop
+@push('scripts')
+    <script>
+        $(".deleteAttribute").click(function(){
+            var id = $(this).data("id");
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax(
+                {
+                    url:  "{!! url('customers/' ) !!}" + "/" + id,
+                    type: 'POST',
+                    dataType: "JSON",
+                    data: {
+                        "id": id,
+                        "_method": 'DELETE',
+                    },
+                    // url: "products/attributes/"+id,
+                    success: function ()
+                    {
+
+                    }
+                });
+        });
+
+        $(document).ajaxStop(function(){
+            window.location.reload();
+        });
+    </script>
+@endpush

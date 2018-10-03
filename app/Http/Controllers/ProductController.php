@@ -836,25 +836,25 @@ class ProductController extends Controller {
 	}
 
 
-
-    public function getSetup($id) {
-	    $product = Product::findOrFail($id);
-		$tree = Category::all()->toArray();
-		$select_categories = printSelect($tree,$product->category_id);
-
-        if($product->company_id != return_company_id()){
-            die("Access violation. Click <a href='/'>here</a> to get back.");
-        }
-    $user_created =     User::where('created_at',$product->created_by)->pluck('username');
-    $user_updated = User::where('updated_at',$product->updated_by)->pluck('username');
-		$select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-		$select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
-		$select_package = ValueList::where('uid','=','package')->orderBy('name', 'asc')->pluck('name','name');
-		$select_origin = ValueList::where('uid','=','origin')->orderBy('name', 'asc')->pluck('name','name');
-	    $select_users = User::pluck('username','id');
-
-      return view('products.setup',compact('user_created','user_updated','product','select_uom','select_package','select_origin','select_users','select_categories','select_currency_codes'));
-        //
+//
+//    public function getSetup($id) {
+//	    $product = Product::findOrFail($id);
+//		$tree = Category::all()->toArray();
+//		$select_categories = printSelect($tree,$product->category_id);
+//
+//        if($product->company_id != return_company_id()){
+//            die("Access violation. Click <a href='/'>here</a> to get back.");
+//        }
+//    $user_created =     User::where('created_at',$product->created_by)->pluck('username');
+//    $user_updated = User::where('updated_at',$product->updated_by)->pluck('username');
+//		$select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+//		$select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
+//		$select_package = ValueList::where('uid','=','package')->orderBy('name', 'asc')->pluck('name','name');
+//		$select_origin = ValueList::where('uid','=','origin')->orderBy('name', 'asc')->pluck('name','name');
+//	    $select_users = User::pluck('username','id');
+//
+//      return view('products.setup',compact('user_created','user_updated','product','select_uom','select_package','select_origin','select_users','select_categories','select_currency_codes'));
+//        //
         // $this->layout->module_title = "Product Details";
         // $this->layout->module_sub_title = "Product Details";
         // $this->layout->content = View::make('products.setup')
@@ -865,35 +865,35 @@ class ProductController extends Controller {
         //     ->with('select_users',$select_users)
         //     ->with('select_categories',$select_categories)
         //     ->with('select_currency_codes',$select_currency_codes);
-	}
+//	}
 
-    public function postSetup($id) {
-        $rules = array(
-            'id' => 'required|integer|digits_between:1,6',
-        );
-        $input = Input::get();
-        $validation = Validator::make($input, $rules);
-        if($validation->fails()){
-            return Redirect::to('products/setup/'.$id)
-                ->with('flash_error','Operation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-            $product = Product::findOrFail($id);
-            $input = Input::get();
-            $product->fill($input);
-            $product->updated_by = Auth::user()->id;
-            if(Input::get('company_sync')){
-				$product->company_sync = 1;
-			} else {
-				$product->company_sync = 0;
-			}
-            $product->save();
-
-            return Redirect::to('products/setup/'.$id)
-                ->with('flash_success','Operation success');
-        }
-	}
+//    public function postSetup($id) {
+//        $rules = array(
+//            'id' => 'required|integer|digits_between:1,6',
+//        );
+//        $input = Input::get();
+//        $validation = Validator::make($input, $rules);
+//        if($validation->fails()){
+//            return Redirect::to('products/setup/'.$id)
+//                ->with('flash_error','Operation failed')
+//                ->withErrors($validation->Messages())
+//                ->withInput();
+//        } else {
+//            $product = Product::findOrFail($id);
+//            $input = Input::get();
+//            $product->fill($input);
+//            $product->updated_by = Auth::user()->id;
+//            if(Input::get('company_sync')){
+//				$product->company_sync = 1;
+//			} else {
+//				$product->company_sync = 0;
+//			}
+//            $product->save();
+//
+//            return Redirect::to('products/setup/'.$id)
+//                ->with('flash_success','Operation success');
+//        }
+//	}
 
 
 	public function getDownloadEdit($id) {

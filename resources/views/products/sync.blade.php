@@ -47,7 +47,7 @@ Syncing this Product will synchronize all basic Details (General Tab) to all Com
                                     <tr>
                                         <td>
                                             <input type="hidden" name='action' value="sync" />
-                                            <input type="submit" value="SYNC NOW" class="btn btn-sm btn-success">
+                                            <input type="submit" value="SYNC NOW" class="btn btn-sm btn-success" disabled>
                                         </td>
                                     </tr>
                                 </table>
@@ -127,7 +127,7 @@ Syncing this Product will synchronize all basic Details (General Tab) to all Com
 						<div class="form-actions">
                             @if(has_role('products_edit'))
                                 <input type="hidden" name='action' value="save" />
-                                <input type="submit" value="Save" class="btn btn-sm btn-success pull-right">
+                                <input type="submit" value="Save" class="btn btn-sm btn-success pull-right" disabled>
                             @endif
 						</div>
 					</div>

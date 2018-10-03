@@ -49,6 +49,12 @@ Route::group(['prefix' => 'customers'], function () {
     Route::post('/create','CustomerController@store');
     Route::get('/{id}','CustomerController@show');
     Route::post('{id}','CustomerController@update');
+
+    Route::resource('history','HistoryController');
+    Route::get('/products/{id}','CustomerController@getProducts');
+
+
+
 });
 
 /** Products Related */
@@ -71,12 +77,17 @@ Route::group(['prefix' => 'products'], function () {
     Route::resource('prices','PriceController')->except([
         'index'
     ]);
-    Route::patch('images/mark-as-main-image/{image}','ImageController@getMarkAsMainImage');
-    Route::patch('images/unmark-as-main-image/{image}','ImageController@getUnmarkAsMainImage');
-    Route::get('images/image-download/{image}','ImageController@downloadImage');
-    Route::resource('images','ImageController')->except([
+    Route::group(['prefix' => 'images'], function () {
+
+        Route::patch('/mark-as-main-image/{image}', 'ImageController@getMarkAsMainImage');
+        Route::patch('/unmark-as-main-image/{image}', 'ImageController@getUnmarkAsMainImage');
+        Route::get('/image-download/{image}', 'ImageController@downloadImage');
+
+    });
+    Route::resource('images', 'ImageController')->except([
         'index'
     ]);
+
     Route::get('/getdata', 'ProductController@getProductData')->name('products/getdata');
     Route::get('/','ProductController@index');
     Route::get('/{id}','ProductController@show');
