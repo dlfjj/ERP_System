@@ -48,17 +48,17 @@
 @section('content')
 				<div class="row">
 					<div class="col-md-12">
-						<div class="widget box">
-							<div class="widget-header">
-								<h4><i class="icon-reorder"></i> Customer Index</h4>
-								<div class="toolbar no-padding">
-									<div class="btn-group">
-										<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
-									</div>
-								</div>
-							</div>
-							<div class="widget-content no-padding">
-								<table class="table table-striped table-bordered table-hover datatable"  id="customer-table">
+						<div class="panel panel-default">
+							{{--<div class="">--}}
+								<div class="panel-heading"><i class="icon-reorder"></i> Customer Index</div>
+								{{--<div class="toolbar no-padding">--}}
+									{{--<div class="btn-group">--}}
+										{{--<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
+									{{--</div>--}}
+								{{--</div>--}}
+							{{--</div>--}}
+							<div class="panel-body">
+								<table class="table table-striped table-bordered table-hover"  id="customers-table">
 									<thead>
 										<tr>
 											<th class="cell-tight">Status</th>
@@ -69,19 +69,19 @@
 											<th>view</th>
 										</tr>
 									</thead>
-									<tbody>
-										@foreach($customers as $customer)
-										  <tr>
-												<td>{{$customer->status}}</td>
-												<td>{{$customer->code}}</td>
-												<td>{{$customer->customer_name}}</td>
-												<td>{{$customer->inv_city}}</td>
-												<td>{{$customer->inv_country}}</td>
-												<td><a href="/customers/{{ $customer->id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a> </td>
-											</tr>
-										@endforeach
+									{{--<tbody>--}}
+										{{--@foreach($customers as $customer)--}}
+										  {{--<tr>--}}
+												{{--<td>{{$customer->status}}</td>--}}
+												{{--<td>{{$customer->code}}</td>--}}
+												{{--<td>{{$customer->customer_name}}</td>--}}
+												{{--<td>{{$customer->inv_city}}</td>--}}
+												{{--<td>{{$customer->inv_country}}</td>--}}
+												{{--<td><a href="/customers/{{ $customer->id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a> </td>--}}
+											{{--</tr>--}}
+										{{--@endforeach--}}
 
-									</tbody>
+									{{--</tbody>--}}
 								</table>
 							</div>
 						</div>
@@ -90,10 +90,31 @@
 				<!-- /Normal -->
 
 
-<script>
-	$(document).ready(function(){
-		$('#customer-table').dataTable();
-	})
-</script>
+{{--<script>--}}
+	{{--$(document).ready(function(){--}}
+		{{--$('#customer-table').dataTable();--}}
+	{{--})--}}
+{{--</script>--}}
 
 @stop
+@push('scripts')
+	<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript">
+        // jquery getting data for purchase table
+        $(function() {
+            $('#customers-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route('customers/getdata') !!}',
+                columns: [
+                    { data: 'status', name: 'status' },
+                    { data: 'customer_code', name: 'customer_code' },
+                    { data: 'customer_name', name: 'customer_name' },
+                    { data: 'inv_city', name: 'inv_city' },
+                    { data: 'inv_country', name: 'inv_country' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false}
+                ]
+            });
+        });
+	</script>
+@endpush

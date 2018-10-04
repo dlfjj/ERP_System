@@ -29,6 +29,7 @@ Route::get('dashboard','DashboardController@dashboard');
 /** Customer Related */
 Route::group(['prefix' => 'customers'], function () {
 
+    Route::get('/getdata', 'CustomerController@getCustomerData')->name('customers/getdata');
     Route::group(['prefix' => '{id}/contacts'], function () {
         Route::post('/add','CustomerController@addContact');
         Route::get('/{contactId}','CustomerController@getContact');
@@ -93,15 +94,13 @@ Route::group(['prefix' => 'products'], function () {
     Route::get('/{id}','ProductController@show');
     Route::post('/{id}','ProductController@update');
 
-//    Route::get('/getImages/{id}', 'ProductController@getImages');
-//    Route::get('/getDownloads/{id}', 'ProductController@getDownloads');
-//    Route::get('/getStocks/{id}', 'ProductController@getStocks');
-//    Route::get('/getSetup/{id}', 'ProductController@getSetup');
     Route::get('/getSync/{id}', 'ProductController@getSync');
 });
 
 /** Vendors */
 Route::group(['prefix' => 'vendors'], function () {
+
+    Route::get('/getdata', 'VendorController@getVendorData')->name('vendors/getdata');
     Route::get('/','VendorController@index');
     Route::get('/create','VendorController@createNew');
     Route::get('/{id}','VendorController@show');
@@ -127,13 +126,18 @@ Route::get('purchases/records/{id}', 'PurchaseController@getRecords')->name('pur
 Route::resource('purchases','PurchaseController');
 
 
-//Route::resource('/chart_of_accounts', 'ChartOfAccountController');
-//Route::resource('/value_lists', 'ValueListController');
 /** Order */
+
 Route::get('orders/getdata', 'OrderController@getOrderData')->name('orders/getdata');
 Route::get('orders/payments/{id}', 'OrderController@getPayments')->name('order.getPayments');
 Route::post('orders/payments/{id}', 'OrderController@postPayments')->name('order.postPayments');
 Route::delete('orders/payments/{id}', 'OrderController@deletePayment')->name('order.deletePayment');
 Route::get('orders/records/{id}', 'OrderController@getRecords')->name('order.getRecords');
 Route::get('orders/records/getdata', 'OrderController@getOrderRecordData')->name('orders/records/getdata');
+Route::get('orders/update_line_item/{item}','OrderController@getLineItemUpdate');
+Route::patch('orders/update_line_item/{item}','OrderController@postLineItemUpdate');
+Route::delete('orders/line_item_delete/{item}','OrderController@lineItemDelete')->name('lineItem.delete');
+Route::get('orders/line_item_add/{id}','OrderController@showLineItemAdd');
+Route::get('orders/line_item_add/{id}/getdata', 'OrderController@anyDtAvailableProducts')->name('line_items/getdata');
+//Route::get('orde/**/rs/')
 Route::resource('orders', 'OrderController');

@@ -21,6 +21,7 @@ use App\Models\Taxcode;
 use App\Models\OrderHistory;
 use App\Models\Order;
 use App\Models\Product;
+use Yajra\DataTables\DataTables;
 
 class CustomerController extends Controller
 {
@@ -37,8 +38,44 @@ class CustomerController extends Controller
     public function index()
     {
         $contents = $this->customerService->getAllCustomersByCompanyId(return_company_id());
-
+//        $customers = $this->customerService->getAllCustomersByCompanyId(return_company_id())['customers'];
+//        foreach($customers as $cs){
+//            return $cs->inv_country;
+//
+//        }
+//        $customers = Customer::select(
+//            array(
+//                'customers.status',
+//                'customers.id',
+//                'customers.customer_code',
+//                'customers.customer_name',
+//                'customers.inv_city',
+//                'customers.inv_country'
+//            ))
+//            ->where('customers.company_id',return_company_id())->get()
+//        ;
+//        return $customers;
         return view('customers.index', $contents);
+    }
+    public function getCustomerData()
+    {
+        $customers = $this->customerService->getAllCustomersByCompanyId(return_company_id())['customers'];
+//        $customers = Customer::select(
+//            array(
+//                'customers.status',
+//                'customers.id',
+//                'customers.customer_code',
+//                'customers.customer_name',
+//                'customers.inv_city',
+//                'customers.inv_country'
+//            ))
+//            ->where('customers.company_id',return_company_id())->get()
+//        ;
+
+
+        return Datatables::of($customers)->addColumn('action', function ($customer) {
+                    return '<a href="/customers/'.$customer->id .'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
+                })->make(true);
     }
 
     public function show(int $id)

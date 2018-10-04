@@ -124,7 +124,6 @@
     <div class="row">
 
 
-        {!! Form::open(array("url"=>"/customers/$customer->id","method"=>"DELETE","class"=>"form-inline","id"=>"delete")) !!}
 
 
 
@@ -142,7 +141,7 @@
 
                 <div class="widget-content">
 
-                    {!! Form::open(array('url' => "/customers/$customer->id", 'enctype' => 'multipart/form-data', 'id' => 'main', 'method' => 'post', 'class' => 'form-vertical row-border form-validate', 'autocomplete' => 'off')) !!}
+                    {!! Form::open(array('url' => "/customers/$customer->id", 'class' => 'form-vertical row-border form-validate', 'enctype' => 'multipart/form-data', 'id' => 'main', 'method' => 'post', 'autocomplete' => 'off')) !!}
 
                     <div class="form-group">
 
@@ -424,7 +423,7 @@
                                 <input type="submit" value="SAVE" class="btn btn-sm btn-success pull-right">
                             @endif
 
-                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn pull-right'] )  }}
+                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
 
 
                         </div>
@@ -539,19 +538,18 @@
 
                                     <td class="align-right">
 
-								<span class="btn-group">
+								        <span class="btn-group">
 
-									{!! Form::open(array('url' => "/customers/$customer->id/contacts/$contact->id", 'enctype' => 'multipart/form-data', 'id' => "contact-delete-$contact->id", 'method' => 'DELETE', 'class' => 'form-inline', 'autocomplete' => 'off')) !!}
+									    {!! Form::open(['action' => ["CustomerController@deleteContact",$customer->id, $contact->id], 'enctype' => 'multipart/form-data', 'method' => 'DELETE', 'class' => 'form-inline', 'autocomplete' => 'off']) !!}
 
-                                    <a href="javascript:void(0);" class="btn btn-xs form-submit-conf"><i
-                                                class="icon-trash"></i></a>
+                                            <button class="btn btn-xs form-submit-conf" type="submit"><i class="icon-trash"></i></button>
+{{--                                            {!! Form::submit('<i class="icon-trash"></i>',['class'=>'btn']) !!}--}}
 
-										<a href="/customers/{{$customer->id}}/contacts/{{$contact->id}}"
-                                           class="btn btn-xs"><i class="icon-edit"></i></a>
+                                            <a href="/customers/{{$customer->id}}/contacts/{{$contact->id}}" class="btn btn-xs"><i class="icon-edit"></i></a>
 
-                                    {!! Form::close() !!}
+                                        {!! Form::close() !!}
 
-								</span>
+								    </span>
 
                                     </td>
 
@@ -667,13 +665,11 @@
 
 								<span class="btn-group">
 
-									{!! Form::open(array('url' => "/customers/$customer->id/addresses/$address->id", 'enctype' => 'multipart/form-data', 'id' => "address-delete-$address->id", 'method' => 'DELETE', 'class' => 'form-inline', 'autocomplete' => 'off')) !!}
+                                    {!! Form::open(['action' => ["CustomerController@deleteAddress",$customer->id, $address->id], 'enctype' => 'multipart/form-data', 'method' => 'DELETE', 'class' => 'form-inline', 'autocomplete' => 'off']) !!}
 
-                                    <a href="javascript:void(0);" class="btn btn-xs form-submit-conf"><i
-                                                class="icon-trash"></i></a>
+                                    <button class="btn btn-xs form-submit-conf" type="submit"><i class="icon-trash"></i></button>
 
-										<a href="/customers/{{$customer->id}}/addresses/{{$address->id}}"
-                                           class="btn btn-xs"><i class="icon-edit"></i></a>
+                                    <a href="/customers/{{$customer->id}}/addresses/{{$address->id}}" class="btn btn-xs"><i class="icon-edit"></i></a>
 
                                     {!! Form::close() !!}
 

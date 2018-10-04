@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Yajra\DataTables\DataTables;
 use App\Models\VendorContact;
 use Illuminate\Http\Request;
 use Validator;
@@ -22,9 +23,18 @@ class VendorController extends Controller {
 
     public function index()
     {
+//        $vendors = Vendor::all();
+
+
+        return view('vendors.index');
+    }
+    public function getVendorData()
+    {
         $vendors = Vendor::all();
 
-        return view('vendors.index', compact('vendors'));
+        return Datatables::of($vendors)->addColumn('action', function ($vendor) {
+            return '<a href="/vendors/'.$vendor->id .'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
+        })->make(true);
     }
 
     public function show($id)

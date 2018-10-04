@@ -21,7 +21,6 @@ use Auth;
 use Validator;
 use Illuminate\Support\Facades\Session;
 
-
 class OrderController extends Controller
 {
     /**
@@ -40,6 +39,7 @@ class OrderController extends Controller
 
     public function index()
     {
+
         $outstanding_balance_currency_code = "USD";
         $outstanding_balance_amount = 0; //$this->_getOutstandingBalance($outstanding_balance_currency_code);
 
@@ -69,6 +69,31 @@ class OrderController extends Controller
             })
             ->make(true);
     }
+
+//    table of products need to be added to the order item
+    public function anyDtAvailableProducts(){
+        $products = Product::select(
+            array(
+                'products.id',
+                'products.product_code',
+                'products.product_name',
+                'products.pack_unit',
+                'products.pack_unit_hq'
+            ))
+            ->where('products.status','Active')
+            ->where('products.company_id',return_company_id())
+        ;
+        return Datatables::of($products)
+            ->removeColumn('id')
+            ->addColumn('action',function($product){
+                return '<form action="" method="post">
+            <input type="hidden" name="product_id" value="'.$product->id.'" />
+            <input type="number" class="qty_picker_input" name="quantity" value="" step="1" min="0" size="3"/>
+            <input type="submit" name="submit" value="Add" class="btn pull-right" />
+            </form>';
+            })->make(true);
+    }
+
 
     public function getPayments($id) {
         $order = Order::findOrFail($id);
@@ -135,13 +160,19 @@ EOT;
             'customer', 'select_status','order_history','the_user_created_this_order','the_user_updated_this_order'));
     }
 
+    public function showLineItemAdd($id)
+    {
+        $order = Order::findOrFail($id);
+        $customer = Customer::findOrFail($order->customer_id);
+
+        if (Auth::user()->company_id != $order->company_id) {
+            die("Access violation E01");
+        }
+        return view('orders.lineItem.add_line_item', compact('order', 'customer'));
+    }
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         //
@@ -219,6 +250,77 @@ EOT;
     {
         //
     }
+
+    public function postLineItemAdd(Request $request, $id) {
+
+        return $request;
+        $rules = array(
+            'product_id' => 'required|integer|digits_between:1,6',
+            'quantity' => 'required|integer'
+        );
+
+        $validation = Validator::make(Input::get(), $rules);
+
+        $order   = Order::findOrFail($id);
+
+        $uid = Auth::user()->id;
+        $sup = Auth::user()->superior_id;
+
+        if($order->created_by != $uid){
+            if($order->customer->salesman_id != $uid){
+                if(!has_role('company_admin')){
+                    return Redirect::to('orders/show/'.$id)
+                        ->with('flash_error','Permission Denied')
+                        ->withErrors($validation->Messages())
+                        ->withInput();
+                }
+            }
+        }
+        if($validation->fails()){
+            return Redirect::to('orders/show/'.$id)
+                ->with('flash_error','Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+            $customer = $order->customer;
+            $product = Product::findOrFail(Input::get('product_id'));
+
+            $oi = OrderItem::where('order_id',$order->id)->where('product_id',$product->id)->first();
+            if(!$oi){
+            }
+            $order->line_no += 1;
+            $order_item = New OrderItem();
+            $order_item->line_no = $order->line_no;
+            $order_item->order_id = $order->id;
+            $order_item->product_id = $product->id;
+            $order_item->product_code = $product->product_code;
+            $order_item->product_name = $product->product_name;
+            $order_item->quantity += Input::get('quantity',1);
+            $order_item->unit_price_net = $product->getSalePrice($order,$customer,$order->currency_code);
+
+            if($order->container->code == '40hq'){
+                $order_item->base_price = $product->sales_base_40;
+                $order_item->pack_unit = $product->pack_unit_hq;
+                $order_item->units_per_pallette = $product->units_per_pallette_hq;
+                $order_item->cbm = ($product->carton_size_w_hq * $product->carton_size_d_hq * $product->carton_size_h_hq);
+            } else {
+                $order_item->base_price = $product->sales_base_20;
+                $order_item->pack_unit = $product->pack_unit;
+                $order_item->units_per_pallette = $product->units_per_pallette;
+                $order_item->cbm = ($product->carton_size_w * $product->carton_size_d * $product->carton_size_h);
+            }
+
+            $order_item->save();
+
+            $order->save();
+
+            updateOrderStatus($order->id);
+
+            return Redirect::to('orders/line-item-add/'.$order->id)
+                ->with('flash_success','Operation success');
+        }
+    }
+
 
     /**
      * Display the specified resource.
@@ -300,12 +402,44 @@ EOT;
             "VOID" => "VOID"
         );
 
+        $created_by_user = User::find($order->created_by)->username;
+        $updated_by_user =User::find($order->updated_by)->username;
+//        return $created_by_user;
+
 
 
         return view('orders.show',compact('select_status','select_customer_contacts',
             'select_payment_terms','select_currency_codes','select_shipping_methods','select_shipping_terms',
             'select_users','order','select_taxcodes','select_containers','customer','total_cost','total_sales',
-            'commission_percent','commission','profit','profit_percent'));
+            'commission_percent','commission','profit','profit_percent', 'created_by_user','updated_by_user'));
+    }
+
+    public function getLineItemUpdate($line_item_id){
+
+        $line_item = OrderItem::findOrFail($line_item_id);
+        $order = Order::findOrFail($line_item->order_id);
+        $customer = Customer::findOrFail($order->customer_id);
+
+        if(Auth::user()->company_id != $order->company_id){
+            die("Access violation E01");
+        }
+
+        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
+        $select_customer_contacts = $customer->contacts->pluck('name','name');
+        $select_status = array(
+            "draft" => "draft",
+            "open" => "open",
+            "closed" => "closed",
+            "void" => "void"
+        );
+        $product_code = $line_item->product->pluck('product_code')->implode(',');
+        $product_name = $line_item->product->pluck('product_name')->implode(',');
+
+        return view('orders..lineItem.edit_line_item',compact('select_status','select_customer_contacts','select_payment_terms','select_currency_codes',
+            'select_shipping_methods' ,'select_shipping_terms','order','customer','line_item','product_code','product_name'));
     }
 
     /**
@@ -390,6 +524,57 @@ EOT;
         }
     }
 
+    public function postLineItemUpdate(Request $request,$line_item_id)
+    {
+        $oi = OrderItem::findOrFail($line_item_id);
+        $order = Order::findOrFail($oi->order_id);
+
+        $uid = Auth::user()->id;
+        $sup = Auth::user()->superior_id;
+        $rules = array(
+            'order_id' => 'required|integer',
+            'id' => 'required|integer',
+            'quantity' => 'required|integer',
+            'remarks' => ''
+        );
+        $input = $request->all();
+        $validation = Validator::make($input, $rules);
+
+        if ($order->created_by != $uid) {
+            if ($order->customer->salesman_id != $uid) {
+                if (!has_role('company_admin')) {
+                    return redirect()->back()
+                        ->with('flash_error', 'Permission Denied')
+                        ->withErrors($validation->Messages())
+                        ->withInput();
+                }
+            }
+        }
+
+        if ($validation->fails()) {
+            return redirect()->back()
+                ->with('flash_error', 'Operation failed')
+                ->witherrors($validation->messages())
+                ->withinput();
+        } else {
+//            $customer = Customer::findOrFail($order->customer_id);
+            $oi->fill($input);
+            $oi->save();
+
+            updateOrderStatus($order->id);
+            return redirect('/orders/'.$order->id)
+                ->with('flash_success','Operation success');
+        }
+    }
+
+
+
+
+
+
+
+
+
     /**
      * Remove the specified resource from storage.
      *
@@ -415,4 +600,20 @@ EOT;
         return redirect('orders/payments/'.$order->id)
             ->with('flash_success','Operation success');
     }
+
+    public function lineItemDelete($line_item_id){
+
+        $line_item = OrderItem::findOrFail($line_item_id);
+        $order = Order::findOrFail($line_item->order_id);
+
+
+            $line_item->delete();
+
+            updateOrderStatus($order->id);
+
+            return redirect('orders/'.$order->id)
+                ->with('flash_success','Operation success');
+//        }
+    }
+
 }

@@ -34,6 +34,8 @@
         {{--{{ Form::hidden('id', $order->id, array("class"=>"", 'readonly')) }}--}}
         {{--</form>--}}
 
+
+{{--customer order details section--}}
         <div class="col-md-12">
             <div class="widget box">
                 <div class="widget-header">
@@ -111,7 +113,9 @@
                                     </div>
                                     <div class="form-actions">
                                         <input type="submit" value="SAVE" class="btn btn-sm btn-success pull-right">
-                                        <a href="/orders/show/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>
+                                        {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
+                                        {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
+
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +135,9 @@
                                     </div>
                                     <div class="form-actions">
                                         <input type="submit" value="SAVE" class="btn btn-sm btn-success pull-right">
-                                        <a href="/orders/show/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>
+                                        {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
+                                        {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
+
                                     </div>
                                 </div>
                             </div>
@@ -229,7 +235,9 @@
                                     </div>
                                     <div class="form-actions">
                                         <input type="submit" value="SAVE" class="btn btn-sm btn-success pull-right">
-                                        <a href="/orders/show/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>
+                                        {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
+                                        {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
+
                                     </div>
                                 </div>
                             </div>
@@ -274,7 +282,9 @@
                                     </div>
                                     <div class="form-actions">
                                         {!! Form::submit('Save',['class'=>'btn btn-sm btn-success pull-right']) !!}
-                                        <a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>
+                                        {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
+                                        {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
+
                                     </div>
                                 </div>
                             </div>
@@ -301,7 +311,10 @@
                             @endif
                             <li class=""><a href="#box_tab12" data-toggle="tab">Profits</a></li>
                         </ul>
+
+
                         <div class="tab-content">
+                            {{--Profits tab--}}
                             @if(has_role('orders_see_profits'))
                                 <div class="tab-pane" id="box_tab12">
                                     <table cellpadding="0" cellspacing="0" border="0" class="table table-hover order-profits">
@@ -328,11 +341,11 @@
                                     </table>
                                 </div>
                             @endif
-                            <div class="tab-pane active" id="box_tab11">
-                                {!! Form::open(['method' => 'PATCH','action' => ['OrderController@update',$order], 'class'=>'table_form']) !!}
 
-                                {{--<form class="table_form" method="POST" action="">--}}
-                                    <table class="table table-hover table-striped">
+                            {{--line item tab--}}
+                            <div class="tab-pane active" id="box_tab11">
+                                {!! Form::open(['method' => 'PATCH','action' => ['OrderController@update',$order->id], 'class'=>'table_form']) !!}
+                                 <table class="table table-hover table-striped">
                                         <thead>
                                         <tr>
                                             <th class="cell-tight">#</th>
@@ -340,12 +353,12 @@
                                             <th class="cell-tight">P/U</th>
                                             <th class="cell-tight">CBM</th>
                                             <th class="cell-tight">Per Pallet</th>
-                                            {{--<th class="cell-tight">Stock</th>--}}
+                                            <th class="cell-tight">Stock</th>
                                             <th class="cell-tight">Qty</th>
                                             <th class="cell-tight">Nt. Price</th>
                                             <th class="cell-tight">Nt. Amount</th>
                                             <th class="align-right" style="width: 90px;">
-                                                <a href="/orders/line-item-add/{{$order->id}}" class="btn btn-xs"><i class="icon-plus-sign"></i></a>
+                                                <a href="/orders/line_item_add/{{$order->id}}" class="btn"><i class="icon-plus-sign"></i></a>
                                             </th>
                                         </tr>
                                         </thead>
@@ -377,7 +390,10 @@
                                                             </table>
                                                         </td>
                                                         <td>
-                                                            {{$oi->product->pluck('cbm')->implode(',') }}
+                                                            {{$oi->product->pluck('pack_unit')->implode(',') }}
+                                                        </td>
+                                                        <td>
+                                                            {{$oi->cbm }}
                                                         </td>
                                                         <td>
                                                             @if($order->container->pluck('code')->implode(',') == '40hq')
@@ -385,10 +401,6 @@
                                                             @else
                                                                 {{$oi->product->pluck('units_per_pallette')->implode(',') }}
                                                             @endif
-{{--                                                                {{ getSalePrice($oi->product[0],$order,$customer) }}--}}
-                                                                {{--@php--}}
-                                                                    {{--$price = getSalePrice( $oi->product[0],$order,$customer );--}}
-                                                                {{--@endphp--}}
                                                         </td>
                                                         <td>
                                                             @php
@@ -414,18 +426,19 @@
                                                         </td>
                                                         <td>
 														<span class="btn-group">
-            												<a href="/orders/line-item-delete/{{$oi->id}}" class="btn btn-xs"><i class="icon-trash"></i></a>
-            												<a href="/orders/line-item-update/{{$oi->id}}" class="btn btn-xs"><i class="icon-edit"></i></a>
+            												<a class="btn btn-block remove-record" data-toggle="modal" data-target="#deleteLineItemModal" data-item="{{ $oi->id }}" data-item2="{{ nl2br($oi->product->pluck('product_name')->implode(',') ) }}"><i class="icon-trash"></i></a>
+
+            												<a href="/orders/update_line_item/{{$oi->id}}" class="btn btn-block"><i class="icon-edit"></i></a>
         												</span>
                                                         </td>
 
                                                     </tr>
                                                 @endforeach
                                                 <tr>
-                                                    <td colspan="9">{{ count($order->items) }} Line Items Total</td>
+                                                    <td colspan="9" style="font-size: 17px">{{ count($order->items) }} Line Items Total</td>
                                                     <td>
                                                         <input type="hidden" name="action" value="update_ois" />
-                                                        <input type="submit" value="SAVE" class="btn btn-xs btn-success pull-right">
+                                                        <input type="submit" value="SAVE" class="btn btn-success pull-right">
                                                     </td>
                                                 </tr>
                                                 @if($order->discount > 0)
@@ -498,11 +511,57 @@
         </div> <!-- /.col-md-12 -->
     </div> <!-- /.row -->
 
+    {{--bootstrap modal--}}
+    {{ Form::open(['method' => 'DELETE', 'action' => ['OrderController@lineItemDelete', $oi->id], 'id'=>'lineitem' ]) }}
+
+    <div class="modal fade" id="deleteLineItemModal" tabindex="-1" role="dialog" aria-labelledby="deleteLineItemModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body edit-content">
+                    <div class="text-center" id="lineitemtext">Are you sure you want to delete this line item? </div>
+{{--                    <input id="email" name="email" type="text" value="{{ request.form.email }}" />--}}
+                </div>
+                <div class="modal-footer">
+                    {{--<a href="/orders/line-item-delete/{{$oi->id}}" id="lineitem"><button type="button" class="btn btn-danger pull-left">Yes, I am sure</button></a>--}}
+                    {{ Form::submit('Delete', ['class' => 'btn btn-danger']) }}
+{{--                    <a href="{{ URL::route('orders/line-item-delete/'.$oi->id) }}" id="lineitem"><button type="button" class="btn btn-danger pull-left">Yes, I am sure</button></a>--}}
+                    {{--<a href="{!! route('lineItem.delete', ['item' => $oi->id]) !!}" id="lineitem"><button type="button" class="btn btn-danger pull-left">Yes, I am sure</button></a>--}}
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">No, not today</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ Form::close() }}
+
+
+
 
     <div class="row">
         <div class="col-md-12 no-padding">
-            {{--<p class="record_status">Created: {{$order->created_at}} | Created by: {{User::find($order->created_by)->username}} | Updated: {{$order->updated_at}} | Updated by: {{User::find($order->updated_by)->username}} | <a href="/orders/changelog/{{ $order->id }}">Changelog</a></p>--}}
+            <p class="record_status">Created: {{$order->created_at}} | Created by: {{$created_by_user}} | Updated: {{$order->updated_at}} | Updated by: {{$updated_by_user}} | <a href="/orders/changelog/{{ $order->id }}">Changelog</a></p>
         </div>
     </div>
-
 @stop
+
+@push('scripts')
+    <script>
+
+        $(document).on("click", ".remove-record", function () {
+            var itemid= $(this).attr('data-item');
+            var itemname= $(this).attr('data-item2');
+            $("#lineitem").attr("action","http://americand.test/orders/line_item_delete/"+itemid)
+            // $('#text').val(itemid);
+            // var shit = document.getElementById('lineitemtext');
+            // shit.innerHTML += itemname;
+            // $("#lineitemtext").attr("href","/orders/line-item-delete/"+itemid)
+
+        });
+
+    </script>
+@endpush

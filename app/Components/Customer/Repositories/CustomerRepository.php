@@ -13,6 +13,11 @@ class CustomerRepository
         return Customer::where('customers.company_id', $companyId)->get();
     }
 
+//    public function getAllCustomersByCompanyId1(int $companyId)
+//    {
+//        return Customer::where('customers.company_id', $companyId);
+//    }
+
     public function getOneCustomerById(int $id): Customer
     {
         $this->customer = Customer::where('id', $id)->first();
