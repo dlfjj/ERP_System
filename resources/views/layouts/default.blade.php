@@ -361,6 +361,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
                     </a>
                 </li>
                 <!-- endif -->
+
                 <!-- if(has_role('purchases')) -->
                 <li class="<?=($segment == 'purchases' ? "current" : "");?>">
                     <a href="/purchases">
@@ -485,21 +486,21 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     </div>
 </div>
 
-<script type="text/javascript" src="/froala/js/froala_editor.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/table.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/link.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/lists.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/video.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/colors.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/align.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/image.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/image_manager.min.js"></script>
+{{--<script type="text/javascript" src="/froala/js/froala_editor.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/table.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/link.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/lists.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/video.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/colors.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/align.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/image.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/image_manager.min.js"></script>--}}
 
-<script type="text/javascript" src="/froala/js/froala_editor.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/table.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/link.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/lists.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/align.min.js"></script>
+{{--<script type="text/javascript" src="/froala/js/froala_editor.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/table.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/link.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/lists.min.js"></script>--}}
+{{--<script type="text/javascript" src="/froala/js/plugins/align.min.js"></script>--}}
 
 <script>
     $(window).unload(function(){

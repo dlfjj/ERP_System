@@ -108,21 +108,33 @@
                     { data: 'product_name', name: 'product_name' },
                     { data: 'pack_unit', name: 'pack_unit' },
                     { data: 'pack_unit_hq', name: 'pack_unit_hq' },
-                    {data: 'action', name: 'action', orderable: false, searchable: false}
+                    // {data: 'action', name: 'action', orderable: false, searchable: false}
+                    {
+                        // attach order id using jquery after the form being render in the view
+                        data: 'action',
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            var id= $("#order_id2").attr('data-item');
+                            var input = $("<input>")
+                                .attr("type", "hidden")
+                                .attr("name", "order_id").val(id);
+                            console.log(id);
+                            $(td).find('.form').append(input);
+                        },
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
                 ]
             });
         });
 
-        $(document).on("click", ".add_this_item", function () {
-            var id= $("#order_id2").attr('data-item');
-            console.log(id);
-            // console.log($('order_id').val(id));
-            // $(this).prev('order_id').val("hello world");
-            document.getElementById("#order_id").val(id);
-
-            // $("#lineitem").attr("action","http://americand.test/orders/line_item_delete/"+itemid)
-
-
-        });
+        // $(document).ready(function(){
+        //     var id= $("#order_id2").attr('data-item');
+        //     var input = $("<input>")
+        //         .attr("type", "hidden")
+        //         .attr("name", "order_id").val(id);
+        //     console.log(id);
+        //     $('.form').append(input);
+        // });
     </script>
 @endpush

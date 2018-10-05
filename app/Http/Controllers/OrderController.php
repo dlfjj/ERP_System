@@ -86,9 +86,8 @@ class OrderController extends Controller
         return Datatables::of($products)
             ->removeColumn('id')
             ->addColumn('action',function($product){
-                return \Form::open(['method'=>'POST','action'=>['OrderController@postLineItemAdd']]).'
+                return \Form::open(['method'=>'POST','action'=>['OrderController@postLineItemAdd'],'class'=>'form']).'
             <input type="hidden" name="product_id" value="'.$product->id.'" />
-            <input type="hidden" name="order_id" value="" class="order_id"/>
             <input type="number" class="qty_picker_input" name="quantity" value="" step="1" min="0" size="3"/>
             <input type="submit" name="submit" value="Add" class="btn pull-right add_this_item" />
             '.\Form::close();
@@ -254,15 +253,15 @@ EOT;
 
     public function postLineItemAdd(Request $request) {
 
-        return $request;
+//        return $request;
         $rules = array(
             'product_id' => 'required|integer|digits_between:1,6',
             'quantity' => 'required|integer'
         );
 
-        $validation = Validator::make(Input::get(), $rules);
+        $validation = Validator::make($request->all(), $rules);
 
-        $order   = Order::findOrFail($id);
+        $order   = Order::findOrFail($request->order_id);
 
         $uid = Auth::user()->id;
         $sup = Auth::user()->superior_id;
@@ -270,7 +269,7 @@ EOT;
         if($order->created_by != $uid){
             if($order->customer->salesman_id != $uid){
                 if(!has_role('company_admin')){
-                    return Redirect::to('orders/show/'.$id)
+                    return Redirect::to('orders/'.$request->order_id)
                         ->with('flash_error','Permission Denied')
                         ->withErrors($validation->Messages())
                         ->withInput();
@@ -278,15 +277,16 @@ EOT;
             }
         }
         if($validation->fails()){
-            return Redirect::to('orders/show/'.$id)
+            return redirect('orders/'.$request->order_id)
                 ->with('flash_error','Operation failed')
                 ->withErrors($validation->Messages())
                 ->withInput();
         } else {
             $customer = $order->customer;
-            $product = Product::findOrFail(Input::get('product_id'));
+            $product = Product::findOrFail($request->product_id);
 
-            $oi = OrderItem::where('order_id',$order->id)->where('product_id',$product->id)->first();
+            $oi = OrderItem::where('order_id',$order->id)->where('product_id',$product->id)->get();
+
             if(!$oi){
             }
             $order->line_no += 1;
@@ -296,7 +296,7 @@ EOT;
             $order_item->product_id = $product->id;
             $order_item->product_code = $product->product_code;
             $order_item->product_name = $product->product_name;
-            $order_item->quantity += Input::get('quantity',1);
+            $order_item->quantity += $request->get('quantity',1);
             $order_item->unit_price_net = $product->getSalePrice($order,$customer,$order->currency_code);
 
             if($order->container->code == '40hq'){
@@ -317,7 +317,7 @@ EOT;
 
             updateOrderStatus($order->id);
 
-            return Redirect::to('orders/line-item-add/'.$order->id)
+            return redirect()->back()
                 ->with('flash_success','Operation success');
         }
     }
