@@ -25,10 +25,12 @@
             <a href="javascript:void(0);" title=""><i class="icon-calendar"></i><span><?=date('F d, Y \(\K\W:W) H:i:s');?></span></a>
         </li>
     </ul>
+
 @stop
 
 
 @section('page-header')
+    <div class="hidden" id="order_id2" data-item="{{$order->id}}"></div>
     <div class="page-header">
         <div class="page-title">
         </div>
@@ -109,6 +111,18 @@
                     {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
             });
+        });
+
+        $(document).on("click", ".add_this_item", function () {
+            var id= $("#order_id2").attr('data-item');
+            console.log(id);
+            // console.log($('order_id').val(id));
+            // $(this).prev('order_id').val("hello world");
+            document.getElementById("#order_id").val(id);
+
+            // $("#lineitem").attr("action","http://americand.test/orders/line_item_delete/"+itemid)
+
+
         });
     </script>
 @endpush

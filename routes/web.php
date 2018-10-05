@@ -139,5 +139,5 @@ Route::patch('orders/update_line_item/{item}','OrderController@postLineItemUpdat
 Route::delete('orders/line_item_delete/{item}','OrderController@lineItemDelete')->name('lineItem.delete');
 Route::get('orders/line_item_add/{id}','OrderController@showLineItemAdd');
 Route::get('orders/line_item_add/{id}/getdata', 'OrderController@anyDtAvailableProducts')->name('line_items/getdata');
-//Route::get('orde/**/rs/')
+Route::post('orders/line_item_add/','OrderController@postLineItemAdd')->name('add_line_items');
 Route::resource('orders', 'OrderController');

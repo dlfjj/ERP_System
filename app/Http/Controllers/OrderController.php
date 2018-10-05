@@ -86,11 +86,12 @@ class OrderController extends Controller
         return Datatables::of($products)
             ->removeColumn('id')
             ->addColumn('action',function($product){
-                return '<form action="" method="post">
+                return \Form::open(['method'=>'POST','action'=>['OrderController@postLineItemAdd']]).'
             <input type="hidden" name="product_id" value="'.$product->id.'" />
+            <input type="hidden" name="order_id" value="" class="order_id"/>
             <input type="number" class="qty_picker_input" name="quantity" value="" step="1" min="0" size="3"/>
-            <input type="submit" name="submit" value="Add" class="btn pull-right" />
-            </form>';
+            <input type="submit" name="submit" value="Add" class="btn pull-right add_this_item" />
+            '.\Form::close();
             })->make(true);
     }
 
@@ -251,7 +252,7 @@ EOT;
         //
     }
 
-    public function postLineItemAdd(Request $request, $id) {
+    public function postLineItemAdd(Request $request) {
 
         return $request;
         $rules = array(
