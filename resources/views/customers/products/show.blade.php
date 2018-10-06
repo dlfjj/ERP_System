@@ -56,11 +56,11 @@
 
     {{ Form::open(array("url"=>"/customers/destroy/$customer->id","method"=>"post","class"=>"form-inline","id"=>"delete")) }}
 
-    <form class="form-inline" id="create" action="/customers/create" method="POST">
-    </form>
+    {{--<form class="form-inline" id="create" action="/customers/create" method="POST">--}}
+    {{--</form>--}}
 
-    <form class="form-inline" id="duplicate" action="/customers/duplicate/{{$customer->id}}" method="POST">
-    </form>
+    {{--<form class="form-inline" id="duplicate" action="/customers/duplicate/{{$customer->id}}" method="POST">--}}
+    {{--</form>--}}
 
     <div class="row">
         <div class="col-md-12">
@@ -97,7 +97,7 @@
                                         <td>{{ $qty_year }}</td>
                                     @endforeach
                                     <td>
-                                        <a href="/product/getShow/{{ $product->id }}">Show</a>
+                                        <a href="/products/{{ $product->id }}">Show</a>
                                     </td>
                                 </tr>
                             @endforeach

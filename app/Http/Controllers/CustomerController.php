@@ -307,13 +307,15 @@ class CustomerController extends Controller
     }
 
     public function deleteAddress(int $id, int $addressId) {
+
         $address = CustomerAddress::findOrFail($addressId);
         $customer_id = $address->customer_id;
         $address->delete();
         return Redirect::to('customers/'.$customer_id)
             ->with('flash_success','Operation success');
-    }
 
+    }
+    /** ========================================================================================================== */
     /** ========================================================================================================== */
     /** ========================================================================================================== */
 
@@ -352,9 +354,7 @@ class CustomerController extends Controller
 //	Product tab within the customer modules
 	public function getProducts($id) {
 	    $customer = Customer::findOrFail($id);
-        $select_groups   = CustomerGroup::where('company_id',return_company_id())
-            ->pluck('group','id')
-        ;
+        $select_groups   = CustomerGroup::where('company_id',return_company_id())->pluck('group','id');
 	    $select_users = User::where('company_id',return_company_id())->pluck('username','id');
 	    $select_contacts = CustomerContact::where('customer_id',$customer->id)->pluck('contact_name','id');
 
@@ -402,6 +402,18 @@ class CustomerController extends Controller
 		$overdue 		= $customer->getOverdueMoney($outstanding_currency);
         return view('customers.products.show',compact('select_currency_codes','select_payment_terms','select_taxcodes','select_groups','select_users','select_contacts','customer','outstandings','outstanding_currency ','overdue','overdue_currency','years','customer_products','product','created_user','updated_user'));
 	}
+
+    public function getRelatedProducts($id){
+
+        $orders = Order::where('customer_id', $id)->get();
+
+        $product = '';
+
+        return \DataTables::of($products)
+            ->addColumn('action', function ($product) {
+                return '<a href="/products/'.$product->id.'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';})
+            ->make(true);
+    }
 
 	public function postDestroy($id) {
         $customer = Customer::findOrFail($id);

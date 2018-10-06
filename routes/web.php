@@ -53,6 +53,8 @@ Route::group(['prefix' => 'customers'], function () {
 
     Route::resource('history','HistoryController');
     Route::get('/products/{id}','CustomerController@getProducts');
+    Route::get('/products/getdata', 'CustomerController@getPosts')->name('products/getdata');
+
 
 
 
@@ -140,4 +142,5 @@ Route::delete('orders/line_item_delete/{item}','OrderController@lineItemDelete')
 Route::get('orders/line_item_add/{id}','OrderController@showLineItemAdd');
 Route::get('orders/line_item_add/{id}/getdata', 'OrderController@anyDtAvailableProducts')->name('line_items/getdata');
 Route::post('orders/line_item_add/','OrderController@postLineItemAdd')->name('add_line_items');
+Route::post('orders/records','OrderController@postRecord');
 Route::resource('orders', 'OrderController');

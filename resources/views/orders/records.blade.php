@@ -20,7 +20,8 @@
                     <h4><i class="icon-reorder"></i> Record order History</h4>
                 </div>
                 <div class="widget-content">
-                    <form enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" method="POST">
+                    {{--<form enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" method="POST">--}}
+                        {!! Form::open(['method'=>'POST','action'=>['OrderController@postRecord'],'files' =>false], array('enctype'=>'multipart/form-data','id'=>'main','class' => 'form-vertical row-border form-validate')) !!}
                         <div class="tabbable box-tabs">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#box_tab1" data-toggle="tab">General</a></li>
@@ -105,29 +106,19 @@
                                                 {{ Form::textarea('mail_body', $mail_body, array("rows"=>"3","cols"=>"5","class"=>"form-control", "id" => "history_comment")) }}
                                             </div>
                                         </div>
-                                        <!--
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <div class="row">
-                                                                            <label class="col-md-6 control-label">Choose File</label>
-                                                                            <div class="col-md-6">
-                                                                                <input type="file" name="file" data-style="fileinput">
-                                                                                <span class="help-block">5MB max. Uploading can take time.</span>
-                                                                            </div>
-                                                                        </div>
-                                        -->
-
                                         <div class="form-actions">
                                             <input type="submit" value="Save" class="btn btn-sm btn-success pull-right">
-                                            <a href="/orders/show/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>
+                                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
+                                            {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {{ Form::close() }}
+                    {{--</form>--}}
                 </div>
             </div>
-            </form>
         </div>
     </div>
 
