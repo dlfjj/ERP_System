@@ -340,6 +340,9 @@
                         <td>
                             {{ Form::select('customer_id', $select_customers, (isset($product_customer->customer_id) ? $product_customer->customer_id : ""), array("class"=>"select2 col-md-12 full-width-fix")) }}
                         </td>
+						{{--<td>--}}
+							{{--{{ Form::select('customer_id', $select_customers, "", ['id'=>'wtf']) }}--}}
+						{{--</td>--}}
                         <td class="text-right">
                             {{ Form::button('<span>ADD</span>', ['class' => 'btn', 'type' => 'submit']) }}
                         </td>

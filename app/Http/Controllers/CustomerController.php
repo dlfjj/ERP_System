@@ -448,32 +448,7 @@ class CustomerController extends Controller
 			->make();
     }
 
-//	public function getHistory($id) {
-//	    $customer = Customer::where('id',$id)->first();
-        // echo Auth::user()->company_id;die;
-//       $orders_history = Order::Leftjoin('customers','orders.customer_id','=','customers.id')
-//            ->Leftjoin('order_status','orders.status_id','=','order_status.id')
-//            ->select(
-//            array(
-//                'orders.id',
-//                'orders.order_no',
-//                'order_status.name',
-//                'orders.order_date',
-//                'orders.customer_order_number',
-//                'orders.currency_code',
-//                'orders.total_gross',
-//                'orders.total_paid'
-//            ))
-//            ->where("orders.customer_id",$id)
-//            ->where('orders.company_id')->get();
-            // echo "<pre>";
-            // print_R($orders_history);die;
-        // $this->layout->module_title = "";
-        // $this->layout->module_sub_title = "";
-//        return view('customers.history',compact('customer'));
- //        $this->layout->content = View::make('customers.history')
- //            ->with('customer',$customer);
-//	}
+
 
 	public function getChangelog($id){
 	    $customer = Customer::findOrFail($id);

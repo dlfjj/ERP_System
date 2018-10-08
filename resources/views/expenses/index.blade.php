@@ -46,12 +46,13 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <div class="widget box">
+            <div class="panel panel-default">
                 <div class="widget-header">
-                    <h4><i class="icon-reorder"></i>Expense Index</h4>
+                    <div class="panel-heading"><i class="icon-reorder"></i> Expense Index</div>
                 </div>
-                <div class="widget-content no-padding">
-                    <table class="table table-striped table-bordered table-hover table-chooser datatable" data-dataTable='{"bServerSide": true, "sAjaxSource": "/expenses/dt-index", "aaSorting": [[ 0, "desc" ]]}'>
+                <div class="panel-body">
+                    {{--<table class="table table-striped table-bordered table-hover table-chooser datatable" data-dataTable='{"bServerSide": true, "sAjaxSource": "/expenses/dt-index", "aaSorting": [[ 0, "desc" ]]}'>--}}
+                    <table class="table table-striped table-bordered table-hover table-chooser" id="expense_table">
                         <thead>
                         <tr>
                             <th>Serial</th>
@@ -64,36 +65,6 @@
                             <th></th>
                         </tr>
                         </thead>
-                        <tbody>
-                        @foreach($expenses as $expense)
-                            <tr>
-                                <td>
-                                    {{$expense->id}}
-                                </td>
-                                <td>
-                                    {{$expense->date_created}}
-                                </td>
-                                <td>
-                                    {{$expense->username}}
-                                </td>
-                                <td>
-                                    {{$expense->name}}
-                                </td>
-                                <td>
-                                    {{$expense->currency_code}}
-                                </td>
-                                <td>
-                                    {{$expense->amount}}
-                                </td>
-                                <td>
-                                    {{$expense->description}}
-                                </td>
-                                <td>
-                                    <a href="/expenses/{{ $expense->id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
                     </table>
                 </div>
             </div>
@@ -170,17 +141,38 @@
 
 
 
+@stop
 
+@push('scripts')
     <script>
-        $(document).ready(function(){
-            $('#expense_table').dataTable();
+        // jquery getting data for purchase table
+        $(function() {
+            $('#expense_table').DataTable({
+                "oLanguage": {
+
+                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
+                    "oPaginate": {
+                        "sNext": "<i class='icon-chevron-right icon-large'></i>",
+                        "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
+                        // "sFirst ": "<i class='icon-backward icon-large'></i>"
+                    }
+
+                },
+                "pagingType": "full_numbers",
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route('expenses/getdata') !!}',
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'date_created', name: 'date_created' },
+                    { data: 'username', name: 'users.username' },
+                    { data: 'name', name: 'chart_of_accounts.name' },
+                    { data: 'currency_code', name: 'currency_code' },
+                    { data: 'amount', name: 'amount' },
+                    { data: 'description', name: 'description' },
+                    {data: 'action', name: 'action', orderable: false, searchable: false}
+                ]
+            });
         });
     </script>
-    <style>
-        #wgtmsr{
-            width:150px;
-        }
-    </style>
-
-
-@stop
+@endpush

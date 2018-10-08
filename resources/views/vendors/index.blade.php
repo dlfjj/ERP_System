@@ -90,11 +90,15 @@
     {{--</script>--}}
 @stop
 @push('scripts')
-    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript">
+    <script>
         // jquery getting data for purchase table
         $(function() {
             $('#vendors-table').DataTable({
+                "oLanguage": {
+
+                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
+
+                },
                 processing: true,
                 serverSide: true,
                 ajax: '{!! route('vendors/getdata') !!}',

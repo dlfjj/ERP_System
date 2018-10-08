@@ -64,7 +64,7 @@
                 </div>
                 <div class="panel-body">
                     {{--<table class="table table-striped table-bordered table-hover datatable" data-dataTable='{"bServerSide": true, "sAjaxSource": "/orders/dt-index", "aaSorting": [[ 0, "desc" ]]}'>--}}
-                    <table class="table table-hover table-bordered table-striped" id="orders-table" style="width: 100%;">
+                    <table class="table table-hover table-bordered table-striped " id="orders-table" style="width: 100%;">
                     <thead>
                         <tr>
                             <th class="cell-tight">ORDER #</th>
@@ -88,11 +88,15 @@
 @stop
 
 @push('scripts')
-    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript">
+    <script>
         // jquery getting data for purchase table
         $(function() {
             $('#orders-table').DataTable({
+                "oLanguage": {
+
+                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
+
+                },
                 processing: true,
                 serverSide: true,
                 ajax: '{!! route('orders/getdata') !!}',
@@ -105,9 +109,13 @@
                     { data: 'estimated_finish_date', name: 'estimated_finish_date' },
 
                     { data: 'total_gross', name: 'total_gross' },
-                    {data: 'action', name: 'action', orderable: false, searchable: false}
+                    {data: 'action',
+
+
+                        name: 'action', orderable: false, searchable: false}
                 ]
             });
         });
+
     </script>
 @endpush

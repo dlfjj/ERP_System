@@ -17,13 +17,45 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import BootstrapVue from 'bootstrap-vue';
+import $ from 'jquery';
+import 'datatables.net';
+import 'select2';
+
+
+window.$ = window.jQuery = $;
 Vue.use(BootstrapVue);
 Vue.component(
     'test',
     require('./components/ExampleComponent.vue')
 );
 
+import 'jquery-ui/ui/widgets/datepicker.js';
+
+
 
 const app = new Vue({
     el: '#app'
 });
+
+
+
+// add datepicker jquery
+$( ".datepicker" ).datepicker({
+    defaultDate: +7,
+    showOtherMonths:true,
+    autoSize: true,
+    dateFormat: 'yy-mm-dd'
+});
+
+$('.select2').select2({
+    minimumInputLength: 3
+});
+
+// $(window).unload(function(){
+//     $("#dvLoading").show();
+//     $('#dvLoading').fadeOut(116000);
+// });
+// $(window).load(function(){
+//     $("#dvLoading").hide();
+// })
+

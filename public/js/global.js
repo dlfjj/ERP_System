@@ -34,6 +34,7 @@ $(document).ready(function() {
 	});
 
 
+
     $("a.basic-alert").click(function(e) {
         e.preventDefault();
         var msg = $(this).attr('rel');

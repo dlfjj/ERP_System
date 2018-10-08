@@ -30,11 +30,11 @@ $(document).ready(function(){
 		};
 	}
 
-	$('#calendar').fullCalendar({
-		disableDragging: false,
-		header: h,
-		editable: true,
-		events: []
-	});
+	// $('#calendar').fullCalendar({
+	// 	disableDragging: false,
+	// 	header: h,
+	// 	editable: true,
+	// 	events: []
+	// });
 
 });

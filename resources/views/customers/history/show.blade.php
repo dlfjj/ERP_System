@@ -30,7 +30,7 @@
 
         <li>
 
-            <a href="/customers/show/{{$customer->id}}">Details</a>
+            <a href="/customers/{{$customer->id}}">Details</a>
 
         </li>
 

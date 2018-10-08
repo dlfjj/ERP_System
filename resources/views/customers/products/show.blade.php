@@ -12,10 +12,13 @@
             <a href="/dashboard">Dashboard</a>
         </li>
         <li>
-            <a href="/customer" title="">Customers</a>
+            <a href="/customers" title="">Customers</a>
+        </li>
+        <li>
+            <a href="/customers/{{$customer->id}}" title="">Details</a>
         </li>
         <li class="current">
-            <a href="/customer/{{$customer->id}}" title="">Details</a>
+            <a href="/customers/products/{{$customer->id}}" title="">Purchased Products</a>
         </li>
     </ul>
 
@@ -26,7 +29,7 @@
         @if(has_role('customers_opos'))
             <li><a href="/customer/getOpos/{{ $customer->id }}" class="" title=""><i class="icon-table"></i><span>OPOS</span></a></li>
         @endif
-        <li>--a
+        <li>
             <a href="javascript:void(0);" title=""><i class="icon-calendar"></i><span><?=date('F d, Y \(\K\W:W) H:i:s');?></span></a>
         </li>
     </ul>

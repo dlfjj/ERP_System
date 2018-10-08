@@ -116,6 +116,7 @@ Route::group(['prefix' => 'vendors'], function () {
 });
 
 /** Expense */
+Route::get('expenses/getdata', 'ExpenseController@getExpenseData')->name('expenses/getdata');
 Route::resource('expenses','ExpenseController');
 
 /** Purchase */

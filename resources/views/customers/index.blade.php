@@ -13,7 +13,7 @@
 			<a href="/dashboard">Dashboard</a>
 		</li>
 		<li class="current">
-			<a href="/customer/getIndex" title="">Customers</a>
+			<a href="/customers" title="">Customers</a>
 		</li>
 	</ul>
 
@@ -36,7 +36,7 @@
 			<li>
 				<div class="summary">
 					<span>OUTSTANDINGS</span>
-					<h3>{{ $outstanding_balance_currency_code }} {{ number_format($outstanding_balance_amount,2) }}</h3>
+					<h4>{{ $outstanding_balance_currency_code }} {{ number_format($outstanding_balance_amount,2) }}</h4>
 				</div>
 			</li>
 		</ul>
@@ -87,22 +87,24 @@
 						</div>
 					</div>
 				</div>
-				<!-- /Normal -->
-
-
-{{--<script>--}}
-	{{--$(document).ready(function(){--}}
-		{{--$('#customer-table').dataTable();--}}
-	{{--})--}}
-{{--</script>--}}
 
 @stop
 @push('scripts')
-	<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-	<script type="text/javascript">
+	<script>
         // jquery getting data for purchase table
         $(function() {
             $('#customers-table').DataTable({
+                "oLanguage": {
+
+                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
+                    "oPaginate": {
+                        "sNext": "<i class='icon-chevron-right icon-large'></i>",
+                        "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
+                        // "sFirst ": "<i class='icon-backward icon-large'></i>"
+                    }
+
+                },
+                "pagingType": "full_numbers",
                 processing: true,
                 serverSide: true,
                 ajax: '{!! route('customers/getdata') !!}',

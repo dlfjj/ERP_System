@@ -286,7 +286,8 @@
 
                         <div class="form-actions">
 
-                            <input type="submit" value="CREATE" class="btn btn-sm btn-success pull-right">
+                            <input type="submit" value="CREATE" class="btn btn-success pull-right">
+                            <a href="/customers" class="btn btn-default pull-right">Cancel</a>
 
                         </div>
 

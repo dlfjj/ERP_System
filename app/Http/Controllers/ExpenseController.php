@@ -11,7 +11,7 @@ use App\Models\ValueList;
 use Validator;
 use Auth;
 use Illuminate\Support\Facades\DB;
-
+use Yajra\DataTables\DataTables;
 
 
 class ExpenseController extends Controller
@@ -65,6 +65,29 @@ class ExpenseController extends Controller
 //        return $account_name;
 
         return view('expenses.index',compact('select_accounts','select_bank_accounts','select_currency_codes','account_name' ,'expenses'));
+
+    }
+
+    public function getExpenseData(){
+        $expenses = Expense::Leftjoin('users','expenses.user_id','=','users.id')
+            ->Leftjoin('chart_of_accounts','expenses.account_id','=','chart_of_accounts.id')
+            ->select(
+                array(
+                    'expenses.id',
+                    'expenses.date_created',
+                    'users.username',
+                    'chart_of_accounts.name',
+                    'expenses.currency_code',
+                    'expenses.amount',
+                    'expenses.description'
+                ))
+            ->where('expenses.company_id',return_company_id())->get();
+
+        return Datatables::of($expenses)
+            ->addColumn('action', function ($expense) {
+                return '<a href="/expenses/'.$expense->id.'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
+            })
+            ->make(true);
 
     }
 

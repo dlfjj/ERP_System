@@ -1757,6 +1757,10 @@ span.red {
 #sidebar #sidebar-content .sidebar-widget {
   margin: 25px 10px;
 }
+.sidebar-text{
+  font-weight: 400;
+}
+
 /* * * * * * * * * * * *
  * slimscroll
  * * * * * * * * * * * */

@@ -10,7 +10,7 @@ $uri_segment = Request::segment(2);
         <a href="/orders/" title="">Orders</a>
     </li>
     <li class="current">
-        <a href="/orders/show/{{$order->id}}" title="">Details</a>
+        <a href="/orders/{{$order->id}}" title="">Details</a>
     </li>
 </ul>
 
