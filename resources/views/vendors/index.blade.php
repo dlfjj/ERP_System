@@ -26,7 +26,7 @@
     <div class="page-header">
         <div class="page-title">
             @if(has_role('vendors_edit'))
-                <a href="/vendors/create" class="btn btn-success btn-lg"><i class="icon-plus-sign"></i> New Vendor</a>
+                <a href="/vendors/create" class="btn btn-success"><i class="icon-plus-sign"></i> New Vendor</a>
             @endif
         </div>
 
@@ -45,11 +45,6 @@
             <div class="widget box">
                 <div class="widget-header">
                     <h4><i class="icon-reorder"></i> Vendor Index</h4>
-                    <div class="toolbar no-padding">
-                        <div class="btn-group">
-                            <span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
-                        </div>
-                    </div>
                 </div>
                 <div class="widget-content">
                     <table class="table table-striped table-bordered"  id="vendors-table">

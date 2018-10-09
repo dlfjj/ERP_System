@@ -19,6 +19,9 @@
                 <div class="widget-content">
 
                     {!! Form::open(array('url' => "/customers/create", 'enctype' => 'multipart/form-data', 'id' => 'main', 'method' => 'POST', 'class' => 'form-vertical row-border form-validate', 'autocomplete' => 'off')) !!}
+                    {{ Form::hidden('created_by','', array("class"=>"form-control")) }}
+                    {{ Form::hidden('updated_by','', array("class"=>"form-control")) }}
+                    {{ Form::hidden('company_id','', array("class"=>"form-control")) }}
 
                     <div class="form-group">
 
@@ -52,7 +55,7 @@
 
                                 <label class="control-label">Status</label>
 
-                                {!! Form::select('status', array('Active' => 'Active','Prospect' => 'Prospect', 'Inactive' => 'Inactive'), '', array("class"=>"form-control")) !!}
+                                {!! Form::select('status', array('Active' => 'Active','Prospect' => 'Prospect', 'Inactive' => 'Inactive'), 'Prospect', array("class"=>"form-control")) !!}
 
                             </div>
 
@@ -173,7 +176,7 @@
 
                                 <label class="control-label">Currency</label>
 
-                                {!! Form::select('currency_code', $select_currency_codes, '', array("class"=>"form-control")) !!}
+                                {!! Form::select('currency_code', $select_currency_codes, 'USD', array("class"=>"form-control")) !!}
 
                             </div>
 

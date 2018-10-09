@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Components\Exceptions\StatusChangeDeniedException;
 use App\Components\Customer\Services\CustomerService;
 use App\Models\CustomerAddress;
-use  Auth;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -131,21 +131,21 @@ class CustomerController extends Controller
 
         $rules = [
             'customer_name' => 'Required|Between:1,150',
-            'customer_name_localized' => 'Between:1,50',
-            'currency_code' => 'required|alpha|between:3,3',
-            'status' => 'Required|Between:1,50',
-            'telephone_1' => 'between:1,50',
-            'telephone_2' => 'between:1,50',
-            'fax' => 'between:1,50',
-            'currency_code' => 'required|between:3,3',
-            'inv_address1' => 'required',
-            'inv_city' => 'required',
-            'inv_province' => 'required',
-            'inv_fax' => 'required',
-            'group_id' => 'required',
-            'status' => 'required',
-            'salesman_commission' => 'required',
-            'ff_name' => 'required',
+//            'customer_name_localized' => 'Between:1,50',
+//            'currency_code' => 'required|alpha|between:3,3',
+//            'status' => 'Required|Between:1,50',
+//            'telephone_1' => 'between:1,50',
+//            'telephone_2' => 'between:1,50',
+//            'fax' => 'between:1,50',
+//            'currency_code' => 'required|between:3,3',
+//            'inv_address1' => 'required',
+//            'inv_city' => 'required',
+//            'inv_province' => 'required',
+//            'inv_fax' => 'required',
+//            'group_id' => 'required',
+//            'status' => 'required',
+//            'salesman_commission' => 'required',
+//            'ff_name' => 'required',
         ];
 
         try {
@@ -154,10 +154,20 @@ class CustomerController extends Controller
             if ($validation->fails()) {
                 return $this->redirectWithErrors('customers/create', $validation->getMessageBag()->getMessages());
             }
+            $input['created_by'] = Auth::user()->id;
+            $input['updated_by'] = Auth::user()->id;
+            $input['company_id'] = return_company_id();
 
+            foreach ($input as $key => $value) {
+                if (is_null($value)) {
+                    $input[$key] = "";
+                }
+            }
             $customer = Customer::create($input);
 
-            return $this->redirectWithSuccessMessage('/customers/' . $customer->id);
+            return redirect('/customers/'.$customer->id)
+                ->with('flash_success','Operation success');
+//            return $this->redirectWithSuccessMessage('/customers/' . $customer->id);
         } catch (StatusChangeDeniedException $e) {
             return Redirect::to('customers/create')
                 ->with('flash_error', 'Operation failed - Status change denied')

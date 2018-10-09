@@ -205,7 +205,7 @@
                                         <th class="cell-tight align-right">AMOUNT</th>
                                         <th class="align-right">
                                             @if(has_role('purchases_edit'))
-                                                <a href="/purchases/line-item-add/{{$purchase->id}}" class="btn btn-xs"><i class="icon-plus-sign"></i></a>
+                                                <a href="/purchases/line_item_add/{{$purchase->id}}" class="btn"><i class="icon-plus-sign"></i></a>
                                             @endif
                                         </th>
                                     </tr>
@@ -216,12 +216,13 @@
                                         $purchase_items = $purchase->items->sortBy('sort_no');
                                         ?>
                                         @foreach($purchase_items as $oi)
+                                            {!! Form::open(['action' => ["PurchaseController@lineItemDelete",$oi->id, $purchase->id], 'enctype' => 'multipart/form-data', 'method' => 'DELETE']) !!}
                                             <tr class="order-form-row">
                                                 <td>
                                                     {{$oi->sort_no}}
                                                 </td>
                                                 <td>
-                                                    <a href="/products/show/{{ $oi->product->id }}">{{ $oi->product->product_code }}</a>
+                                                    <a href="/products/{{ $oi->product->id }}">{{ $oi->product->product_code }}</a>
                                                 </td>
                                                 <td class="align-right">{{ $oi->product->getStockOnHand() }}</td>
                                                 <td class="align-right">{{ $oi->getQuantityDelivered() }}</td>
@@ -240,8 +241,9 @@
                                                 <td class="align-right" style="width: 100px;">
 												<span class="btn-group">
 													@if(has_role('purchases_edit'))
-                                                        <a href="/purchases/line-item-delete/{{$oi->id}}" class="btn btn-xs"><i class="icon-trash"></i></a>
-                                                        <a href="/purchases/line-item-update/{{$oi->id}}" class="btn btn-xs"><i class="icon-edit"></i></a>
+                                                        {{ Form::button('<i class="icon-trash"></i>', ['type' => 'submit', 'class' => 'btn'] )  }}
+                                                        {{--<a href="/purchases/line-item-delete/{{$oi->id}}" class="btn"><i class="icon-trash"></i></a>--}}
+                                                        <a href="/purchases/update_line_item/{{$oi->id}}" class="btn"><i class="icon-edit"></i></a>
                                                     @else
                                                         -
                                                     @endif
@@ -258,6 +260,7 @@
                                                     @endif
                                                 </td>
                                             </tr>
+                                            {{ Form::close() }}
                                         @endforeach
                                         <tr>
                                             <td colspan="9">{{ count($purchase->items) }} Line Items Total</td>
@@ -313,7 +316,7 @@
 
     <div class="row">
         <div class="col-md-12 no-padding">
-            {{--<p class="record_status">Created: {{$purchase->created_at}} | Created by: {{User::find($purchase->created_by)->username}} | Updated: {{$purchase->updated_at}} | Updated by: {{User::find($purchase->updated_by)->username}} | <a href="/purchases/changelog/{{ $purchase->id }}">Changelog</a></p>--}}
+            <p class="record_status">Created: {{$purchase->created_at}} | Created by: {{$created_by_user}} | Updated: {{$purchase->updated_at}} | Updated by: {{$updated_by_user}} | <a href="/purchases/changelog/{{ $purchase->id }}">Changelog</a></p>
         </div>
     </div>
 @stop

@@ -10,11 +10,11 @@ $uri_segment = Request::segment(2);
         <a href="/purchases/" title="">Purchases</a>
     </li>
     <li>
-        <a href="/purchases/show/{{$purchase->id}}" title="">Details</a>
+        <a href="/purchases/{{$purchase->id}}" title="">Details</a>
     </li>
     @if($uri_segment != "" && $uri_segment != "show")
         <li class="current">
-            <a href="/purchases/{{$uri_segment}}/{{$purchase->id}}" title="">{{ $uri_segment }}</a>
+            <a href="/purchases/{{$uri_segment}}" title="">{{ $uri_segment }}</a>
         </li>
     @endif
 </ul>

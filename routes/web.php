@@ -120,8 +120,17 @@ Route::get('expenses/getdata', 'ExpenseController@getExpenseData')->name('expens
 Route::resource('expenses','ExpenseController');
 
 /** Purchase */
-
 Route::get('purchases/getdata', 'PurchaseController@getPurchaseData')->name('purchase/getdata');
+
+Route::delete('purchases/{id}/lineItem/{item}','PurchaseController@lineItemDelete');
+Route::get('purchases/update_line_item/{item}','PurchaseController@getLineItemUpdate');
+Route::patch('purchases/update_line_item/{item}','PurchaseController@postLineItemUpdate');
+
+Route::get('purchases/line_item_add/{id}','PurchaseController@showLineItemAdd');
+Route::get('purchases/line_item_add/{id}/getdata', 'PurchaseController@anyDtAvailableProducts')->name('purchase_line_items/getdata');
+Route::post('purchases/line_item_add/','PurchaseController@postLineItemAdd')->name('add_line_items');
+
+
 Route::get('purchases/receive/{id}', 'PurchaseController@getReceive')->name('purchase.getReceive');
 Route::post('purchases/receive/{id}', 'PurchaseController@postReceive')->name('purchase.postReceive');
 Route::get('purchases/payments/{id}', 'PurchaseController@getPayments')->name('purchase.getPayments');
@@ -130,18 +139,20 @@ Route::resource('purchases','PurchaseController');
 
 
 /** Order */
-
 Route::get('orders/getdata', 'OrderController@getOrderData')->name('orders/getdata');
 Route::get('orders/payments/{id}', 'OrderController@getPayments')->name('order.getPayments');
 Route::post('orders/payments/{id}', 'OrderController@postPayments')->name('order.postPayments');
 Route::delete('orders/payments/{id}', 'OrderController@deletePayment')->name('order.deletePayment');
 Route::get('orders/records/{id}', 'OrderController@getRecords')->name('order.getRecords');
 Route::get('orders/records/getdata', 'OrderController@getOrderRecordData')->name('orders/records/getdata');
+
 Route::get('orders/update_line_item/{item}','OrderController@getLineItemUpdate');
 Route::patch('orders/update_line_item/{item}','OrderController@postLineItemUpdate');
 Route::delete('orders/line_item_delete/{item}','OrderController@lineItemDelete')->name('lineItem.delete');
+
 Route::get('orders/line_item_add/{id}','OrderController@showLineItemAdd');
 Route::get('orders/line_item_add/{id}/getdata', 'OrderController@anyDtAvailableProducts')->name('line_items/getdata');
 Route::post('orders/line_item_add/','OrderController@postLineItemAdd')->name('add_line_items');
+
 Route::post('orders/records','OrderController@postRecord');
 Route::resource('orders', 'OrderController');

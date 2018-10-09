@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PurchaseItem;
 use Illuminate\Http\Request;
 use App\Models\Purchase;
 use App\Models\PurchaseDelivery;
@@ -10,6 +11,7 @@ use App\Models\User;
 use App\Models\ValueList;
 use App\Models\Taxcode;
 use App\Models\ChartOfAccount;
+use App\Models\Product;
 use Yajra\Datatables\Datatables;
 use Validator;
 use Auth;
@@ -61,129 +63,29 @@ class PurchaseController extends Controller
             ->make(true);
     }
 
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function anyDtAvailableProducts(){
+        $products = Product::select(
+            array(
+                'products.id',
+                'products.product_code',
+                'products.product_name',
+                'products.pack_unit',
+                'products.pack_unit_hq'
+            ))
+            ->where('products.status','Active')
+            ->where('products.company_id',return_company_id());
+        return Datatables::of($products)
+            ->removeColumn('id')
+            ->addColumn('action',function($product){
+                return \Form::open(['method'=>'POST','action'=>['PurchaseController@postLineItemAdd'],'class'=>'form']).'
+            <input type="hidden" name="product_id" value="'.$product->id.'" />
+            <input type="number" class="qty_picker_input" name="quantity" value="" step="1" min="0" size="3"/>
+            <input type="submit" name="submit" value="Add" class="btn pull-right add_this_item" />
+            '.\Form::close();
+            })->make(true);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $purchase = Purchase::findOrFail($id);
-
-        $vendor = Vendor::findOrFail($purchase->vendor_id);
-
-        if($purchase->company_id != return_company_id()){
-            die("Access violation. Click <a href='/purchases'>here</a> to get back.");
-        }
-
-        $select_users = User::pluck('username','id');
-        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
-        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
-        $select_taxcodes  	   = Taxcode::orderBy('sort_no', 'asc')->pluck('name','id');
-        $select_status = array(
-            "DRAFT" => "DRAFT",
-            "OPEN" => "OPEN",
-            "CLOSED" => "CLOSED",
-            "VOID" => "VOID"
-        );
-
-        return view('purchases.show',compact('select_status','select_vendor_contacts',
-            'select_payment_terms','select_currency_codes','select_shipping_methods','select_shipping_terms',
-            'select_users','select_taxcodes','purchase','vendor'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $rules = array(
-            'id'    => 'integer'
-        );
-        $input = $request->all();
-
-        $validation = Validator::make($input, $rules);
-
-        if($validation->fails()){
-//            return Redirect::to('purchases/show/'.$id)
-            return redirect('purchases/'.$id)
-                ->with('flash_error','Operation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-            $purchase = Purchase::findOrFail($id);
-            $purchase->fill($input);
-            $purchase->updated_by = Auth::user()->id;
-//            return $request->input('taxcode_id');
-//            return $input['taxcode_id'];
-            $taxcode = Taxcode::findOrFail($input['taxcode_id']);
-            $purchase->taxcode_id   = $taxcode->id;
-            $purchase->taxcode_name = $taxcode->name;
-            $purchase->taxcode_percent = $taxcode->percent;
-
-            $purchase->save();
-
-            updatePurchaseStatus($id);
-
-            return redirect('purchases/'.$id)
-                ->with('flash_success','Operation success');
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-//    Receive Modules within Purchase
     public function getReceive($id) {
         $purchase = Purchase::findOrFail($id);
 
@@ -360,4 +262,311 @@ EOT;
         return view('purchases.records',compact('mail_to','mail_cc','mail_bcc','mail_subject','mail_body','purchase','vendor'));
 
     }
+
+
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    public function postLineItemAdd(Request $request){
+
+        $purchase_id = $request->purchase_id;
+        $purchase = Purchase::findOrFail($purchase_id);
+
+        $rules = array(
+            'product_id' => 'required|integer|digits_between:1,6',
+            'quantity'   => 'required|numeric'
+        );
+        $validation = Validator::make($request->all(), $rules);
+        if($validation->fails()){
+            return redirect('purchases/'.$purchase_id)
+                ->with('flash_error','Validation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+
+            $product_id = $request->product_id;
+            $product = Product::findOrFail($product_id);
+
+            $purchase_item = New PurchaseItem();
+            $purchase_item->purchase_id = $purchase->id;
+            $purchase_item->product_id = $product->id;
+            $purchase_item->quantity = $request->get('quantity',1);
+            $purchase_item->gross_price = $product->base_price_20;
+            $purchase_item->net_price   = return_net_price($purchase_item->gross_price, $purchase->taxcode->percent);
+            $purchase_item->net_total = $purchase_item->quantity * $purchase_item->net_price;
+            $purchase_item->gross_total = $purchase_item->quantity * $purchase_item->gross_price;
+            $purchase_item->save();
+
+            $purchase->save();
+
+            updatePurchaseStatus($purchase_id);
+
+            return redirect()->back()
+                ->with('flash_success','Operation success');
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $purchase = Purchase::findOrFail($id);
+
+        $vendor = Vendor::findOrFail($purchase->vendor_id);
+
+        if($purchase->company_id != return_company_id()){
+            die("Access violation. Click <a href='/purchases'>here</a> to get back.");
+        }
+
+        $select_users = User::pluck('username','id');
+        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
+        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
+        $select_taxcodes  	   = Taxcode::orderBy('sort_no', 'asc')->pluck('name','id');
+        $select_status = array(
+            "DRAFT" => "DRAFT",
+            "OPEN" => "OPEN",
+            "CLOSED" => "CLOSED",
+            "VOID" => "VOID"
+        );
+        $created_by_user = User::find($purchase->created_by)->username;
+        $updated_by_user = User::find($purchase->updated_by)->username;
+
+
+        return view('purchases.show',compact('select_status','select_vendor_contacts',
+            'select_payment_terms','select_currency_codes','select_shipping_methods','select_shipping_terms',
+            'select_users','select_taxcodes','purchase','vendor','created_by_user','updated_by_user'));
+    }
+
+    public function showLineItemAdd($id){
+
+        $purchase = Purchase::findOrFail($id);
+        $vendor = Vendor::findOrFail($purchase->vendor_id);
+
+        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
+        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
+        $select_status = array(
+            "DRAFT" => "DRAFT",
+            "OPEN" => "OPEN",
+            "CLOSED" => "CLOSED",
+            "VOID" => "VOID"
+        );
+        return view('purchases.lineItem.add_line_item',compact('select_status','select_vendor_contacts','select_payment_terms',
+            'select_currency_codes','select_shipping_methods','select_shipping_terms','purchase','vendor'));
+
+    }
+
+    public function getLineItemUpdate($line_item_id){
+        $line_item = PurchaseItem::findOrFail($line_item_id);
+        $purchase = Purchase::findOrFail($line_item->purchase_id);
+        $vendor = Vendor::findOrFail($purchase->vendor_id);
+
+        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
+        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
+        $select_status = array(
+            "DRAFT" => "DRAFT",
+            "OPEN" => "OPEN",
+            "CLOSED" => "CLOSED",
+            "VOID" => "void"
+        );
+
+        return view('purchases.lineItem.edit_line_item', compact('select_currency_codes','select_payment_terms','select_shipping_terms',
+            'select_shipping_terms','select_shipping_methods','select_vendor_contacts','select_status','purchase','line_item'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $rules = array(
+            'id'    => 'integer'
+        );
+        $input = $request->all();
+
+        $validation = Validator::make($input, $rules);
+
+        if($validation->fails()){
+//            return Redirect::to('purchases/show/'.$id)
+            return redirect('purchases/'.$id)
+                ->with('flash_error','Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+            $purchase = Purchase::findOrFail($id);
+            $purchase->fill($input);
+            $purchase->updated_by = Auth::user()->id;
+//            return $request->input('taxcode_id');
+//            return $input['taxcode_id'];
+            $taxcode = Taxcode::findOrFail($input['taxcode_id']);
+            $purchase->taxcode_id   = $taxcode->id;
+            $purchase->taxcode_name = $taxcode->name;
+            $purchase->taxcode_percent = $taxcode->percent;
+
+            $purchase->save();
+
+            updatePurchaseStatus($id);
+
+            return redirect('purchases/'.$id)
+                ->with('flash_success','Operation success');
+        }
+    }
+
+    public function postLineItemUpdate(Request $request,$purchase_item_id){
+        $purchase_item = PurchaseItem::findOrFail($purchase_item_id);
+        $purchase = Purchase::findOrFail($purchase_item->purchase_id);
+
+        /*
+            if($purchase->status != "DRAFT"){
+                return Redirect::to("/purchases/show/{$purchase->id}")
+                    ->with('flash_error','Operation requires status DRAFT');
+            }
+        */
+
+        $today = date("Y-m-d");
+
+        $rules = array(
+            'purchase_id' => 'required|integer',
+            'id' => 'required|integer',
+            'quantity' => 'required|numeric',
+            'gross_price'   => 'required|numeric',
+            'sort_no' => 'integer',
+            'remarks' => ''
+        );
+
+        $validation = Validator::make($request->all(), $rules);
+
+        if($validation->fails()){
+            return redirect("/purchases/update_line_item/{$purchase_item_id}")
+                ->with('flash_error','Operation failed')
+                ->witherrors($validation->messages())
+                ->withinput();
+        } else {
+//            $new_quantity = $request->get('quantity',0);
+
+            // If new_quantity < already delivered or passed, then cancel operation
+            /*
+            if($new_quantity < $purchase_item->quantity_open){
+                return Redirect::to("/purchases/line-item-update/{$purchase_item_id}")
+                    ->with('flash_error','Quantity cannot < delivered quantity');
+            }
+            */
+
+            // First deduct old Quantity
+            // warehouse_transaction(1100,0,$line_item->product_id,$line_item->quantity,$purchase);
+
+//            $vendor = Vendor::findOrFail($purchase->vendor_id);
+            $purchase_item->fill($request->all());
+            $purchase_item->save();
+
+            updatePurchaseStatus($purchase->id);
+
+            return redirect('purchases/'.$purchase_item->purchase_id)
+                ->with('flash_success','Operation success');
+        }
+    }
+
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+
+    public function lineItemDelete ($purchase_item_id, $purchase_id){
+
+        $purchase_item = PurchaseItem::findOrFail($purchase_item_id);
+        $purchase = Purchase::findOrFail($purchase_item->purchase_id);
+
+        /*
+        if($purchase->status != "DRAFT"){
+            return Redirect::to("/purchases/show/{$purchase->id}")
+                ->with('flash_error','Operation requires status DRAFT');
+        }
+        */
+
+        if($purchase_item->getQuantityDelivered() > 0){
+            return Redirect::to("/purchases/{$purchase->id}")
+                ->with('flash_error','Cannot remove Item with deliveries');
+        }
+
+//        $input = array_map('intval',array($purchase_id, $purchase_item_id));
+        $input = array('purchase_id'=>$purchase_id,'purchase_item_id'=> $purchase_item_id);
+        $rules = array(
+            'purchase_id' => 'required|integer',
+            'purchase_item_id' => 'required|integer'
+        );
+
+
+        $validation = Validator::make($input, $rules);
+
+        if($validation->fails()){
+            return redirect()->back()
+                ->with('flash_error','Operation failed')
+                ->witherrors($validation->messages())
+                ->withinput();
+        } else {
+            $purchase_item->delete();
+
+            updatePurchaseStatus($purchase->id);
+
+            return redirect('purchases/'.$purchase_item->purchase_id)
+                ->with('flash_success','Operation success');
+        }
+    }
+
+//    Receive Modules within Purchase
+
 }
