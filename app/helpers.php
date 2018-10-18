@@ -189,6 +189,7 @@ function has_role($checkrole,$redirect=0){
     return false;
 }
 
+
 function return_net_price($price, $percent){
     if($percent == 0){ return $price; }
     $price = $price / $percent;

@@ -70,6 +70,33 @@ class OrderController extends Controller
             ->make(true);
     }
 
+    public function customersList(){
+        return view('orders.customersList');
+    }
+
+    public function getCustomerslist(){
+        $customers = Customer::Select(
+            array(
+                'customers.id',
+                'customers.customer_code',
+                'customers.customer_name'
+            ))
+            ->where('status','ACTIVE')
+            ->where('company_id',return_company_id())
+        ;
+
+        return Datatables::of($customers)
+            ->addColumn('action',function($customer){
+                return \Form::open(['method'=>'GET','action'=>'OrderController@create','class'=>'form']).'
+				<input type="hidden" name="id" value="'.$customer->id.'" />
+				<input type="submit" name="submit" value="Create" class="btn center-block" />
+		        '.\Form::close();
+            })
+            ->make(true);
+    }
+
+
+
 //    table of products need to be added to the order item
     public function anyDtAvailableProducts(){
         $products = Product::select(
@@ -93,7 +120,6 @@ class OrderController extends Controller
             '.\Form::close();
             })->make(true);
     }
-
 
     public function getPayments($id) {
         $order = Order::findOrFail($id);
@@ -125,7 +151,6 @@ class OrderController extends Controller
             'select_payment_terms', 'select_currency_codes', 'select_shipping_methods', 'select_shipping_terms', 'select_accounts',
             'order','customer'));
     }
-
 
     public function getRecords($id)
     {
@@ -173,9 +198,97 @@ EOT;
 
 
 
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $rules = array(
+            'id' => 'Required|integer',
+        );
+        $input = $request->all();
+        $validation = Validator::make($input, $rules);
+
+        if($validation->fails()){
+            return redirect()->back()
+                ->with('flash_error','Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+            $customer_id = $request->id;
+            $customer = Customer::find($customer_id);
+
+            if(!$customer){
+                return redirect()->back()
+                    ->with('flash_error','Customer not found');
+            }
+
+            if($customer->taxcode_id == ""){
+                return redirect()->back()
+                    ->with('flash_error','Customer has no Taxcode');
+            }
+
+            if($customer->contacts->count() == 0){
+                return redirect()->back()
+                    ->with('flash_error','Customer has no Contacts');
+            }
+
+            if($customer->credit > 0){
+                if($customer->getOutstandingMoney($customer->currency_code) > $customer->credit){
+                    if(!has_role('admin') && !has_role('company_admin')){
+                        return Redirect::to('orders/create')
+                            ->with('flash_error','Customer exceeded credit');
+                    }
+                }
+            }
+
+            $ship_to = "";
+
+            if($customer->inv_address1 != ""){
+                $ship_to .= $customer->inv_address1 . "\n";
+            }
+            if($customer->inv_address2 != ""){
+                $ship_to .= $customer->inv_address2 . "\n";
+            }
+            if($customer->inv_postal_code != ""){
+                $ship_to .= $customer->inv_postal_code . " ";
+            }
+            if($customer->inv_city != ""){
+                $ship_to .= $customer->inv_city . "\n";
+            }
+            if($customer->inv_province != ""){
+                $ship_to .= $customer->inv_province . ", ";
+            }
+            if($customer->inv_country != ""){
+                $ship_to .= $customer->inv_country . "\n";
+            }
+            $ship_to = trim($ship_to);
+
+            $order = New Order;
+            $order->status_id = 1;
+            $order->order_no = getNewOrderNo(return_company_id());
+            $order->customer_id = $customer_id;
+            $order->container_type = 1;
+            $customer_contact = $customer->contacts->first();
+            $order->customer_contact_id = $customer_contact->id;
+            $order->taxcode_id 	  = $customer->taxcode_id;
+            $order->currency_code = $customer->currency_code;
+            $order->delivery_address = $ship_to;
+            $order->billing_address  = $ship_to;
+            //$order->payment_terms = $customer->payment_terms;
+            $order->created_by  = Auth::user()->id;
+            $order->updated_by = Auth::user()->id;
+            $order->user_id = Auth::user()->id;
+            $order->order_date = date("Y-m-d");
+            $order->company_id = return_company_id();
+            $order->ff_name = $customer->ff_name;
+            $order->ff_contact = $customer->ff_contact;
+            $order->ff_email = $customer->ff_email;
+            $order->ff_phone = $customer->ff_phone;
+            $order->ff_fax = $customer->ff_fax;
+            $order->save();
+
+            $id = $order->id;
+            return redirect('orders/'.$id)
+                ->with('flash_success','Operation success');
+        }
     }
 
     public function postPayments(Request $request,  $id) {
@@ -457,7 +570,6 @@ EOT;
 
     /**
      * Store a newly created resource in storage.
-     *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
@@ -782,14 +894,6 @@ EOT;
                 ->with('flash_success','Operation success');
         }
     }
-
-
-
-
-
-
-
-
 
     /**
      * Remove the specified resource from storage.

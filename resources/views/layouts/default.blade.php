@@ -102,17 +102,15 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
     <!--=== JavaScript ===-->
 
-
     <script type="text/javascript" src="/assets/js/libs/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js"></script>
 
     <!--datepicker-->
-    <script type="text/javascript" src="/plugins/daterangepicker/moment.min.js"></script>
-    <script type="text/javascript" src="/plugins/daterangepicker/daterangepicker.js"></script>
-    <script type="text/javascript" src="/plugins/blockui/jquery.blockUI.min.js"></script>
+    {{--<script type="text/javascript" src="/plugins/daterangepicker/moment.min.js"></script>--}}
+    {{--<script type="text/javascript" src="/plugins/daterangepicker/daterangepicker.js"></script>--}}
+    {{--<script type="text/javascript" src="/plugins/blockui/jquery.blockUI.min.js"></script>--}}
 
     <!-- Forms -->
-    {{--<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>--}}
     <script type="text/javascript" src="/assets/js/libs/lodash.compat.min.js"></script>
     <script type="text/javascript" src="/plugins/uniform/jquery.uniform.min.js"></script>
     <script type="text/javascript" src="/plugins/select2/select2.min.js"></script>
@@ -523,11 +521,11 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
 <script src="//code.jquery.com/jquery.js"></script>
 <!-- DataTables -->
-<script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+{{--<script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>--}}
 <!-- Bootstrap JavaScript -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+{{--<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>--}}
 <!-- App scripts -->
-
+<script src="/bootstrap/js/bootstrap.min.js"></script>
 @stack('scripts')
 </body>
 </html>

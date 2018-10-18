@@ -4,37 +4,24 @@
 @section('page-crumbs')
 
     <ul id="breadcrumbs" class="breadcrumb">
-
         <li>
-
             <i class="icon-home"></i>
-
             <a href="/dashboard">Dashboard</a>
-
         </li>
 
         <li>
-
             <a href="/products" title="">Products</a>
-
         </li>
 
         <li class="current">
-
             <a href="#" title="">Create New Products</a>
-
         </li>
-
     </ul>
 
-
-
     <ul class="crumb-buttons">
-
         <li>
-
-            <a href="javascript:void(0);" title=""><i class="icon-calendar"></i><span><?=date('F d, Y \(\K\W:W) H:i:s');?></span></a>
-
+            <a href="javascript:void(0);" title=""><i class="icon-calendar"></i><span><?=date('F d, Y \(\K\W:W) H:i:s');?></span>
+            </a>
         </li>
     </ul>
 
@@ -387,8 +374,6 @@
                                             </div>
 
                                         </div>
-
-
 
                                         <div class="form-group">
 

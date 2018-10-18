@@ -35,7 +35,7 @@
         {{--</form>--}}
 
 
-{{--customer order details section--}}
+        {{--customer order details section--}}
         <div class="col-md-12">
             <div class="widget box">
                 <div class="widget-header">
@@ -82,10 +82,10 @@
                                 </div>
                                 <div class="form-group">
                                     @php
-                                    $commission_ro = "readonly";
-                                    if(has_role('admin') || has_role('company_admin')){
-                                        $commission_ro = "";
-                                    }
+                                        $commission_ro = "readonly";
+                                        if(has_role('admin') || has_role('company_admin')){
+                                            $commission_ro = "";
+                                        }
                                     @endphp
                                     <div class="row">
                                         <div class="col-md-2">
@@ -345,161 +345,161 @@
                             {{--line item tab--}}
                             <div class="tab-pane active" id="box_tab11">
                                 {!! Form::open(['method' => 'PATCH','action' => ['OrderController@update',$order->id], 'class'=>'table_form']) !!}
-                                 <table class="table table-hover table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th class="cell-tight">#</th>
-                                            <th>Product #</th>
-                                            <th class="cell-tight">P/U</th>
-                                            <th class="cell-tight">CBM</th>
-                                            <th class="cell-tight">Per Pallet</th>
-                                            <th class="cell-tight">Stock</th>
-                                            <th class="cell-tight">Qty</th>
-                                            <th class="cell-tight">Nt. Price</th>
-                                            <th class="cell-tight">Nt. Amount</th>
-                                            <th class="align-right" style="width: 90px;">
-                                                <a href="/orders/line_item_add/{{$order->id}}" class="btn"><i class="icon-plus-sign"></i></a>
-                                            </th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if(count($order->items)>0)
-                                                @php
-                                                    $order_items = $order->items;
-                                                @endphp
-                                                @foreach($order_items as $oi)
-                                                    <tr class="order-form-row">
-                                                        <td>
-                                                            {{ $oi->line_no }}
-                                                        </td>
-                                                        <td>
-                                                            <a href="/products/{{$oi->product->pluck('id')->implode(',')}}">{{$oi->product->pluck('product_code')->implode(',') }}</a>
-                                                            <table class="table_in_table">
-                                                                <tr>
-                                                                    <td>Product</td>
-                                                                    <td>{{ nl2br($oi->product->pluck('product_name')->implode(',') ) }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Remarks</td>
-                                                                    <td><textarea name="oi[{{$oi->id}}][remark]" style="height: 40px; background: none; width: 100%; padding: 3px !important; border: 1px solid #CCC;">{{ $oi->remark }}</textarea>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>CSC Code</td>
-                                                                    <td><input name="oi[{{$oi->id}}][commodity_code]" style="background: none; width: 100%; padding: 3px !important; border: 1px solid #CCC;" type="text" value="{{ $oi->commodity_code }}" /></td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                        <td>
-                                                            {{$oi->product->pluck('pack_unit')->implode(',') }}
-                                                        </td>
-                                                        <td>
-                                                            {{$oi->cbm }}
-                                                        </td>
-                                                        <td>
-                                                            @if($order->container->pluck('code')->implode(',') == '40hq')
-                                                                {{$oi->product->pluck('units_per_pallette_hq')->implode(',') }}
-                                                            @else
-                                                                {{$oi->product->pluck('units_per_pallette')->implode(',') }}
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            @php
-                                                                if ($oi->product->pluck('stock')->implode(',') == ""){
-                                                                    $stock = "0";
-                                                                }else{
-                                                                    $stock = $oi->product->pluck('stock')->implode(',');
-                                                                }
-                                                            @endphp
-                                                            {{ $stock }}
-                                                        </td>
-                                                        <td class="">
-                                                            <input name="oi[{{$oi->id}}][quantity]" style="width: 50px; padding: 3px !important; border: 1px solid #CCC;" type="text" value="{{ $oi->quantity }}" />
-                                                        </td>
-                                                        <td>
-                                                            <input name="oi[{{$oi->id}}][price]" style="width: 50px; padding: 3px !important; border: 1px solid #CCC;" type="text" value="{{ $oi->unit_price_net }}" />
-                                                            @if(has_role('admin'))
-                                                                <p style='font-size: 9px;'>{{ $oi->base_price }}</p>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            {{number_format($oi->amount_net,2)}}
-                                                        </td>
-                                                        <td>
+                                <table class="table table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="cell-tight">#</th>
+                                        <th>Product #</th>
+                                        <th class="cell-tight">P/U</th>
+                                        <th class="cell-tight">CBM</th>
+                                        <th class="cell-tight">Per Pallet</th>
+                                        <th class="cell-tight">Stock</th>
+                                        <th class="cell-tight">Qty</th>
+                                        <th class="cell-tight">Nt. Price</th>
+                                        <th class="cell-tight">Nt. Amount</th>
+                                        <th class="align-right" style="width: 90px;">
+                                            <a href="/orders/line_item_add/{{$order->id}}" class="btn"><i class="icon-plus-sign"></i></a>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if(count($order->items)>0)
+                                        @php
+                                            $order_items = $order->items;
+                                        @endphp
+                                        @foreach($order_items as $oi)
+                                            <tr class="order-form-row">
+                                                <td>
+                                                    {{ $oi->line_no }}
+                                                </td>
+                                                <td>
+                                                    <a href="/products/{{$oi->product->pluck('id')->implode(',')}}">{{$oi->product->pluck('product_code')->implode(',') }}</a>
+                                                    <table class="table_in_table">
+                                                        <tr>
+                                                            <td>Product</td>
+                                                            <td>{{ nl2br($oi->product->pluck('product_name')->implode(',') ) }}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Remarks</td>
+                                                            <td><textarea name="oi[{{$oi->id}}][remark]" style="height: 40px; background: none; width: 100%; padding: 3px !important; border: 1px solid #CCC;">{{ $oi->remark }}</textarea>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>CSC Code</td>
+                                                            <td><input name="oi[{{$oi->id}}][commodity_code]" style="background: none; width: 100%; padding: 3px !important; border: 1px solid #CCC;" type="text" value="{{ $oi->commodity_code }}" /></td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    {{$oi->product->pluck('pack_unit')->implode(',') }}
+                                                </td>
+                                                <td>
+                                                    {{$oi->cbm }}
+                                                </td>
+                                                <td>
+                                                    @if($order->container->pluck('code')->implode(',') == '40hq')
+                                                        {{$oi->product->pluck('units_per_pallette_hq')->implode(',') }}
+                                                    @else
+                                                        {{$oi->product->pluck('units_per_pallette')->implode(',') }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @php
+                                                        if ($oi->product->pluck('stock')->implode(',') == ""){
+                                                            $stock = "0";
+                                                        }else{
+                                                            $stock = $oi->product->pluck('stock')->implode(',');
+                                                        }
+                                                    @endphp
+                                                    {{ $stock }}
+                                                </td>
+                                                <td class="">
+                                                    <input name="oi[{{$oi->id}}][quantity]" style="width: 50px; padding: 3px !important; border: 1px solid #CCC;" type="text" value="{{ $oi->quantity }}" />
+                                                </td>
+                                                <td>
+                                                    <input name="oi[{{$oi->id}}][price]" style="width: 50px; padding: 3px !important; border: 1px solid #CCC;" type="text" value="{{ $oi->unit_price_net }}" />
+                                                    @if(has_role('admin'))
+                                                        <p style='font-size: 9px;'>{{ $oi->base_price }}</p>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    {{number_format($oi->amount_net,2)}}
+                                                </td>
+                                                <td>
 														<span class="btn-group">
             												<a class="btn btn-block remove-record" data-toggle="modal" data-target="#deleteLineItemModal" data-item="{{ $oi->id }}" data-item2="{{ nl2br($oi->product->pluck('product_name')->implode(',') ) }}"><i class="icon-trash"></i></a>
 
             												<a href="/orders/update_line_item/{{$oi->id}}" class="btn btn-block"><i class="icon-edit"></i></a>
         												</span>
-                                                        </td>
+                                                </td>
 
-                                                    </tr>
-                                                @endforeach
-                                                <tr>
-                                                    <td colspan="9" style="font-size: 17px">{{ count($order->items) }} Line Items Total</td>
-                                                    <td>
-                                                        <input type="hidden" name="action" value="update_ois" />
-                                                        <input type="submit" value="SAVE" class="btn btn-success pull-right">
-                                                    </td>
-                                                </tr>
-                                                @if($order->discount > 0)
-                                                    <tr>
-                                                        <td colspan="8" class="align-right">Discount</td>
-                                                        <td class="align-right">{{ $order->discount }}%</td>
-                                                        <td></td>
-                                                    </tr>
-                                                @endif
+                                            </tr>
+                                        @endforeach
+                                        <tr>
+                                            <td colspan="9" style="font-size: 17px">{{ count($order->items) }} Line Items Total</td>
+                                            <td>
+                                                <input type="hidden" name="action" value="update_ois" />
+                                                <input type="submit" value="SAVE" class="btn btn-success pull-right">
+                                            </td>
+                                        </tr>
+                                        @if($order->discount > 0)
+                                            <tr>
+                                                <td colspan="8" class="align-right">Discount</td>
+                                                <td class="align-right">{{ $order->discount }}%</td>
+                                                <td></td>
+                                            </tr>
+                                        @endif
 
-                                                @if($order->discount > 0)
-                                                    <tr>
-                                                        <td colspan="8" class="align-right">Sub Total Net</td>
-                                                        <td class="align-right">{{ $order->sub_total_net }}</td>
-                                                        <td></td>
-                                                    </tr>
-                                                @else
-                                                    <tr>
-                                                        <td colspan="8" class="align-right">Sub Total Net</td>
-                                                        <td class="align-right">{{ $order->sub_total_net }}</td>
-                                                        <td></td>
-                                                    </tr>
-                                                @endif
+                                        @if($order->discount > 0)
+                                            <tr>
+                                                <td colspan="8" class="align-right">Sub Total Net</td>
+                                                <td class="align-right">{{ $order->sub_total_net }}</td>
+                                                <td></td>
+                                            </tr>
+                                        @else
+                                            <tr>
+                                                <td colspan="8" class="align-right">Sub Total Net</td>
+                                                <td class="align-right">{{ $order->sub_total_net }}</td>
+                                                <td></td>
+                                            </tr>
+                                        @endif
 
 
-                                                @if($order->shipping_cost > 0)
-                                                    <tr>
-                                                        <td colspan="8" class="align-right">+ Freight Charge</td>
-                                                        <td class="align-right">{{ number_format($order->shipping_cost,2) }}</td>
-                                                        <td></td>
-                                                    </tr>
-                                                @endif
-                                                @if($order->taxcode->percent > 0)
-                                                    <tr>
-                                                        <td colspan="8" class="align-right">{{ $order->taxcode->name }}</td>
-                                                        <td class="align-right">{{ $order->tax_total }}</td>
-                                                        <td></td>
-                                                    </tr>
-                                                @endif
-                                                <tr>
-                                                    <td colspan="8" class="align-right">Total {{ $order->currency_code }}</td>
-                                                    <td class="align-right">{{ $order->total_gross }}</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="8" class="align-right">Paid til now</td>
-                                                    <td class="align-right">{{ $order->getPaidTillNow() }}</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="8" class="align-right">Open Balance</td>
-                                                    <td class="align-right">{{ $order->getOpenBalance() }}</td>
-                                                    <td></td>
-                                                </tr>
-                                            @else
-                                                <tr>
-                                                    <td colspan="10">Nothing found</td>
-                                                </tr>
-                                            @endif
-                                        </tbody>
-                                    </table>
+                                        @if($order->shipping_cost > 0)
+                                            <tr>
+                                                <td colspan="8" class="align-right">+ Freight Charge</td>
+                                                <td class="align-right">{{ number_format($order->shipping_cost,2) }}</td>
+                                                <td></td>
+                                            </tr>
+                                        @endif
+                                        @if($order->taxcode->percent > 0)
+                                            <tr>
+                                                <td colspan="8" class="align-right">{{ $order->taxcode->name }}</td>
+                                                <td class="align-right">{{ $order->tax_total }}</td>
+                                                <td></td>
+                                            </tr>
+                                        @endif
+                                        <tr>
+                                            <td colspan="8" class="align-right">Total {{ $order->currency_code }}</td>
+                                            <td class="align-right">{{ $order->total_gross }}</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="8" class="align-right">Paid til now</td>
+                                            <td class="align-right">{{ $order->getPaidTillNow() }}</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="8" class="align-right">Open Balance</td>
+                                            <td class="align-right">{{ $order->getOpenBalance() }}</td>
+                                            <td></td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td colspan="10">Nothing found</td>
+                                        </tr>
+                                    @endif
+                                    </tbody>
+                                </table>
                                 {{--</form>--}}
 
                                 {!! Form::close() !!}
@@ -512,32 +512,34 @@
     </div> <!-- /.row -->
 
     {{--bootstrap modal--}}
-    {{ Form::open(['method' => 'DELETE', 'action' => ['OrderController@lineItemDelete', $oi->id], 'id'=>'lineitem' ]) }}
+    @if(count($order->items)>0)
+        {{ Form::open(['method' => 'DELETE', 'action' => ['OrderController@lineItemDelete', $oi->id], 'id'=>'lineitem' ]) }}
 
-    <div class="modal fade" id="deleteLineItemModal" tabindex="-1" role="dialog" aria-labelledby="deleteLineItemModal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body edit-content">
-                    <div class="text-center" id="lineitemtext">Are you sure you want to delete this line item? </div>
-{{--                    <input id="email" name="email" type="text" value="{{ request.form.email }}" />--}}
-                </div>
-                <div class="modal-footer">
-                    {{--<a href="/orders/line-item-delete/{{$oi->id}}" id="lineitem"><button type="button" class="btn btn-danger pull-left">Yes, I am sure</button></a>--}}
-                    {{ Form::submit('Delete', ['class' => 'btn btn-danger']) }}
-{{--                    <a href="{{ URL::route('orders/line-item-delete/'.$oi->id) }}" id="lineitem"><button type="button" class="btn btn-danger pull-left">Yes, I am sure</button></a>--}}
-                    {{--<a href="{!! route('lineItem.delete', ['item' => $oi->id]) !!}" id="lineitem"><button type="button" class="btn btn-danger pull-left">Yes, I am sure</button></a>--}}
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">No, not today</button>
+        <div class="modal fade" id="deleteLineItemModal" tabindex="-1" role="dialog" aria-labelledby="deleteLineItemModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body edit-content">
+                        <div class="text-center" id="lineitemtext">Are you sure you want to delete this line item? </div>
+                        {{--                    <input id="email" name="email" type="text" value="{{ request.form.email }}" />--}}
+                    </div>
+                    <div class="modal-footer">
+                        {{--<a href="/orders/line-item-delete/{{$oi->id}}" id="lineitem"><button type="button" class="btn btn-danger pull-left">Yes, I am sure</button></a>--}}
+                        {{ Form::submit('Delete', ['class' => 'btn btn-danger']) }}
+                        {{--                    <a href="{{ URL::route('orders/line-item-delete/'.$oi->id) }}" id="lineitem"><button type="button" class="btn btn-danger pull-left">Yes, I am sure</button></a>--}}
+                        {{--<a href="{!! route('lineItem.delete', ['item' => $oi->id]) !!}" id="lineitem"><button type="button" class="btn btn-danger pull-left">Yes, I am sure</button></a>--}}
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">No, not today</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    {{ Form::close() }}
+        {{ Form::close() }}
+    @endif
 
 
 
@@ -551,7 +553,6 @@
 
 @push('scripts')
     <script>
-
         $(document).on("click", ".remove-record", function () {
             var itemid= $(this).attr('data-item');
             var itemname= $(this).attr('data-item2');
@@ -562,8 +563,5 @@
             // $("#lineitemtext").attr("href","/orders/line-item-delete/"+itemid)
 
         });
-
-
-
     </script>
 @endpush

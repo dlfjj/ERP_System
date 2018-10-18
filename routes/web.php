@@ -164,4 +164,6 @@ Route::get('orders/line_item_add/{id}/getdata', 'OrderController@anyDtAvailableP
 Route::post('orders/line_item_add/','OrderController@postLineItemAdd')->name('add_line_items');
 
 Route::post('orders/records','OrderController@postRecord');
+Route::get('orders/customersList','OrderController@customersList');
+Route::get('orders/customersList/getdata', 'OrderController@getCustomerslist')->name('cusomtersList/getdata');
 Route::resource('orders', 'OrderController');

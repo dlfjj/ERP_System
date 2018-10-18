@@ -23,15 +23,13 @@
             <a href="javascript:void(0);" title=""><i class="icon-calendar"></i><span><?=date('F d, Y \(\K\W:W) H:i:s');?></span></a>
         </li>
     </ul>
-
-
 @stop
 
 @section('page-header')
     <div class="page-header">
         <div class="page-title">
             @if(has_role('orders_edit'))
-                <a class="btn btn-success btn-lg" href="/orders/create"><i class="icon-plus-sign"></i> New Order</a>
+                <a class="btn btn-success" href="/orders/customersList"><i class="icon-plus-sign"></i> New Order</a>
             @endif
         </div>
 

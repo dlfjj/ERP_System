@@ -28,26 +28,26 @@ $uri_segment = Request::segment(2);
         $sync_status = "<img src='/img/circle_red.png' title='Unknown Sync Status' width='24px' />";
     }
     ?>
-    @if(return_company_id()  == 1)
-        @if(has_role('orders_edit'))
-            @if(has_role('orders_can_sync'))
-                @if($order->erp_sync_status == "NEVER" || $order->erp_sync_status == "FAILED")
-                    <li>
-                        <a href="/erp/sync/{{$order->id}}" class="" title=""><i class="icon-retweet"></i><span>ERP Sync</span></a>
-                    </li>
-                @else
-                    @if(has_role('admin'))
-                        <li>
-                            <a href="/erp/reset/{{$order->id}}" class="" title=""><i class="icon-retweet"></i><span>ERP Reset</span></a>
-                        </li>
-                    @endif
-                @endif
-            @endif
-        @endif
-        <li>
-            <a href="/orders/change-customer/{{$order->id}}" class="" title=""><i class="icon-pencil"></i><span>Change Customer</span></a>
-        </li>
-    @endif
+    {{--@if(return_company_id()  == 1)--}}
+        {{--@if(has_role('orders_edit'))--}}
+            {{--@if(has_role('orders_can_sync'))--}}
+                {{--@if($order->erp_sync_status == "NEVER" || $order->erp_sync_status == "FAILED")--}}
+                    {{--<li>--}}
+                        {{--<a href="/erp/sync/{{$order->id}}" class="" title=""><i class="icon-retweet"></i><span>ERP Sync</span></a>--}}
+                    {{--</li>--}}
+                {{--@else--}}
+                    {{--@if(has_role('admin'))--}}
+                        {{--<li>--}}
+                            {{--<a href="/erp/reset/{{$order->id}}" class="" title=""><i class="icon-retweet"></i><span>ERP Reset</span></a>--}}
+                        {{--</li>--}}
+                    {{--@endif--}}
+                {{--@endif--}}
+            {{--@endif--}}
+        {{--@endif--}}
+        {{--<li>--}}
+            {{--<a href="/orders/change-customer/{{$order->id}}" class="" title=""><i class="icon-pencil"></i><span>Change Customer</span></a>--}}
+        {{--</li>--}}
+    {{--@endif--}}
     <li class="dropdown">
         <a href="#" title="" data-toggle="dropdown"><i class="icon-print"></i><span>Printing</span><i class="icon-angle-down left-padding"></i></a>
         <ul class="dropdown-menu">
