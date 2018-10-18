@@ -19400,6 +19400,51 @@ function toComment(sourceMap) {
 
 /***/ }),
 
+/***/ "./node_modules/datatables.net-dt/js/dataTables.dataTables.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*! DataTables styling integration
+ * ©2018 SpryMedia Ltd - datatables.net/license
+ */
+
+(function( factory ){
+	if ( true ) {
+		// AMD
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__("./node_modules/jquery/dist/jquery.js"), __webpack_require__("./node_modules/datatables.net/js/jquery.dataTables.js")], __WEBPACK_AMD_DEFINE_RESULT__ = (function ( $ ) {
+			return factory( $, window, document );
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}
+	else if ( typeof exports === 'object' ) {
+		// CommonJS
+		module.exports = function (root, $) {
+			if ( ! root ) {
+				root = window;
+			}
+
+			if ( ! $ || ! $.fn.dataTable ) {
+				// Require DataTables, which attaches to jQuery, including
+				// jQuery if needed and have a $ property so we can access the
+				// jQuery object that is used
+				$ = require('datatables.net')(root, $).$;
+			}
+
+			return factory( $, root, root.document );
+		};
+	}
+	else {
+		// Browser
+		factory( jQuery, window, document );
+	}
+}(function( $, window, document, undefined ) {
+
+return $.fn.dataTable;
+
+}));
+
+
+/***/ }),
+
 /***/ "./node_modules/datatables.net/js/jquery.dataTables.js":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -86734,12 +86779,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_bootstrap_vue__ = __webpack_require__("./node_modules/bootstrap-vue/es/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__("./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_datatables_net__ = __webpack_require__("./node_modules/datatables.net/js/jquery.dataTables.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_datatables_net___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_datatables_net__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_select2__ = __webpack_require__("./node_modules/select2/dist/js/select2.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_select2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_select2__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_ui_widgets_datepicker_js__ = __webpack_require__("./node_modules/jquery-ui/ui/widgets/datepicker.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_jquery_ui_ui_widgets_datepicker_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_jquery_ui_ui_widgets_datepicker_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_select2__ = __webpack_require__("./node_modules/select2/dist/js/select2.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_select2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_select2__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_ui_widgets_datepicker_js__ = __webpack_require__("./node_modules/jquery-ui/ui/widgets/datepicker.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_jquery_ui_ui_widgets_datepicker_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_jquery_ui_ui_widgets_datepicker_js__);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -86748,7 +86791,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  */
 
 __webpack_require__("./resources/assets/js/bootstrap.js");
-
+__webpack_require__("./node_modules/datatables.net-dt/js/dataTables.dataTables.js")();
 window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 
 /**
@@ -86756,7 +86799,6 @@ window.Vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
 
 
 

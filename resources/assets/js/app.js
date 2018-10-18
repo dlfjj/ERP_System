@@ -6,7 +6,6 @@
  */
 
 require('./bootstrap');
-
 window.Vue = require('vue');
 
 
@@ -18,7 +17,6 @@ window.Vue = require('vue');
  */
 import BootstrapVue from 'bootstrap-vue';
 import $ from 'jquery';
-import 'datatables.net';
 import 'select2';
 
 

@@ -30,13 +30,15 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
 
     <!-- jQuery UI -->
-    <!--<link href="plugins/jquery-ui/jquery-ui-1.10.2.custom.css" rel="stylesheet" type="text/css" />-->
+    <link href="plugins/jquery-ui/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 9]>
-    <link rel="stylesheet" type="text/css" href="plugins/jquery-ui/jquery.ui.1.10.2.ie.css"/>
+    <link rel="stylesheet" type="text/css" href="plugins/jquery-ui/jquery.ui.1.10.3.ie.css"/>
     <![endif]-->
 
     <!-- Bootstrap -->
 {{--<link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />--}}
+    <link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+
     <!-- Theme -->
     {{--<link href="/assets/css/main.css" rel="stylesheet" type="text/css" />--}}
     <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
@@ -45,8 +47,6 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <link href="/assets/css/icons.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/assets/css/fontawesome/font-awesome.min.css">
 
-
-    {{--<link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />--}}
     <script src="{{asset('/plugins/chart/Chart.min.js')}}"></script>
     <!--[if IE 7]>
     <link rel="stylesheet" href="/assets/css/fontawesome/font-awesome-ie7.min.css">
@@ -57,11 +57,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <![endif]-->
 
     <!-- datatable styles -->
-    {{--<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">--}}
-    <link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
-    {{--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">--}}
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
-    {{--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">--}}
+    <link rel="stylesheet" type="text/css" href="/plugins/datatables/datatables.min.css">
 
 
 
@@ -155,9 +151,6 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <!--[if lt IE 9]>
     <script type="text/javascript" src="/plugins/flot/excanvas.min.js"></script>
     <![endif]-->
-
-
-
 
     <!-- Noty -->
     <script type="text/javascript" src="/plugins/noty/jquery.noty.js"></script>
@@ -515,17 +508,8 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         $("#dvLoading").hide();
     })
 </script>
-
-<script src="{{ asset('js/app.js') }}" defer></script>
-
-
-<script src="//code.jquery.com/jquery.js"></script>
-<!-- DataTables -->
-{{--<script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>--}}
-<!-- Bootstrap JavaScript -->
-{{--<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>--}}
-<!-- App scripts -->
 <script src="/bootstrap/js/bootstrap.min.js"></script>
+<script src="{{ asset('js/app.js') }}"></script>
 @stack('scripts')
 </body>
 </html>
