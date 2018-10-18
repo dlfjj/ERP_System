@@ -54,14 +54,14 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="widget-header">
+                {{--<div class="widget-header">--}}
                     <div class="panel-heading"><i class="icon-reorder"></i> Order Index</div>
                     {{--<div class="toolbar no-padding">--}}
                         {{--<div class="btn-group">--}}
                             {{--<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
                         {{--</div>--}}
                     {{--</div>--}}
-                </div>
+                {{--</div>--}}
                 <div class="panel-body">
                     {{--<table class="table table-striped table-bordered table-hover datatable" data-dataTable='{"bServerSide": true, "sAjaxSource": "/orders/dt-index", "aaSorting": [[ 0, "desc" ]]}'>--}}
                     <table class="table table-hover table-bordered table-striped " id="orders-table" style="width: 100%;">

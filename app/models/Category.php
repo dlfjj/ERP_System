@@ -3,10 +3,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Baum\Node;
 /**
 * Category
 */
-class Category extends Model {
+class Category extends Node {
 
   /**
    * Table name.

@@ -30,6 +30,9 @@
             @if(has_role('expenses_edit'))
                 <a class="btn btn-success btn" data-toggle="modal" href="#modal_expense"><i class="icon-plus-sign"></i> Add Expense</a>
             @endif
+            @if(has_role('expenses_edit'))
+                <a class="btn btn-info btn"><i class="icon-plus-sign"></i> Add Income</a>
+            @endif
         </div>
         <ul class="page-stats">
             <li>
@@ -47,11 +50,8 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="widget-header">
                     <div class="panel-heading"><i class="icon-reorder"></i> Expense Index</div>
-                </div>
                 <div class="panel-body">
-                    {{--<table class="table table-striped table-bordered table-hover table-chooser datatable" data-dataTable='{"bServerSide": true, "sAjaxSource": "/expenses/dt-index", "aaSorting": [[ 0, "desc" ]]}'>--}}
                     <table class="table table-striped table-bordered table-hover table-chooser" id="expense_table">
                         <thead>
                         <tr>
@@ -96,10 +96,14 @@
                                     {{ Form::select('bank_account', $select_bank_accounts, "", array("class"=>"form-control")) }}
                                     <span class="help-block">Account</span>
                                 </div>
+                                {{--<div class="col-md-6">--}}
+                                    {{--<div style="text-overflow: ellipsis;">--}}
+                                        {{--{{ Form::select('account_id', $account_name,null, array("class"=>"dropdown-toggle form-control",'placeholder'=>'Please select ...')) }}--}}
+                                    {{--</div>--}}
+                                    {{--<span class="help-block">Account Categories</span>--}}
+                                {{--</div>--}}
                                 <div class="col-md-6">
-                                    <div style="text-overflow: ellipsis;">
-                                        {{ Form::select('account_id', $account_name,null, array("class"=>"dropdown-toggle form-control",'placeholder'=>'Please select ...')) }}
-                                    </div>
+                                    {!! $select_accounts !!}
                                     <span class="help-block">Account Categories</span>
                                 </div>
                             </div>
@@ -149,14 +153,12 @@
         $(function() {
             $('#expense_table').DataTable({
                 "oLanguage": {
-
                     "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
                     "oPaginate": {
                         "sNext": "<i class='icon-chevron-right icon-large'></i>",
                         "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
                         // "sFirst ": "<i class='icon-backward icon-large'></i>"
                     }
-
                 },
                 "pagingType": "full_numbers",
                 processing: true,

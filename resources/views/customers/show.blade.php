@@ -43,8 +43,7 @@
     <ul class="crumb-buttons">
 
     <!-- @if(has_role('customers_pricelist')) -->
-    <!-- /customer/getPricelist/{{ $customer->id }} -->
-        <li><a href="#" class="" title=""><i class="icon-table"></i><span>Pricelist</span></a></li>
+        <li><a href="/customers/getPricelist/{{ $customer->id }}"  class="" title=""><i class="icon-table"></i><span>Pricelist</span></a></li>
 
     <!-- @endif -->
 
@@ -91,7 +90,7 @@
 
                         <span>Outstandings</span>
 
-                        <h3>{{ $outstanding_currency }} {{ number_format($outstandings,2) }}</h3>
+                        <h3>{{ $outstanding_currency[0] }} {{ number_format($outstandings,2) }}</h3>
 
                     </div>
 
@@ -103,7 +102,7 @@
 
                         <span>Overdue</span>
 
-                        <h3>{{ $overdue_currency }} {{ number_format($overdue,2) }}</h3>
+                        <h3>{{ $overdue_currency[0] }} {{ number_format($overdue,2) }}</h3>
 
                     </div>
 

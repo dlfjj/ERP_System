@@ -85,6 +85,31 @@ class PurchaseController extends Controller
             })->make(true);
     }
 
+    //    before creating a new purchase, you will get a list of vendor
+    public function vendorsList() {
+        return view('purchases.vendorsList');
+    }
+
+    public function getVendorslist(){
+        $vendors = Vendor::Select(
+            array(
+                'vendors.id',
+                'vendors.company_name'
+            ))
+            ->where('vendors.company_id',return_company_id())
+            ->where('status','Active')
+        ;
+
+        return Datatables::of($vendors)
+            ->addColumn('action',function($vendor){
+                return \Form::open(['method'=>'GET','action'=>'PurchaseController@create','class'=>'form']).'
+				<input type="hidden" name="id" value="'.$vendor->id.'" />
+				<input type="submit" name="submit" value="Create" class="btn center-block" />
+		        '.\Form::close();
+            })
+            ->make(true);
+    }
+
 
     public function getReceive($id) {
         $purchase = Purchase::findOrFail($id);
@@ -270,9 +295,51 @@ EOT;
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+
+
+
+
+//    create new purchase
+    public function create(Request $request)
     {
-        //
+        $rules = array(
+            'id' => 'Required|integer'
+        );
+        $input = $request->all();
+        $validation = Validator::make($input, $rules);
+
+        if($validation->fails()){
+            return redirect('purchases/vendorsList')
+                ->with('flash_error','Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+            $vendor_id = $request->id;
+            $vendor = Vendor::findOrFail($vendor_id);
+
+            if($vendor->taxcode_id == ""){
+                return redirect('purchases/vendorsList')
+                    ->with('flash_error','Illegal Taxcode');
+            }
+
+            $purchase = New Purchase();
+            $purchase->purchase_no = getNewPurchaseNo(return_company_id());
+            $purchase->vendor_id   = $vendor_id;
+            $purchase->status      = 'Draft';
+            $purchase->currency_code = $vendor->currency_code;
+            $purchase->payment_terms = $vendor->payment_terms;
+            $purchase->created_by  = Auth::user()->id;
+            $purchase->updated_by = Auth::user()->id;
+            $purchase->user_id = Auth::user()->id;
+            $purchase->date_placed = date("Y-m-d");
+            $purchase->taxcode_id = $vendor->taxcode_id;
+            $purchase->company_id = return_company_id();
+            $purchase->save();
+
+            $id = $purchase->id;
+            return redirect('purchases/'.$id)
+                ->with('flash_success','Operation success');
+        }
     }
 
     /**

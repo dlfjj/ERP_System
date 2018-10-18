@@ -36,6 +36,8 @@ Route::group(['prefix' => 'customers'], function () {
         Route::patch('/{contactId}', 'CustomerController@updateContact');
         Route::delete('/{contactId}','CustomerController@deleteContact');
     });
+    Route::get('/getPricelist/{id}','CustomerController@getPricelist');
+
 
     Route::group(['prefix' => '{id}/addresses'], function () {
         Route::post('/add','CustomerController@addAddress');
@@ -93,8 +95,10 @@ Route::group(['prefix' => 'products'], function () {
 
     Route::get('/getdata', 'ProductController@getProductData')->name('products/getdata');
     Route::get('/','ProductController@index');
+    Route::get('/create','ProductController@createNew');
     Route::get('/{id}','ProductController@show');
-    Route::post('/{id}','ProductController@update');
+    Route::patch('/{id}','ProductController@update');
+    Route::post('','ProductController@store');
 
     Route::get('/getSync/{id}', 'ProductController@getSync');
 });
@@ -135,6 +139,11 @@ Route::get('purchases/receive/{id}', 'PurchaseController@getReceive')->name('pur
 Route::post('purchases/receive/{id}', 'PurchaseController@postReceive')->name('purchase.postReceive');
 Route::get('purchases/payments/{id}', 'PurchaseController@getPayments')->name('purchase.getPayments');
 Route::get('purchases/records/{id}', 'PurchaseController@getRecords')->name('purchase.getRecords');
+
+Route::get('purchases/vendorsList','PurchaseController@vendorsList');
+Route::get('purchases/vendorsList/getdata', 'PurchaseController@getVendorslist')->name('vendorsList/getdata');
+
+
 Route::resource('purchases','PurchaseController');
 
 

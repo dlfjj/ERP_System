@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Components\Exceptions\StatusChangeDeniedException;
 use App\Components\Product\Exceptions\MPNAlreadyExistExceptions;
 use App\Components\Product\Services\ProductService;
+use App\Models\PaymentTerm;
+use App\Models\Taxcode;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use Throwable;
@@ -27,6 +29,8 @@ use App\Models\ProductDownload;//import product Downloads
 use App\Models\WarehouseTransaction;//import warehouse transactions
 use App\Models\Company;//import company model
 use App\Models\ProductImage;//import product image
+
+use Illuminate\Support\Facades\DB;//eloquent query builder
 
 class ProductController extends Controller {
 
@@ -60,48 +64,14 @@ class ProductController extends Controller {
 
     }
 
-//    public function getAttributes($id) {
-//        $product = Product::findOrFail($id);
-//        $attributes = ProductAttribute::where('product_id',$product->id)->orderBy('group','DESC')->orderBy('name','ASC')->get();
-//        return view('products.attributes',compact('product','attributes'));
-        // $this->layout->content = View::make('products.attributes')
-        //     ->with('product',$product)
-        // ;
-//    }
-
-//    public function getPrices($id,$product_customer_id=null) {
-//        $product = Product::findOrFail($id);
-//
-//        if($product_customer_id != null){
-//            $product_customer = ProductCustomer::findOrFail($product_customer_id);
-//        } else {
-//            $product_customer = null;
-//        }
-//
-//        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-//        $select_customers = Customer::where('company_id',return_company_id())
-//            ->where('status','=','ACTIVE')->orderBy('customer_name', 'asc')->pluck('customer_name','id');
-//
-//        $select_groups   = CustomerGroup::where('company_id',return_company_id())
-//            ->pluck('group','id')
-//        ;
-//        $group_prices = ProductPrice::where('product_id',$product->id)->where('company_id',return_company_id())->orderBy('customer_group_id','DESC')->get();
-//
-//        return view('products.prices',compact('product','product_customer','select_groups','select_customers','select_currency_codes','group_prices'));
-//    }
-
-
-
 
     public function show($id)
     {
 //        $product = Product::findOrFail($id);
 //
-//        return $product->priceOverrides->sortBy('customer_id')->first();
-//
-//        foreach($product->priceOverrides->sortBy('customer_id') as $customer){
-//        return $customer->customer;
-//    }
+//        $tree = Category::all()->toHierarchy();
+//        $select_categories = printSelect($tree,$product->category_id);
+
         $contents = $this->productService->getProductById($id);
 
         return view('products.show', $contents);
@@ -182,6 +152,77 @@ class ProductController extends Controller {
     return view('products.export');
         // $this->layout->content = View::make('products.export');
 	}
+
+    public function store(Request $request){
+
+//        use for validation
+        $input = $request->all();
+        $rules = array(
+//            'id' => 'required|integer|digits_between:1,6',
+            'category_id' => 'required|integer|digits_between:1,6',
+//            'description' => 'between:1,5000',
+//            'packing_instructions' => 'between:1,5000',
+//            'package' => 'between:1,50',
+//            'uom' => 'between:1,50',
+//            'pack_unit' => 'required|integer|digits_between:1,6|min:1',
+//            'unit_mc' => 'integer|digits_between:1,6',
+//            'unit_ic' => 'integer|digits_between:1,6',
+//            'ic_per_mc' => 'integer|digits_between:1,6',
+//            'net_weight_unit' => 'numeric|digits_between:1,50',
+//            'gross_weight_unit' => 'numeric|digits_between:1,50',
+//            'origin' => 'between:1,50',
+//            'commodity_code' => 'between:1,50',
+//            'sales_moq' => 'numeric|digits_between:1,6',
+//            'sales_currency_code' => 'alpha|between:3,3',
+//            'sales_price' => 'numeric|digits_between:1,12'
+        );
+        $validation = Validator::make($input, $rules);
+        if($validation->fails()) {
+            return redirect()->back()
+                ->with('flash_error', 'Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        }else{
+            if($input['mpn'] != ""){
+                $dupe = Product::where('mpn',$input['mpn'])
+                    ->where('company_id',return_company_id())
+                    ->first();
+                if($dupe){
+                    return \redirect()->back()
+                        ->with('flash_error','MPN already exists')
+                        ->withErrors($validation->Messages())
+                        ->withInput();
+                }
+            }
+
+//            I take off parent id check, if that cause problem in the future
+            //initiate new product
+            $product = New Product;
+            $product->status = "Draft";
+            $product->created_by = Auth::user()->id;
+            $product->updated_by = Auth::user()->id;
+            $product->category_id = $request->category_id;
+            $product->company_id = return_company_id();
+            //get ride of token and id field because the database would generate a new id for new product
+            foreach($request->except('_token','id') as $key => $product_attribute){
+
+                if (is_null($product_attribute)) {
+                    $product_attribute = "";
+                }
+                $product->setAttribute($key,$product_attribute);
+            }
+            if(return_company_id() == 1){
+                $product->company_sync = 1;
+            }
+            $product->save();
+            $new_product = DB::table('products')->orderBy('created_at', 'desc')->first();
+//            $product->save();
+
+            return Redirect::to('products/'.$new_product->id)
+                ->with('flash_success','Operation success');
+
+        }
+    }
 
 	public function postExport(){
 			$report = Input::get('action');
@@ -476,22 +517,43 @@ class ProductController extends Controller {
 	$sheet->calculateColumnWidths();
 	}
 
-	public function postCreate() {
-        $product = New Product;
-        $product->status = "Draft";
-        $product->created_by = Auth::user()->id;
-        $product->updated_by = Auth::user()->id;
-        $product->category_id = 1;
-        $product->company_id = return_company_id();
-        if(return_company_id() == 1){
-            $product->company_sync = 1;
-        }
-        $product->save();
+//	public function postCreate() {
+//        $product = New Product;
+//        $product->status = "Draft";
+//        $product->created_by = Auth::user()->id;
+//        $product->updated_by = Auth::user()->id;
+//        $product->category_id = 1;
+//        $product->company_id = return_company_id();
+//        if(return_company_id() == 1){
+//            $product->company_sync = 1;
+//        }
+//        $product->save();
+//
+//        $id = $product->id;
+//        return Redirect::to('products/'.$id)
+//            ->with('flash_success','Operation success');
+//	}
 
-        $id = $product->id;
-        return Redirect::to('products/show/'.$id)
-            ->with('flash_success','Operation success');
-	}
+	public function createNew(){
+//        work on this one
+        $select_groups = CustomerGroup::where('company_id',return_company_id())->pluck('group','id');
+        $company_id = return_company_id();
+        $tree = Category::all()->toHierarchy();
+        $category_id = 34;
+        $select_categories = printSelect($tree,$category_id);
+        $select_taxcodes  	   = Taxcode::orderBy('sort_no', 'asc')->pluck('name','id');
+
+        $select_payment_terms  = PaymentTerm::orderBy('name', 'asc')->pluck('name','name');
+        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+        $select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
+        $select_manufacturer = ValueList::where('uid','=','manufacturer')->orderBy('name', 'asc')->pluck('name','name');
+        $select_package = ValueList::where('uid','=','package')->orderBy('name', 'asc')->pluck('name','name');
+        $select_origin = ValueList::where('uid','=','origin')->orderBy('name', 'asc')->pluck('name','name');
+        $select_users = User::pluck('username','id');
+
+        return view('products.create', compact('select_uom','select_manufacturer','select_package','select_origin',
+            'select_users','select_users','select_currency_codes','company_id','select_groups','select_payment_terms','select_taxcodes','select_categories','select_categories'));
+    }
 
 	public function postDuplicate($original_id){
         $original = Product::findOrFail($original_id);
@@ -551,27 +613,6 @@ class ProductController extends Controller {
             ->with('product',$product);
 	}
 
-//	public function getStocks($id) {
-//	    $product = Product::findOrFail($id);
-//      $transactions = WarehouseTransaction::where('product_id',$product->id)
-//          ->where('company_id',return_company_id())
-//          ->orderBy('id', 'desc')->limit(100)->get();
-//
-//		$select_inventory_adjustment = ValueList::where('uid','=','inventory_adjustment')->orderBy('name', 'asc')->pluck('name','name');
-//
-//		$select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-//		$select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
-//		$select_package = ValueList::where('uid','=','package')->orderBy('name', 'asc')->pluck('name','name');
-
-        // $this->layout->content = View::make('products.stocks')
-        //     ->with('product',$product)
-        //     ->with('select_uom',$select_uom)
-        //     ->with('select_package',$select_package)
-        //     ->with('select_currency_codes',$select_currency_codes)
-        //     ->with('select_inventory_adjustment',$select_inventory_adjustment)
-        //     ;
-//        return view("products.stocks",compact('transactions','product','select_uom','select_package','select_currency_codes','select_inventory_adjustment'));
-//	}
 
     public function postStockAdjust($id){
         $rules = array(
@@ -803,25 +844,26 @@ class ProductController extends Controller {
 	}
 
     public function getSync($id) {
-	   $product = Product::findOrFail($id);
-		$tree = Category::all()->ToArray();
-		$select_categories = printSelect($tree,$product->category_id);
+
+        $product = Product::findOrFail($id);
+//        $tree = Category::all()->ToArray();
+//        $select_categories = printSelect($tree,$product->category_id);
 
         if($product->company_id != return_company_id()){
             die("Access violation. Click <a href='/'>here</a> to get back.");
         }
-    $companies =   Company::all();
-    foreach($companies as $company){
-      $slave = Product::where('company_id',$company->id)->where('parent_id',$product->id)->first();
-    }
-    $user_created =     User::where('created_at',$product->created_by)->pluck('username');
-    $user_updated = User::where('updated_at',$product->updated_by)->pluck('username');
-    $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-		$select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
-		$select_package = ValueList::where('uid','=','package')->orderBy('name', 'asc')->pluck('name','name');
-		$select_origin = ValueList::where('uid','=','origin')->orderBy('name', 'asc')->pluck('name','name');
-	  $select_users = User::pluck('username','id');
-    return view('products.sync',compact('slave','companies','user_created','user_updated','product','select_uom','select_package','select_origin','select_users','select_categories','select_currency_codes'));
+        $companies =   Company::all();
+        foreach($companies as $company){
+            $slave = Product::where('company_id',$company->id)->where('parent_id',$product->id)->first();
+        }
+        $user_created =     User::where('created_at',$product->created_by)->pluck('username');
+        $user_updated = User::where('updated_at',$product->updated_by)->pluck('username');
+        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+        $select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
+        $select_package = ValueList::where('uid','=','package')->orderBy('name', 'asc')->pluck('name','name');
+        $select_origin = ValueList::where('uid','=','origin')->orderBy('name', 'asc')->pluck('name','name');
+        $select_users = User::pluck('username','id');
+        return view('products.sync',compact('slave','companies','user_created','user_updated','product','select_uom','select_package','select_origin','select_users','select_currency_codes'));
         //
         // $this->layout->module_title = "Product Details";
         // $this->layout->module_sub_title = "Product Details";
@@ -833,68 +875,7 @@ class ProductController extends Controller {
         //     ->with('select_users',$select_users)
         //     ->with('select_categories',$select_categories)
         //     ->with('select_currency_codes',$select_currency_codes);
-	}
-
-
-//
-//    public function getSetup($id) {
-//	    $product = Product::findOrFail($id);
-//		$tree = Category::all()->toArray();
-//		$select_categories = printSelect($tree,$product->category_id);
-//
-//        if($product->company_id != return_company_id()){
-//            die("Access violation. Click <a href='/'>here</a> to get back.");
-//        }
-//    $user_created =     User::where('created_at',$product->created_by)->pluck('username');
-//    $user_updated = User::where('updated_at',$product->updated_by)->pluck('username');
-//		$select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-//		$select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
-//		$select_package = ValueList::where('uid','=','package')->orderBy('name', 'asc')->pluck('name','name');
-//		$select_origin = ValueList::where('uid','=','origin')->orderBy('name', 'asc')->pluck('name','name');
-//	    $select_users = User::pluck('username','id');
-//
-//      return view('products.setup',compact('user_created','user_updated','product','select_uom','select_package','select_origin','select_users','select_categories','select_currency_codes'));
-//        //
-        // $this->layout->module_title = "Product Details";
-        // $this->layout->module_sub_title = "Product Details";
-        // $this->layout->content = View::make('products.setup')
-        //     ->with('product',$product)
-        //     ->with('select_uom',$select_uom)
-        //     ->with('select_package',$select_package)
-        //     ->with('select_origin',$select_origin)
-        //     ->with('select_users',$select_users)
-        //     ->with('select_categories',$select_categories)
-        //     ->with('select_currency_codes',$select_currency_codes);
-//	}
-
-//    public function postSetup($id) {
-//        $rules = array(
-//            'id' => 'required|integer|digits_between:1,6',
-//        );
-//        $input = Input::get();
-//        $validation = Validator::make($input, $rules);
-//        if($validation->fails()){
-//            return Redirect::to('products/setup/'.$id)
-//                ->with('flash_error','Operation failed')
-//                ->withErrors($validation->Messages())
-//                ->withInput();
-//        } else {
-//            $product = Product::findOrFail($id);
-//            $input = Input::get();
-//            $product->fill($input);
-//            $product->updated_by = Auth::user()->id;
-//            if(Input::get('company_sync')){
-//				$product->company_sync = 1;
-//			} else {
-//				$product->company_sync = 0;
-//			}
-//            $product->save();
-//
-//            return Redirect::to('products/setup/'.$id)
-//                ->with('flash_success','Operation success');
-//        }
-//	}
-
+    }
 
 	public function getDownloadEdit($id) {
 		$attachment 	= ProductAttachment::findOrFail($id);
@@ -1763,33 +1744,6 @@ class ProductController extends Controller {
 		}
 	}
 
-//    public function getImages($id){
-//	    $product = Product::findOrFail($id);
-//        $select_yesno = [0 => 'No', 1 => 'Yes'];
-
-		//$download_folder = Config::get('app.file_folder');
-		//$extensions = array("txt");
-		//$downloads= find_recursive_images($download_folder,$extensions);
-
-//        $images = ProductImage::where('product_id',$product->id)->get();
-
-        /*
-		foreach($downloads as $i => &$download){
-			$download = explode("public",$download);
-			$download = $download[1];
-		}
-
-	    $linked_downloads = Product::find($id)->downloads;
-        */
-//        return view('products.images',compact('product','images','select_yesno'));
-        // $this->layout->content = View::make('products.images')
-        //     ->with('product', $product)
-        //     ->with('images', $images)
-        //     ->with('select_yesno', $select_yesno)
-        // ;
-//    }
-
-
     public function getDownloads($id){
       // echo $id;die;
 	    $product = Product::findOrFail($id);
@@ -1839,7 +1793,7 @@ class ProductController extends Controller {
 
         if($validation->fails()){
             return Redirect::to('/products/images/'.$id)
-                ->with('flash_error',$msg)
+                ->with('flash_error',$validation->Messages())
                 ->withErrors($validation->Messages())
                 ->withInput();
         } else {
@@ -1901,7 +1855,7 @@ class ProductController extends Controller {
 
         if($validation->fails()){
             return Redirect::to('/products/downloads/'.$id)
-                ->with('flash_error',$msg)
+                ->with('flash_error',$validation->Messages())
                 ->withErrors($validation->Messages())
                 ->withInput();
         } else {

@@ -31,11 +31,13 @@
 @section('page-header')
 	<div class="page-header">
 		<div class="page-title">
-			<!-- if(has_role('products_edit')) -->
-			<form class="form-inline" id="create" action="/product/getExport" method="POST"><!--remove product/create path and andd product/getExport-->
-				<a class="btn btn-success form-submit-conf" href="javascript:void(0);" data-target-form="create"><i class="icon-plus-sign"></i> New Product</a>
-			</form>
-			<!-- endif -->
+			@if(has_role('products_edit'))
+			{{--<form class="form-inline" id="create" action="/product/getExport" method="POST"><!--remove product/create path and and product/getExport-->--}}
+				{{--<a class="btn btn-success form-submit-conf" href="javascript:void(0);" data-target-form="create"><i class="icon-plus-sign"></i> New Product</a>--}}
+			{{--</form>--}}
+				<a class="btn btn-success" href="/products/create"><i class="icon-plus-sign"></i> New Product</a>
+                {{--<a class="btn btn-success" href="/customers/create"><i class="icon-plus-sign"></i> New Customer</a>--}}
+			@endif
 		</div>
 	</div>
 @stop
@@ -45,10 +47,8 @@
 
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default" style="margin-bottom: 100px;">
-				<div class="">
-					<div class="panel-heading"><i class="icon-reorder"></i> Product Index</div>
-				</div>
+			<div class="panel panel-default">
+                <div class="panel-heading"><i class="icon-reorder"></i> Product Index</div>
 				<div class="panel-body">
 					<table class="table table-hover table-bordered table-striped" id="product_table" style="width: 100%;">
 						<thead>
@@ -65,7 +65,6 @@
 						<tbody>
 						</tbody>
 					</table>
-
 				</div>
 			</div>
 		</div>
@@ -84,17 +83,15 @@
             $('#product_table').DataTable({
                 "oLanguage": {
 
-                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
-
-                },
-                "pagingType": "full_numbers",
-                "oLanguage": {
+                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
                     "oPaginate": {
                         "sNext": "<i class='icon-chevron-right icon-large'></i>",
                         "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
                         // "sFirst ": "<i class='icon-backward icon-large'></i>"
                     }
+
                 },
+                "pagingType": "full_numbers",
                 processing: true,
                 serverSide: true,
                 ajax: '{!! route('products/getdata') !!}',

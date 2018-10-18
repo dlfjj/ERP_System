@@ -533,22 +533,25 @@ function printSelect($root,$category_id,$field_name='category_id'){
 }
 
 function printOption($node,$category_id=NULL){
-//    $level = $node->getLevel();
-//    $indent = "";
-//    for($i = 0; $i < $level; $i++){
-//        $indent .= "&nbsp;|-&nbsp;";
-//    }
-//    if($category_id == $node->id){
-//        $checked = 'selected="selected"';
-//    } else {
-//        $checked = "";
-//    }
-//    $html = '<option ' . $checked . ' value="'.$node->id . '">'.$indent . $node->name . '</option>';
-//    foreach($node->children as $child){
-//        $html .= printOption($child,$category_id);
-//    }
-//    return $html;
+    $level = $node->getLevel();
+    $indent = "";
+    for($i = 0; $i < $level; $i++){
+        $indent .= "&nbsp;|-&nbsp;";
+    }
+    if($category_id == $node->id){
+        $checked = 'selected="selected"';
+    } else {
+        $checked = "";
+    }
+    $html = '<option ' . $checked . ' value="'.$node->id . '">'.$indent . $node->name . '</option>';
+    foreach($node->children as $child){
+        $html .= printOption($child,$category_id);
+    }
+    return $html;
 }
+
+//I build my own categories tree view
+
 
 
 //        temporary methods specific data to Add expense Account Name

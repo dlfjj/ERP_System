@@ -30,21 +30,18 @@
 
     <div class="row">
 
-    <!-- {{ Form::open(array("url"=>"/products/destroy/$product->id","method"=>"post","class"=>"form-inline","id"=>"delete")) }}
+     {{--{{ Form::open(array("url"=>"/products/destroy/$product->id","method"=>"post","class"=>"form-inline","id"=>"delete")) }}--}}
 
-            </form>
+            {{--</form>--}}
+        <form class="form-inline" id="create" action="/product/postShow/{{$product->id}}" method="POST">
 
-
-
-            <form class="form-inline" id="create" action="/product/postShow/{{$product->id}}" method="POST">
-
-</form>
+        </form>
 
 
 
-<form class="form-inline" id="duplicate" action="/products/duplicate/{{$product->id}}" method="POST">
+        <form class="form-inline" id="duplicate" action="/products/duplicate/{{$product->id}}" method="POST">
 
-</form> -->
+        </form>
 
 
 
@@ -62,7 +59,8 @@
 
                 <div class="widget-content">
 
-                    <form autocomplete="off" enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" action="/products/{{$product->id}}" method="POST">
+                    {{--<form autocomplete="off" enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" action="/products/{{$product->id}}" method="PATCH">--}}
+                        {!! Form::open(['action' => ["ProductController@update",$product->id],'id'=>'main', 'enctype' => 'multipart/form-data', 'method' => 'PATCH', 'class' => 'form-vertical row-border form-validate', 'autocomplete' => 'off']) !!}
                         {{csrf_field()}}
                         <div class="tabbable">
 
@@ -110,15 +108,20 @@
 
                                             </div>
 
+                                            {{--<div class="col-md-2">--}}
+
+                                                {{--<label class="control-label">Category</label>--}}
+                                                {{--<select name="category_id" class="form-Control">--}}
+                                                    {{--@foreach($tree as $category_name=>$category_id)--}}
+                                                        {{--<option value="{{$category_id}}">{{$category_name}}</option>--}}
+                                                    {{--@endforeach--}}
+                                                {{--</select>--}}
+
+                                            {{--</div>--}}
+
                                             <div class="col-md-2">
-
                                                 <label class="control-label">Category</label>
-                                                <select name="category_id" class="form-Control">
-                                                    @foreach($tree as $category_name=>$category_id)
-                                                        <option value="{{$category_id}}">{{$category_name}}</option>
-                                                    @endforeach
-                                                </select>
-
+                                                {!! $select_categories !!}
                                             </div>
 
                                             <div class="col-md-3">
@@ -731,7 +734,8 @@
 
                             </div>
                         </div>
-                    </form>
+                    {{ Form::close() }}
+                    {{--</form>--}}
 
                 </div>
 

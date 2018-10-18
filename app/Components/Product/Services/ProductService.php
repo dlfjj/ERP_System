@@ -31,14 +31,14 @@ class ProductService
     {
         $product = Product::findOrFail($productId);
 
-        $tree = Category::where('id',$product->category_id)->pluck('id','name');
 
         if($product->company_id != return_company_id()){
             die("Access violation. Click <a href='/'>here</a> to get back.");
         }
 
         $company_id = return_company_id();
-
+        $tree = Category::all()->toHierarchy();
+        $select_categories = printSelect($tree,$product->category_id);
         $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
         $select_uom = ValueList::where('uid','=','uom')->orderBy('name', 'asc')->pluck('name','name');
         $select_manufacturer = ValueList::where('uid','=','manufacturer')->orderBy('name', 'asc')->pluck('name','name');
@@ -48,8 +48,8 @@ class ProductService
 
         $group_prices = ProductPrice::where('product_id',$product->id)->where('company_id',return_company_id())->orderBy('customer_group_id','DESC')->get();
 
-        $created_by_user = User::select('username')->where('created_by',$product->created_by)->first();
-        $updated_by_user = User::select('username')->where('updated_by',$product->updated_by)->first();
+        $created_by_user = User::find($product->created_by)->username;
+        $updated_by_user = User::find($product->updated_by)->username;
 
         return [
             'product' => $product,
@@ -58,7 +58,7 @@ class ProductService
             'select_package' => $select_package,
             'select_origin' => $select_origin,
             'select_users' => $select_users,
-            'tree' => $tree,
+            'select_categories' => $select_categories,
             'select_currency_codes' => $select_currency_codes,
             'company_id' => $company_id,
             'group_prices' => $group_prices,

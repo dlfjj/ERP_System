@@ -32,14 +32,14 @@
 
 @section('page-header')
     <div class="page-header">
-        {{--<div class="page-title">--}}
-            {{--@if(has_role('purchases_edit'))--}}
-                {{--<a class="btn btn-success btn-lg" href="/purchases/create"><i class="icon-plus-sign"></i> New P.O</a>--}}
-            {{--@endif--}}
-        {{--</div>--}}
+        <div class="page-title">
+            @if(has_role('purchases_edit'))
+                <a class="btn btn-success" href="/purchases/vendorsList"><i class="icon-plus-sign"></i> New Purchase</a>
+            @endif
+        </div>
 
-        <ul class="page-stats">
-        </ul>
+        {{--<ul class="page-stats">--}}
+        {{--</ul>--}}
     </div>
 @stop
 

@@ -55,8 +55,8 @@ class SetupController extends Controller
     public function show($id)
     {
         $product = Product::findOrFail($id);
-        $tree = Category::all()->toArray();
-        $select_categories = printSelect($tree,$product->category_id);
+//        $tree = Category::all()->toArray();
+//        $select_categories = printSelect($tree,$product->category_id);
 
         if($product->company_id != return_company_id()){
             die("Access violation. Click <a href='/'>here</a> to get back.");
@@ -69,7 +69,7 @@ class SetupController extends Controller
         $select_origin = ValueList::where('uid','=','origin')->orderBy('name', 'asc')->pluck('name','name');
         $select_users = User::pluck('username','id');
 
-        return view('products.setup.show',compact('user_created','user_updated','product','select_uom','select_package','select_origin','select_users','select_categories','select_currency_codes'));
+        return view('products.setup.show',compact('user_created','user_updated','product','select_uom','select_package','select_origin','select_users','select_currency_codes'));
 
     }
 

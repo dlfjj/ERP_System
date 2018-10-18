@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Components\Exceptions\StatusChangeDeniedException;
 use App\Components\Customer\Services\CustomerService;
 use App\Models\CustomerAddress;
+use App\Models\ProductCustomerSpecific;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -60,18 +61,6 @@ class CustomerController extends Controller
     public function getCustomerData()
     {
         $customers = $this->customerService->getAllCustomersByCompanyId(return_company_id())['customers'];
-//        $customers = Customer::select(
-//            array(
-//                'customers.status',
-//                'customers.id',
-//                'customers.customer_code',
-//                'customers.customer_name',
-//                'customers.inv_city',
-//                'customers.inv_country'
-//            ))
-//            ->where('customers.company_id',return_company_id())->get()
-//        ;
-
 
         return Datatables::of($customers)->addColumn('action', function ($customer) {
                     return '<a href="/customers/'.$customer->id .'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
@@ -80,6 +69,7 @@ class CustomerController extends Controller
 
     public function show(int $id)
     {
+
         $contents = $this->customerService->getOneCustomerById($id);
 
         return view('customers.show', $contents);
@@ -258,7 +248,7 @@ class CustomerController extends Controller
             'customer_id' => 'Required|Between:1,50',
             'contact_name' => 'Required|Between:1,50',
             'username' => 'Required|Email|Between:1,50',
-            'contact_mobile' => 'Between:1,50',
+            'contact_mobile' => 'nullable|Integer',
             'contact_skype' => 'nullable|Between:1,50',
             'position' => 'nullable|Between:1,50'
         );
@@ -271,6 +261,11 @@ class CustomerController extends Controller
                 ->withErrors($validation->Messages())
                 ->withInput();
         } else {
+            foreach ($input as $key => $value) {
+                if (is_null($value)) {
+                    $input[$key] = "";
+                }
+            }
             $new_record = New CustomerContact;
             $new_record->fill($input);
             $new_record->save();
@@ -470,14 +465,14 @@ class CustomerController extends Controller
 	}
 
     public function getPricelist($id){
+        return "Not Done Yet";
 		$customer = Customer::findOrFail($id);
-        print_R($customer);die;
+        print_R($customer);
         if($customer->company_id != return_company_id()){
             die("Access violation!");
         }
 
-		$group    = $customer->group;
-
+		$group = $customer->group;
         $customer_specifics = ProductCustomerSpecific::where('customer_id','!=',$id)
             ->pluck('product_id');
 

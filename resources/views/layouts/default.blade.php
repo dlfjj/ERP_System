@@ -384,7 +384,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
                 </li>
                 <!-- endif -->
 
-                <!-- if(has_role('expensesdsfsd')) -->
+                <!-- if(has_role('expenses')) -->
                 <li class="<?=($segment == 'expensesdsfsd' ? "current" : "");?>">
                     <a href="/expenses">
                         <i class="icon-money"></i>
@@ -480,6 +480,8 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         @show
 
         <!--=== Page Content ===-->
+            {{--using vuejs components in the future--}}
+            <div id="app"></div>
         @yield('content')
         <!-- /Page Content -->
         </div>
@@ -515,6 +517,8 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         $("#dvLoading").hide();
     })
 </script>
+
+<script src="{{ asset('js/app.js') }}" defer></script>
 
 
 <script src="//code.jquery.com/jquery.js"></script>

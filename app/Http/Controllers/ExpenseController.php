@@ -56,8 +56,8 @@ class ExpenseController extends Controller
             ->where('expenses.company_id',return_company_id())->get();
 //        $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toArray();
 //        $select_accounts = printSelect($tree,10,'account_id');
-        $select_accounts = [];
-
+        $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toHierarchy();
+        $select_accounts = printSelect($tree,10,'account_id');
         $select_bank_accounts  = ValueList::where('uid','=','BANK_ACCOUNTS')->orderBy('name', 'asc')->pluck('name','name')->toArray();
         $select_currency_codes = ValueList::where('uid','=','CURRENCY_CODES')->orderBy('name', 'asc')->pluck('name','name')->toArray();
 
@@ -136,7 +136,7 @@ class ExpenseController extends Controller
     {
 //        return $request->all();
         $rules = [
-            'account_id' => 'required|integer|digits_between:1,6',
+//            'account_id' => 'required|integer|digits_between:1,6',
             'description' => 'required|between:1,5000',
             'currency_code' => 'alpha|between:3,3',
             'amount' => 'numeric|required|regex:/^\d*(\.\d{1,2})?$/',
@@ -148,7 +148,6 @@ class ExpenseController extends Controller
 
 
         $input  = $request->all();
-//        return $request->input('account_id');
         $validation = Validator::make($input, $rules);
         if($validation->fails()){
             return redirect('expenses'.'/')
@@ -160,8 +159,8 @@ class ExpenseController extends Controller
             $expense->fill($input);
 
 //            modify transaction_reference and account id
-            if($request->account_id === NULL) {
-                $account_id = null;
+            if($request->account_id === NULL or return_company_id() === 1) {
+                $account_id = "";
             } else {
                 $account_id = DB::select('select id from chart_of_accounts where type =\'Expense\' LIMIT '.$request->account_id.',1;')[0]->id;
             }
@@ -193,17 +192,17 @@ class ExpenseController extends Controller
     public function show($id)
     {
         $expense = Expense::findOrFail($id);
-//        if($expense->company_id != return_company_id()){
-//            die("Access Violation!");
-//        }
-//
-//        if(has_role('expenses_see_own')){
-//            if($expense->user_id != Auth::user()->id){
-//                die("Permission issue");
-//            }
-//        }
-        $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toArray();
-        $select_accounts = printSelect($tree,10,'account_id');
+        if($expense->company_id != return_company_id()){
+            die("Access Violation!");
+        }
+
+        if(has_role('expenses_see_own')){
+            if($expense->user_id != Auth::user()->id){
+                die("Permission issue");
+            }
+        }
+        $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toHierarchy();
+        $select_accounts = printSelect($tree,$expense->account_id,'account_id');
         $select_currency_codes = ValueList::where('uid','=','CURRENCY_CODES')->orderBy('name', 'asc')->pluck('name','name');
         $select_bank_accounts  = ValueList::where('uid','=','BANK_ACCOUNTS')->orderBy('name', 'asc')->pluck('name','name');
         return view('expenses.show',compact('expense','select_accounts','select_bank_accounts','select_currency_codes'));
@@ -224,7 +223,11 @@ class ExpenseController extends Controller
      */
     public function update(Request $request,$id)
     {
+//        return $request;
 
+        if(return_company_id()==1){
+            $request->account_id = "Hongkong do not use this function";
+        }
         $rules = [
             'id' => 'required|integer|digits_between:1,6',
             'account_id' => 'required|integer|digits_between:1,6',
@@ -235,6 +238,7 @@ class ExpenseController extends Controller
             'purchase_id' => 'nullable|integer'
         ];
         $input = $request->all();
+        return  $input;
         $validation = Validator::make($input, $rules);
         if($validation->fails()){
             return redirect('expenses'.'/'.$id)

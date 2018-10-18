@@ -56,10 +56,11 @@
                                     <span class="help-block">Date</span>
                                 </div>
                                 <div class="col-md-2">
-                                    <select name="account_id">
-                                        <option value="{{$expense->account_id}}">{{$expense->account_id}}</option>
-                                    </select>
-                                    <span class="help-block">Category</span>
+                                    {{--<select name="account_id">--}}
+                                        {{--<option value="{{$expense->account_id}}">{{$expense->account_id}}</option>--}}
+                                    {{--</select>--}}
+                                    {!! $select_accounts !!}
+                                    <span class="help-block">Account Category</span>
                                 </div>
                                 <div class="col-md-2">
                                     {{ Form::select('bank_account', $select_bank_accounts, $expense->bank_account, ["class"=>"form-control"]) }}

@@ -12,6 +12,7 @@ use App\Models\Taxcode;
 use App\Models\User;
 use App\Models\ValueList;
 use App\Shared\Repositories\CustomerGroupRepository;
+use Auth;
 
 class CustomerService
 {
@@ -53,6 +54,7 @@ class CustomerService
         }
 
         $overdue_currency = $outstanding_currency = User::Leftjoin('companies', 'users.company_id', '=', 'companies.id')->where('users.id', $currentUserId)->pluck('companies.currency_code');
+//        $overdue_currency = $outstanding_currency = Auth::user()->company->currency_code;
 
         $outstandings 		   = $customer->getOutstandingMoney($outstanding_currency[0]);
         $overdue 		= $customer->getOverdueMoney($outstanding_currency[0]);

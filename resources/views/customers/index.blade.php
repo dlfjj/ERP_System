@@ -28,7 +28,7 @@
 	<div class="page-header">
 		<div class="page-title">
 			@if(has_role('customers_edit'))
-				<a class="btn btn-success btn-lg" href="/customers/create"><i class="icon-plus-sign"></i> New Customer</a>
+				<a class="btn btn-success" href="/customers/create"><i class="icon-plus-sign"></i> New Customer</a>
 			@endif
 		</div>
 
@@ -50,7 +50,7 @@
 					<div class="col-md-12">
 						<div class="panel panel-default">
 							{{--<div class="">--}}
-								<div class="panel-heading"><i class="icon-reorder"></i> Customer Index</div>
+							<div class="panel-heading"><i class="icon-reorder"></i> Customer Index</div>
 								{{--<div class="toolbar no-padding">--}}
 									{{--<div class="btn-group">--}}
 										{{--<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
