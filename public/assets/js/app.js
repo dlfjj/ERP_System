@@ -85,9 +85,9 @@ var App = function() {
 		}
 
 		// handles responsive breakpoints.
-		$(window).setBreakpoints({
-			breakpoints: [320, 480, 768, 979, 1200]
-		});
+		// $(window).setBreakpoints({
+		// 	breakpoints: [320, 480, 768, 979, 1200]
+		// });
 
 		$(window).bind('exitBreakpoint320', function() {
 			handleElements();
@@ -175,14 +175,14 @@ var App = function() {
 
 		// Realign headers from DataTables (otherwise header will have an offset)
 		// Only affects horizontal scrolling DataTables
-		if ($.fn.dataTable) {
-			var tables = $.fn.dataTable.fnTables(true);
-			$(tables).each(function() {
-				if (typeof $(this).data('horizontalWidth') != 'undefined') {
-					$(this).dataTable().fnAdjustColumnSizing();
-				}
-			});
-		}
+		// if ($.fn.dataTable) {
+		// 	var tables = $.fn.dataTable.fnTables(true);
+		// 	$(tables).each(function() {
+		// 		if (typeof $(this).data('horizontalWidth') != 'undefined') {
+		// 			$(this).dataTable().fnAdjustColumnSizing();
+		// 		}
+		// 	});
+		// }
 	}
 
 	/**

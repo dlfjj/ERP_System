@@ -31,7 +31,7 @@
                 <a class="btn btn-success btn" data-toggle="modal" href="#modal_expense"><i class="icon-plus-sign"></i> Add Expense</a>
             @endif
             @if(has_role('expenses_edit'))
-                <a class="btn btn-info btn"><i class="icon-plus-sign"></i> Add Income</a>
+                <a class="btn btn-info btn" data-toggle="modal"><i class="icon-plus-sign"></i> Add Income</a>
             @endif
         </div>
         <ul class="page-stats">
@@ -152,14 +152,14 @@
         // jquery getting data for purchase table
         $(function() {
             $('#expense_table').DataTable({
-                "oLanguage": {
-                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
-                    "oPaginate": {
-                        "sNext": "<i class='icon-chevron-right icon-large'></i>",
-                        "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
+                // "oLanguage": {
+                    // "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
+                    // "oPaginate": {
+                    //     "sNext": "<i class='icon-chevron-right icon-large'></i>",
+                    //     "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
                         // "sFirst ": "<i class='icon-backward icon-large'></i>"
-                    }
-                },
+                    // }
+                // },
                 "pagingType": "full_numbers",
                 processing: true,
                 serverSide: true,

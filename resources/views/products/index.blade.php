@@ -69,11 +69,6 @@
 			</div>
 		</div>
 	</div>
-	{{--<script>--}}
-        {{--$(document).ready(function(){--}}
-            {{--$('product_table').dataTable();--}}
-        {{--})--}}
-	{{--</script>--}}
 @stop
 
 @push('scripts')
@@ -81,16 +76,16 @@
         // jquery getting data for purchase table
         $(function() {
             $('#product_table').DataTable({
-                "oLanguage": {
+                // "oLanguage": {
 
-                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
-                    "oPaginate": {
-                        "sNext": "<i class='icon-chevron-right icon-large'></i>",
-                        "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
+                    // "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
+                    // "oPaginate": {
+                    //     "sNext": "<i class='icon-chevron-right icon-large'></i>",
+                    //     "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
                         // "sFirst ": "<i class='icon-backward icon-large'></i>"
-                    }
+                    // }
 
-                },
+                // },
                 "pagingType": "full_numbers",
                 processing: true,
                 serverSide: true,

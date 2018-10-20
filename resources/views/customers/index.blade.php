@@ -58,7 +58,7 @@
 								{{--</div>--}}
 							{{--</div>--}}
 							<div class="panel-body">
-								<table class="table table-striped table-bordered table-hover"  id="customers-table">
+								<table class="table table-striped table-bordered table-hover"  id="customers-table" >
 									<thead>
 										<tr>
 											<th class="cell-tight">Status</th>
@@ -95,14 +95,12 @@
         $(function() {
             $('#customers-table').DataTable({
                 "oLanguage": {
-
-                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
+                    // "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
                     "oPaginate": {
-                        "sNext": "<i class='icon-chevron-right icon-large'></i>",
-                        "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
+                        // "sNext": "<i class='icon-chevron-right icon-large'></i>",
+                        // "sPrevious": "<i class='icon-chevron-left icon-large'></i>",
                         // "sFirst ": "<i class='icon-backward icon-large'></i>"
                     }
-
                 },
                 "pagingType": "full_numbers",
                 processing: true,

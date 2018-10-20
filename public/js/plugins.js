@@ -199,39 +199,39 @@ var Plugins = function() {
 			// Set default options
 			$.extend(true, $.fn.dataTable.defaults, {
 				"oLanguage": {
-					"sSearch": ""
+					"sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
 				},
-				"sDom": "<'row'<'dataTables_header clearfix'<'col-md-6'l><'col-md-6'f>r>>t<'row'<'dataTables_footer clearfix'<'col-md-6'i><'col-md-6'p>>>",
+				// "sDom": "<'row'<'dataTables_header clearfix'<'col-md-6'l><'col-md-6'f>r>>t<'row'<'dataTables_footer clearfix'<'col-md-6'i><'col-md-6'p>>>",
 				// set the initial value
-				"iDisplayLength": 25,
-				fnDrawCallback: function () {
-					if ($.fn.uniform) {
-						$(':radio.uniform, :checkbox.uniform').uniform();
-					}
+				// "iDisplayLength": 25,
+				// fnDrawCallback: function () {
+				// 	if ($.fn.uniform) {
+				// 		$(':radio.uniform, :checkbox.uniform').uniform();
+				// 	}
 
-					if ($.fn.select2) {
-						$('.dataTables_length select').select2({
-							minimumResultsForSearch: "-1"
-						});
-					}
+					// if ($.fn.select2) {
+					// 	$('.dataTables_length select').select2({
+					// 		minimumResultsForSearch: "-1"
+					// 	});
+					// }
 
 					// SEARCH - Add the placeholder for Search and Turn this into in-line formcontrol
-					var search_input = $(this).closest('.dataTables_wrapper').find('div[id$=_filter] input');
+					// var search_input = $(this).closest('.dataTables_wrapper').find('div[id$=_filter] input');
 
 					// Only apply settings once
-					if (search_input.parent().hasClass('input-group')) return;
+					// if (search_input.parent().hasClass('input-group')) return;
 
 					//search_input.attr('placeholder', 'Search')
-					search_input.addClass('form-control')
-					search_input.wrap('<div class="input-group"></div>');
-					search_input.parent().prepend('<span class="input-group-addon"><i class="icon-search"></i></span>');
-					//search_input.parent().prepend('<span class="input-group-addon"><i class="icon-search"></i></span>').css('width', '250px');
+					// search_input.addClass('form-control')
+					// search_input.wrap('<div class="input-group"></div>');
+					// search_input.parent().prepend('<span class="input-group-addon"><i class="icon-search"></i></span>');
+					// search_input.parent().prepend('<span class="input-group-addon"><i class="icon-search"></i></span>').css('width', '250px');
 
 					// Responsive
 					/*if (typeof responsiveHelper != 'undefined') {
 						responsiveHelper.respond();
 					}*/
-				}
+				// }
 			});
 
 			$.fn.dataTable.defaults.aLengthMenu = [[5, 10, 25, 50], [5, 10, 25, 50 ]];

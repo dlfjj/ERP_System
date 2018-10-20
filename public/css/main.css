@@ -3533,6 +3533,16 @@ th.cell-tight.sorting{
 .table{
   font-size:12px;
 }
+.dataTables_filter{
+  padding-bottom: 10px;
+}
+.dataTables_filter > label > input{
+  /*width: 100%;*/
+  /*margin: 8px 0;*/
+  border: 1px solid #0f2452;
+  border-radius: 4px;
+  height: 21px;
+}
 /* #product_table_wrapper{
   overflow-x:auto;
   font-size:10px;

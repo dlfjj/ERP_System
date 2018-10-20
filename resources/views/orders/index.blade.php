@@ -92,7 +92,7 @@
             $('#orders-table').DataTable({
                 "oLanguage": {
 
-                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
+                    // "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
 
                 },
                 processing: true,
@@ -107,10 +107,7 @@
                     { data: 'estimated_finish_date', name: 'estimated_finish_date' },
 
                     { data: 'total_gross', name: 'total_gross' },
-                    {data: 'action',
-
-
-                        name: 'action', orderable: false, searchable: false}
+                    {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
             });
         });

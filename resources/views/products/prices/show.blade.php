@@ -265,10 +265,13 @@
                     {!!  Form::open(['method' => 'PATCH','action' => ['PriceController@update', $product->id]]) !!}
                     {{ Form::hidden('action', "customer_add", array()) }}
                     <tr>
-                        <td>
+                        {{--<td>--}}
                             {{--text search function here--}}
-                            {{ Form::select('customer_id', $select_customers, array("class"=>"form-control")) }}
-                        </td>
+{{--                            {{ Form::select('customer_id', $select_customers, array("class"=>"form-control")) }}--}}
+                        {{--</td>--}}
+						<td>
+							{{ Form::select('customer_id', $select_customers, (isset($product_customer->customer_id) ? $product_customer->customer_id : ""), array("class"=>"select2 col-md-12 full-width-fix")) }}
+						</td>
                         <td>
                             {{ Form::input('number', 'base_price_20', "",['class' => 'form-control','step' => 'any']) }}
 

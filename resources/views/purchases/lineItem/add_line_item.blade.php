@@ -89,11 +89,11 @@
         // jquery getting data for product table
         $(function() {
             $('#product_table_for_purchase').DataTable({
-                "oLanguage": {
+                // "oLanguage": {
 
-                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
+                    // "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
 
-                },
+                // },
                 processing: true,
                 serverSide: true,
                 ajax: '{!! route('purchase_line_items/getdata',[$purchase->id]) !!}',

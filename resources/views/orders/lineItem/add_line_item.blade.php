@@ -101,7 +101,7 @@
             $('#product_table_for_order').DataTable({
                 "oLanguage": {
 
-                    "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
+                    // "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
 
                 },
                 processing: true,

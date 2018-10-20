@@ -17,7 +17,7 @@ window.Vue = require('vue');
  */
 import BootstrapVue from 'bootstrap-vue';
 import $ from 'jquery';
-import 'select2';
+// import 'select2';
 
 
 window.$ = window.jQuery = $;
@@ -27,7 +27,7 @@ Vue.component(
     require('./components/ExampleComponent.vue')
 );
 
-import 'jquery-ui/ui/widgets/datepicker.js';
+// import 'jquery-ui/ui/widgets/datepicker.js';
 
 
 
@@ -38,16 +38,16 @@ const app = new Vue({
 
 
 // add datepicker jquery
-$( ".datepicker" ).datepicker({
-    defaultDate: +7,
-    showOtherMonths:true,
-    autoSize: true,
-    dateFormat: 'yy-mm-dd'
-});
-
-$('.select2').select2({
-    minimumInputLength: 3
-});
+// $( ".datepicker" ).datepicker({
+//     defaultDate: +7,
+//     showOtherMonths:true,
+//     autoSize: true,
+//     dateFormat: 'yy-mm-dd'
+// });
+//
+// $('.select2').select2({
+//     minimumInputLength: 3
+// });
 
 // $(window).unload(function(){
 //     $("#dvLoading").show();

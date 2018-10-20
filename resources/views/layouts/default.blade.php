@@ -30,22 +30,26 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
 
     <!-- jQuery UI -->
-    <link href="plugins/jquery-ui/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css" />
+    {{--<link href="plugins/jquery-ui/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css" />--}}
+    <link rel="stylesheet" type="text/css" href="plugins/jquery-ui/jquery-ui.css"/>
+
     <!--[if lt IE 9]>
     <link rel="stylesheet" type="text/css" href="plugins/jquery-ui/jquery.ui.1.10.3.ie.css"/>
     <![endif]-->
 
     <!-- Bootstrap -->
 {{--<link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />--}}
-    <link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
 
     <!-- Theme -->
     {{--<link href="/assets/css/main.css" rel="stylesheet" type="text/css" />--}}
     <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
+{{--    <link rel="stylesheet" href="{{ asset('css/app.css') }}">--}}
+    <link href="{{asset('/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet"/>
     <link href="/assets/css/plugins.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/responsive.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/icons.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="/assets/css/fontawesome/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/fontawesome/font-awesome.min.css" />
+{{--    <link href="{{ asset('/plugins/noty/noty.css') }}" />--}}
 
     <script src="{{asset('/plugins/chart/Chart.min.js')}}"></script>
     <!--[if IE 7]>
@@ -57,7 +61,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <![endif]-->
 
     <!-- datatable styles -->
-    <link rel="stylesheet" type="text/css" href="/plugins/datatables/datatables.min.css">
+    <link rel="stylesheet" href="{{ asset('plugins/datatables/datatables.min.css') }}">
 
 
 
@@ -80,26 +84,13 @@ if(Session::get('browser_name') == 'Internet Explorer'){
             font-weight: 700;
             src: url("/fonts/opensans/OpenSans-Bold.ttf");
         }
-        .dataTables_filter{
-            padding-bottom: 10px;
-        }
-        .dataTables_filter > label > input{
-            /*width: 100%;*/
-            /*margin: 8px 0;*/
-            border: 1px solid #0f2452;
-            border-radius: 4px;
-            height: 21px;
-        }
-        .sidebar-text{
-            font-weight: 400;
-        }
-
     </style>
 
     <!--=== JavaScript ===-->
-
     <script type="text/javascript" src="/assets/js/libs/jquery-1.10.2.min.js"></script>
+    {{--<script src="{{ asset('plugins/jquery-ui/jquery-ui.min.js') }}"></script>--}}
     <script type="text/javascript" src="/plugins/jquery-ui/jquery-ui-1.10.2.custom.min.js"></script>
+{{--    <script src="{{ asset('plugins/jquery-ui/jquery-ui-1.10.3.custom.css') }}"></script>--}}
 
     <!--datepicker-->
     {{--<script type="text/javascript" src="/plugins/daterangepicker/moment.min.js"></script>--}}
@@ -121,9 +112,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <script type="text/javascript" src="/plugins/bootbox/bootbox.min.js"></script>
 
     <!-- Form Validation -->
-
     <script type="text/javascript" src="/plugins/validation/jquery.validate.min.js"></script>
-
     <script type="text/javascript" src="/plugins/validation/additional-methods.min.js"></script>
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -142,7 +131,6 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <script type="text/javascript" src="/assets/js/libs/breakpoints.js"></script>
     <script type="text/javascript" src="/plugins/respond/respond.min.js"></script> <!-- Polyfill for min/max-width CSS3 Media Queries (only for IE8) -->
     <script type="text/javascript" src="/plugins/cookie/jquery.cookie.min.js"></script>
-
     <script type="text/javascript" src="/plugins/slimscroll/jquery.slimscroll.min.js"></script>
     <script type="text/javascript" src="/plugins/slimscroll/jquery.slimscroll.horizontal.min.js"></script>
 
@@ -154,6 +142,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
     <!-- Noty -->
     <script type="text/javascript" src="/plugins/noty/jquery.noty.js"></script>
+    {{--<script src="{{ asset('/plugins/noty/noty.js') }}"></script>--}}
     <script type="text/javascript" src="/plugins/noty/layouts/top.js"></script>
     <script type="text/javascript" src="/plugins/noty/themes/default.js"></script>
 
@@ -161,31 +150,34 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
 
     <!-- DataTables -->
-    <script type="text/javascript" src="/plugins/datatables/jquery.dataTables.min.js"></script>
+    {{--<script type="text/javascript" src="/plugins/datatables/jquery.dataTables.min.js"></script>--}}
+    <script  src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script type="text/javascript" src="/plugins/datatables/tabletools/TableTools.min.js"></script>
-    <script type="text/javascript" src="/plugins/datatables/colvis/ColVis.min.js"></script>
-    <script type="text/javascript" src="/plugins/datatables/columnfilter/jquery.dataTables.columnFilter.js"></script>
-    {{--<script type="text/javascript" src="/plugins/datatables/DT_bootstrap.js"></script>--}}
+    {{--<script type="text/javascript" src="/plugins/datatables/colvis/ColVis.min.js"></script>--}}
+    {{--<script type="text/javascript" src="/plugins/datatables/columnfilter/jquery.dataTables.columnFilter.js"></script>--}}
+    <script src="{{ asset('plugins/datatables/DT_bootstrap.js') }}"></script>
 
     <!-- App -->
-    <script type="text/javascript" src="/assets/js/app.js"></script>
-    <script type="text/javascript" src="/assets/js/plugins.js"></script>
+
+    <script src="{{ asset('assets/js/app.js') }}"></script>
+    {{--<script type="text/javascript" src="/assets/js/plugins.js"></script>--}}
+    <script src="{{ asset('/js/plugins.js') }}"></script>
     <script type="text/javascript" src="/assets/js/plugins.form-components.js"></script>
     <script type="text/javascript" src="/plugins/fileinput/fileinput.js"></script>
 
     <!--?php if($uri_segment == 'user_calendar'):?-->
-    <script type="text/javascript" src="/plugins/fullcalendar/fullcalendar.min.js"></script>
-    <script type="text/javascript" src="/assets/js/demo/pages_calendar.js"></script>
+    {{--<script type="text/javascript" src="/plugins/fullcalendar/fullcalendar.min.js"></script>--}}
+    {{--<script type="text/javascript" src="/assets/js/demo/pages_calendar.js"></script>--}}
     <!--?php endif;?>
 
 
         <!?php if($uri_segment == 'orders'):?-->
     <!--?php endif;?>
     	<!?php if($uri_segment == 'infopages' || $uri_segment == 'webshop_settings'):?-->
-    <script type="text/javascript" src="/js/infopages.js"></script>
+    {{--<script type="text/javascript" src="/js/infopages.js"></script>--}}
     <!--?php endif;?>
     	<!?php if($uri_segment == 'products'):?=-->
-    <script type="text/javascript" src="/js/products.js"></script>
+    {{--<script type="text/javascript" src="/js/products.js"></script>--}}
     <!--?php endif;?-->
 
 
@@ -212,7 +204,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     noty({
         text: "{{ Session::get('flash_error') }}",
         type: 'error',
-        timeout: 1000
+        timeout: 500
     });
 </script>
 @endif
@@ -221,7 +213,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         noty({
             text: "{{ Session::get('flash_success') }}",
             type: 'success',
-            timeout: 1000
+            timeout: 500
         });
     </script>
 @endif
@@ -229,7 +221,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 <!-- Header -->
 <header class="header navbar navbar-fixed-top" role="banner">
     <!-- Top Navigation Bar -->
-    <div class="container">
+    <div class="container-fluid">
 
 
         <!-- Sidebar Toggler -->
@@ -239,10 +231,10 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         <!-- Top Left Menu -->
         <ul class="nav navbar-nav navbar-left hidden-xs hidden-sm">
             @section('page-module-menu')
-                <li class="text-center">
+                {{--<li class="text-center">--}}
                 {{--<li class="text-center" style="font-size: 15px; background: #0f2452; margin-top:10px; padding-left: 10px; padding-right: 10px;">--}}
-                    AMERICAN DUNNAGE INC.
-                </li>
+                    {{--AMERICAN DUNNAGE INC.--}}
+                {{--</li>--}}
 
 
         </ul>
@@ -426,7 +418,8 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <!-- /Sidebar -->
 
     <div id="content">
-        <div class="container" style="padding: 50px 20px 20px 20px;">
+        {{--<div class="container" style="padding: 50px 20px 20px 20px;">--}}
+        <div class="container">
             <!-- Breadcrumbs line -->
             <div class="crumbs">
                 @section('page-crumbs')
@@ -480,24 +473,9 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
     </div>
 </div>
-
-<script type="text/javascript" src="/froala/js/froala_editor.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/table.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/link.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/lists.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/video.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/colors.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/align.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/image.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/image_manager.min.js"></script>
-
-<script type="text/javascript" src="/froala/js/froala_editor.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/table.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/link.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/lists.min.js"></script>
-<script type="text/javascript" src="/froala/js/plugins/align.min.js"></script>
-<script type="text/javascript" src="/js/global.js"></script>
-<script type="text/javascript" src="/js/orders.js"></script>
+<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('/js/global.js') }}"></script>
+<script src="{{ asset('/js/orders.js') }}"></script>
 
 <script>
     $(window).unload(function(){
@@ -508,8 +486,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         $("#dvLoading").hide();
     })
 </script>
-<script src="/bootstrap/js/bootstrap.min.js"></script>
-<script src="{{ asset('js/app.js') }}"></script>
+{{--<script src="{{ asset('js/app.js') }}"></script>--}}
 @stack('scripts')
 </body>
 </html>
