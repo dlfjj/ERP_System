@@ -2459,7 +2459,7 @@ label > span.required {
 }*/
 .row-border .form-group {
   border-top: 1px solid #ececec;
-  padding-top: 15px;
+  padding-top: 5px;
   padding-bottom: 15px;
   margin-bottom: 0;
 }

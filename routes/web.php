@@ -167,3 +167,8 @@ Route::post('orders/records','OrderController@postRecord');
 Route::get('orders/customersList','OrderController@customersList');
 Route::get('orders/customersList/getdata', 'OrderController@getCustomerslist')->name('cusomtersList/getdata');
 Route::resource('orders', 'OrderController');
+
+
+/** User Profile */
+
+Route::resource('userprofiles', 'UserProfileController');

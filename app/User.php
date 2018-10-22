@@ -78,6 +78,12 @@ class User extends Authenticatable
         return 'remember_token';
     }
 
+    public function photo(){
+
+        return $this->belongsTo('App\Photo');
+
+    }
+
     public function locks() {
         return $this->hasMany('App\Models\ProductLock');
     }

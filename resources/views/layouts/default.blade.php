@@ -199,7 +199,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <img src="{{asset('/assets/img/loader.gif')}}" id="loading_image">
     <!-- <input type="hidden" value="" class="loading_img"> -->
 </div>
-@if (Session::has('flash_error')) -->
+@if (Session::has('flash_error'))
 <script type="text/javascript">
     noty({
         text: "{{ Session::get('flash_error') }}",
@@ -299,7 +299,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
                     @endif
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="/userprofiles/getIndex"><i class="icon-user"></i> My Profile</a></li>
+                    <li><a href="/userprofiles"><i class="icon-user"></i> My Profile</a></li>
                     <li><a href="#"><i class="icon-calendar"></i> Rates Calculator</a></li><!--remove link convert_currency-->
                     <!-- if(has_role('company_admin')) -->
                     <li><a href="/settings/getIndex"><i class="icon-tasks"></i> Settings</a></li>
