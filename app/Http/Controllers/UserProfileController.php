@@ -16,17 +16,29 @@ class UserProfileController extends Controller
     public function __construct(){
          $this->middleware('auth');
     }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
         $id = Auth::user()->id;
         $user = User::findOrFail($id);
+        $user_avatar = $user->picture;
+//        $user = User::where('picture','=','')->first();
+//        return empty($user_avatar);
 
-        return view('user_profile.show',compact('user'));
+        if ($user_avatar == ''){
+            $user_avatar = 'placeholder_200x200.jpg';
+        }
+
+//        $user_avatar = $user->picture->photo();
+//
+
+        return view('user_profile.show',compact('user','user_avatar'));
     }
 
     /**
@@ -81,20 +93,19 @@ class UserProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-//        $id = Auth::user()->id;
-//        return $request;
+
         $input = $request->all();
         if ($request->action === 'password_change'){
             $rules = array(
                 'username' => 'Required|alpha_num|Between:1,50',
-                'password' => 'Min:10|Max:200',
+                'password' => 'Min:10|Max:200|nullable',
                 'password_conf' => 'Required_with:password|Same:password',
             );
 
             $validation = Validator::make($input, $rules);
 
             if($validation->fails()){
-                return Redirect::to('userprofiles')
+                return Redirect::to('userProfiles')
                     ->with('flash_error','Operation failed')
                     ->withErrors($validation->Messages())
                     ->withInput();
@@ -131,20 +142,30 @@ class UserProfileController extends Controller
 
                 if ($file = $request->file('picture')) {
                     $picture = $file;
+
+                    $userImage = public_path("users/{$user->picture}"); // get previous image from folder
+                    if (file_exists($userImage) && $user->picture != '') { // unlink or remove previous image from folder
+                        unlink($userImage);
+                    }
                     $public_folder = config('app.public_folder') . "users/";
                     $name = md5($id).time().$file->getClientOriginalName();
 //                    $picture_extension = $picture->getClientOriginalExtension();
-//                    $picture->move($public_folder, md5($id) . "." . $picture_extension);
-                    $photo = Photo::create(['file'=>$name]);
-                    $input['picture'] = $photo->id;
+                    $picture->move($public_folder, $name);
+//                    $photo = Photo::create(['file'=>$name]);
+//                    $input['picture'] = $photo->id;
                     $user->picture = $name;
+                }else{
+                    $placeholderImage = public_path("users/placeholder_200x200.jpg");
+                    $user->picture = $placeholderImage;
                 }
-                unset($input['action']);
-                $user->update($input);
+                $user->save();
+//                unset($input['action'],$input['_method'],$input['_token']);
+//
+//                $user->update($input);
 
-//                $user->save();
 
-                return Redirect::to('userprofiles')
+
+                return Redirect::to('userProfiles')
                     ->with('flash_success', 'Operation success');
             }
         }

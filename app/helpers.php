@@ -620,11 +620,11 @@ function updateOrderStatus($order_id){
         if($order->container->code == '40hq'){
             $order_item->pack_unit = $order_item->product->pluck('pack_unit_hq')->implode(',');
             $order_item->units_per_pallette = $order_item->product->pluck('units_per_pallette_hq')->implode(',');
-            $order_item->cbm = ($order_item->product->pluck('carton_size_w_hq')->implode(',') * $order_item->product->pluck('carton_size_d_hq')->implode(',') * $order_item->product->pluck('carton_size_h_hq')->implode(','));
+            $order_item->cbm = ((float)($order_item->product->pluck('carton_size_w_hq')->implode(',')) * (float)($order_item->product->pluck('carton_size_d_hq')->implode(',')) * (float)($order_item->product->pluck('carton_size_h_hq')->implode(',')));
         } else {
             $order_item->pack_unit = $order_item->product->pluck('pack_unit')->implode(',');
             $order_item->units_per_pallette = $order_item->product->pluck('units_per_pallette')->implode(',');
-            $order_item->cbm = ($order_item->product->pluck('carton_size_w')->implode(',') * $order_item->product->pluck('carton_size_d')->implode(',') * $order_item->product->pluck('carton_size_h')->implode(','));
+            $order_item->cbm = ((float)($order_item->product->pluck('carton_size_w')->implode(',')) * (float)($order_item->product->pluck('carton_size_d')->implode(',')) * (float)($order_item->product->pluck('carton_size_h')->implode(',')));
         }
 
         $order_item->save();

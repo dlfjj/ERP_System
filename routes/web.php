@@ -26,6 +26,14 @@ $this->get('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('dashboard','DashboardController@dashboard');
 
+/** User Profile */
+Route::resource('userProfiles', 'UserProfileController');
+
+/** User */
+Route::get('usersList/loginAs/{id}','UserController@postLoginAs');
+Route::resource('usersList', 'UserController');
+
+
 /** Customer Related */
 Route::group(['prefix' => 'customers'], function () {
 
@@ -169,6 +177,3 @@ Route::get('orders/customersList/getdata', 'OrderController@getCustomerslist')->
 Route::resource('orders', 'OrderController');
 
 
-/** User Profile */
-
-Route::resource('userprofiles', 'UserProfileController');

@@ -69,7 +69,7 @@
                     <div><i class="icon-reorder"></i> Order Details</div>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-striped table-bordered table-hover datatable" id="product_table_for_order" style="width:100%">
+                    <table class="table table-striped table-bordered table-hover" id="product_table_for_order" style="width:100%">
                         <thead>
                         <tr>
                             <th class="cell-tight">Part Number</th>

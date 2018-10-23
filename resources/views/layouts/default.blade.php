@@ -27,11 +27,9 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{Auth::user()->company->name}}</title>
 
-
-
     <!-- jQuery UI -->
     {{--<link href="plugins/jquery-ui/jquery-ui-1.10.3.custom.css" rel="stylesheet" type="text/css" />--}}
-    <link rel="stylesheet" type="text/css" href="plugins/jquery-ui/jquery-ui.css"/>
+    <link rel="stylesheet" href="{{ asset('/plugins/jquery-ui/jquery-ui.css') }}"/>
 
     <!--[if lt IE 9]>
     <link rel="stylesheet" type="text/css" href="plugins/jquery-ui/jquery.ui.1.10.3.ie.css"/>
@@ -299,16 +297,16 @@ if(Session::get('browser_name') == 'Internet Explorer'){
                     @endif
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a href="/userprofiles"><i class="icon-user"></i> My Profile</a></li>
+                    <li><a href="/userProfiles"><i class="icon-user"></i> My Profile</a></li>
                     <li><a href="#"><i class="icon-calendar"></i> Rates Calculator</a></li><!--remove link convert_currency-->
                     <!-- if(has_role('company_admin')) -->
                     <li><a href="/settings/getIndex"><i class="icon-tasks"></i> Settings</a></li>
                     <!-- endif -->
-                    <!-- if(has_role('admin')) -->
-                    <li><a href="/webshop_settings/getIndex"><i class="icon-tasks"></i> Webshop Settings</a></li>
+                    @if(has_role('admin'))
+                    {{--<li><a href="/webshop_settings/getIndex"><i class="icon-tasks"></i> Webshop Settings</a></li>--}}
                     <li><a href="/company/getIndex"><i class="icon-tasks"></i> Companies</a></li>
-                    <li><a href="/users/getIndex"><i class="icon-tasks"></i> Users</a></li>
-                    <!-- endif -->
+                    <li><a href="/usersList"><i class="icon-tasks"></i> Users</a></li>
+                    @endif
                     <li class="divider"></li>
                     <li><a href="/logout"><i class="icon-key"></i> Log Out</a></li>
                 </ul>

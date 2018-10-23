@@ -55,9 +55,13 @@
                                     <label class="control-label">E-Mail</label>
                                     {!! Form::text('email', $user->email, array("class"=>"form-control","readonly")) !!}
                                 </div>
-                                <div class="col-md-6 text-right">
+                                <div class="col-md-6">
                                     @if($user->picture != "")
-                                        <img style="margin-bottom: 10px;" src="/timthumb.php?src=/public/users/{{ $user->picture }}&w=100" /><br />
+{{--                                        <img style="margin-bottom: 10px;" src="/timthumb.php?src=/public/users/{{ $user->picture }}&w=100" /><br />--}}
+                                        <img style="margin-bottom: 0px;display: block;max-width: 100%; height: 150px" src="/users/{{ $user_avatar }}" class="pull-right img-responsive" />
+{{--                                        <img style="margin-bottom: 0px;display: block;max-width: 100%; height: 150px" src="/users/{{ $user_avatar }}" class="pull-right img-responsive" />--}}
+                                        {{--<img style="margin-bottom: 0px;display: block;max-width: 100%; height: 150px" src="/users/placeholder_200x200.jpg" class="pull-right img-responsive" />--}}
+                                        {{--<img src="{{ asset('/users/.'.$user->picture.') }}" /><br />--}}
                                     @endif
                                 </div>
                             </div>
