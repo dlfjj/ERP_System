@@ -33,6 +33,10 @@ Route::resource('userProfiles', 'UserProfileController');
 Route::get('usersList/loginAs/{id}','UserController@postLoginAs');
 Route::resource('usersList', 'UserController');
 
+/** Order */
+
+Route::resource('currency_calculator','CurrencyCalculatorController');
+
 
 /** Customer Related */
 Route::group(['prefix' => 'customers'], function () {

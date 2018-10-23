@@ -298,7 +298,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
                 </a>
                 <ul class="dropdown-menu">
                     <li><a href="/userProfiles"><i class="icon-user"></i> My Profile</a></li>
-                    <li><a href="#"><i class="icon-calendar"></i> Rates Calculator</a></li><!--remove link convert_currency-->
+                    <li><a href="/currency_calculator"><i class="icon-calendar"></i> Rates Calculator</a></li><!--remove link convert_currency-->
                     <!-- if(has_role('company_admin')) -->
                     <li><a href="/settings/getIndex"><i class="icon-tasks"></i> Settings</a></li>
                     <!-- endif -->
