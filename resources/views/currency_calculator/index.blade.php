@@ -35,7 +35,8 @@
 				<h4><i class="icon-reorder"></i> Currency Calculator</h4>
 			</div>
 			<div class="widget-content">
-				<form autocomplete="off" enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" action="" method="POST">
+				{!! Form::open(['method'=>'PUT', 'action'=> ['CurrencyCalculatorController@update',$user_id], 'class'=>'form-vertical row-border form-validate','id'=>'main','enctype'=>'multipart/form-data']) !!}
+				{{--<form autocomplete="off" enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" action="" method="POST">--}}
 					<div class="form-group">
 						<div class="row">
 							<div class="col-md-2">
@@ -114,16 +115,16 @@
 										</tr>
 									@endforeach
 								</table>
-								<p><a href="/exchange_rates">View Source Rates</a></p>
+								{{--<p><a href="/exchange_rates">View Source Rates</a></p>--}}
 							</div>
 						</div>
 						<div class="form-actions">
 							<input type="submit" value="Recalculate" class="btn btn-sm btn-success pull-right">
-							<input type="submit" name="flip" value="Flip" class="btn btn-sm btn-success pull-right">
+							{{--<input type="submit" name="flip" value="Flip" class="btn btn-sm btn-success pull-right">--}}
 						</div>
 					</div>
-				</div>
-			</form>
+                {{ Form::close() }}
+            </div>
 		</div>
 	</div>
 </div>

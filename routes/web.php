@@ -33,8 +33,11 @@ Route::resource('userProfiles', 'UserProfileController');
 Route::get('usersList/loginAs/{id}','UserController@postLoginAs');
 Route::resource('usersList', 'UserController');
 
-/** Order */
+/** User */
+Route::resource('companies','CompanyController');
 
+
+/** Currency Calculator */
 Route::resource('currency_calculator','CurrencyCalculatorController');
 
 
@@ -56,7 +59,6 @@ Route::group(['prefix' => 'customers'], function () {
         Route::get('/{addressId}','CustomerController@getAddress');
         Route::patch('/{addressId}', 'CustomerController@updateAddress');
         Route::delete('/{addressId}','CustomerController@deleteAddress');
-
     });
 
     Route::get('/','CustomerController@index');
@@ -65,6 +67,7 @@ Route::group(['prefix' => 'customers'], function () {
     Route::get('/{id}','CustomerController@show');
     Route::post('{id}','CustomerController@update');
 
+    Route::get('/history/{id}/getdata', 'HistoryController@anyDtOrders')->name('history/getdata');
     Route::resource('history','HistoryController');
     Route::get('/products/{id}','CustomerController@getProducts');
     Route::get('/products/getdata', 'CustomerController@getPosts')->name('products/getdata');

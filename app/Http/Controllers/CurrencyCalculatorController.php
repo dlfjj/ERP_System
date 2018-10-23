@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ValueList;
 use Illuminate\Http\Request;
+use Auth;
+use Validator;
+use View;
 
 class CurrencyCalculatorController extends Controller
 {
@@ -32,6 +35,7 @@ class CurrencyCalculatorController extends Controller
         $sale = 2;
         $margin = $sale - $cost;
         $margin_percent = 0;
+        $user_id = Auth::user()->id;
 
         $sale_converted = convert_currency($sale_currency,$cost_currency,$sale,$date);
 
@@ -43,7 +47,7 @@ class CurrencyCalculatorController extends Controller
         }
 
         return view('currency_calculator.index',compact('currency_from','currency_to','date',
-            'amount','result','cost_currency','sale_currency','cost','sale','margin','margin_percent','select_currency_codes'));
+            'amount','result','cost_currency','sale_currency','cost','sale','margin','margin_percent','select_currency_codes','user_id'));
     }
 
     /**
@@ -98,7 +102,8 @@ class CurrencyCalculatorController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $select_currency_codes = ValueList::where('uid','=','CURRENCY_CODES')->orderBy('name', 'asc')->lists('name','name');
+
+        $select_currency_codes = ValueList::where('uid','=','CURRENCY_CODES')->orderBy('name', 'asc')->pluck('name','name');
 
         $rules = array(
             'currency_from' => 'required|min:3|max:3',
@@ -117,21 +122,21 @@ class CurrencyCalculatorController extends Controller
                 ->witherrors($validation->messages())
                 ->withinput();
         } else {
-            if(Input::has('flip')){
-                $currency_to = Input::get('currency_from');
-                $currency_from = Input::get('currency_to');
+            if($request->has('flip')){
+                $currency_to = $request->currency_from;
+                $currency_from = $request->currency_to;
             } else {
-                $currency_from = Input::get('currency_from');
-                $currency_to = Input::get('currency_to');
+                $currency_from = $request->currency_from;
+                $currency_to = $request->currency_to;
             }
-            $date = Input::get('date');
-            $amount = Input::get('amount');
+            $date = $request->date;
+            $amount = $request->amount;
             $result = convert_currency($currency_from,$currency_to,$amount,$date);
 
-            $cost = Input::get('cost');
-            $sale = Input::get('sale');
-            $cost_currency = Input::get('cost_currency');
-            $sale_currency = Input::get('sale_currency');
+            $cost = $request->cost;
+            $sale = $request->sale;
+            $cost_currency = $request->cost_currency;
+            $sale_currency = $request->sale_currency;
 
             $sale_converted = convert_currency($sale_currency,$cost_currency,$sale,$date);
             $margin = $sale_converted - $cost;
@@ -146,7 +151,13 @@ class CurrencyCalculatorController extends Controller
                 $margin_percent = 0;
             }
 
-            return redirect('currency_calculator')->with('flash_success','Update success');
+            $user_id = Auth::user()->id;
+
+
+            return view('currency_calculator.index',compact('currency_from','currency_to','date',
+                'amount','result','cost_currency','sale_currency','cost','sale','margin','margin_percent','select_currency_codes','user_id'));
+
+//            return redirect('currency_calculator')->with('flash_success','Update success');
 //            return view('currency_calculator.index',compact('currency_from','currency_to','date',
 //                'amount','result','cost_currency','sale_currency','cost','sale','margin','margin_percent','select_currency_codes'));
 //            $this->layout->module_title = "";

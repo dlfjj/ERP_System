@@ -8,6 +8,7 @@ use App\Models\Setting;
 use App\Models\ProductPrice;
 use App\Models\ProductPriceOverride;
 use App\Models\CustomerGroup;
+use App\Models\ValueList;
 use Illuminate\Support\Facades\Cache;//add cache facade
 use App\models\Company;//import model class
 use Illuminate\Support\Facades\Auth;
@@ -204,7 +205,7 @@ function return_gross_price($price, $percent){
 
 function selectbox_array($name){
     if($name == "currency_codes"){
-        return ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->lists('name','name');
+        return ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
     }
 
     return array();

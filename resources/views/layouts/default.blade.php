@@ -304,7 +304,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
                     <!-- endif -->
                     @if(has_role('admin'))
                     {{--<li><a href="/webshop_settings/getIndex"><i class="icon-tasks"></i> Webshop Settings</a></li>--}}
-                    <li><a href="/company/getIndex"><i class="icon-tasks"></i> Companies</a></li>
+                    <li><a href="/companies"><i class="icon-tasks"></i> Companies</a></li>
                     <li><a href="/usersList"><i class="icon-tasks"></i> Users</a></li>
                     @endif
                     <li class="divider"></li>

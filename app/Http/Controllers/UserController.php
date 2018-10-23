@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Support\Facades\Hash;
 use Validator;
 use Auth;
+use Redirect;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -41,7 +42,24 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $user = New User;
+        $user->username = uniqid();
+        $user->email= uniqid() .'@'.'somedomain.com';
+        $user->created_by = Auth::user()->id;
+        $user->updated_by = Auth::user()->id;
+        $user->save();
+
+        $id = $user->id;
+
+        if (request()->ajax()){
+            $data['ret_type'] = 'success';
+            $data['ret_msg'] = "Success";
+            $data['ret_url'] = "/users/$id";
+            return json_encode($data);
+        } else {
+            return redirect('usersList/'.$id)
+                ->with('flash_success','Operation success');
+        }
     }
 
     public function postLoginAs($id){
@@ -173,6 +191,23 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if($id == Auth::user()->id){
+            return Redirect::to('usersList/'.$id)->with('flash_error','I will not let you destroy yourself');
+        }
+        if($id == 1){
+            return Redirect::to('usersList/'.$id)->with('flash_error','He can neither be created nor destroyed');
+        }
+        $user = User::find($id);
+        User::find($id)->roles()->detach();
+        $user->delete();
+
+        $data['ret_type'] = 'success';
+        $data['ret_msg'] = "Success";
+        $data['ret_url'] = "/users";
+        if (Request::ajax()){
+            return json_encode($data);
+        } else {
+            return Redirect::to('usersList/')->with('flash_success','Operation success');
+        }
     }
 }

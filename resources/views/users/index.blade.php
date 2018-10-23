@@ -23,9 +23,12 @@
     <div class="page-header">
         <div class="page-title">
             @if(has_role('users_edit'))
-                <form class="form-inline" id="create" action="/users/create" method="POST">
-                    <a class="btn btn-success form-submit-conf" href="javascript:void(0);" data-target-form="create"><i class="icon-plus-sign"></i> New User</a>
-                </form>
+                {{--<form class="form-inline" id="create" action="/users/create" method="POST">--}}
+                {!! Form::open(['method'=>'GET','action'=>'UserController@create'], array('enctype'=>'multipart/form-data','class' => 'form-inline')) !!}
+                    <input type="submit" value="ADD NEW USER" class="btn btn-success form-submit-conf">
+                    {{--<a class="btn btn-success form-submit-conf" href="javascript:void(0);" data-target-form="create"><i class="icon-plus-sign"></i> New User</a>--}}
+                {{--</form>--}}
+                {{ Form::close() }}
             @endif
         </div>
     </div>
@@ -71,7 +74,13 @@
     </div>
     <!-- /Normal -->
 
-
-
-
 @stop
+
+
+@push('scripts')
+    <script>
+        $(".form-submit-conf").on("submit", function(){
+            return confirm("Are you sure? 你确定吗？ bist du sicher？");
+        });
+    </script>
+@endpush

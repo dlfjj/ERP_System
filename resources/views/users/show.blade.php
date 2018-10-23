@@ -211,7 +211,7 @@
                             <div class="form-actions">
                                 @if(has_role('users_edit'))
                                     <input type="submit" value="SAVE" class="btn btn-success pull-right">
-                                    <a class="btn btn-danger pull-right conf" href="/users/destroy/{{$user->id}}"><i class="icon-trash"></i> Delete</a>
+                                    <a class="btn btn-danger pull-right conf" href="/usersList/destroy/{{$user->id}}"><i class="icon-trash"></i> Delete</a>
                                 @endif
                                 <a href="/users" class="btn btn-default pull-right">Cancel</a>
                             </div>

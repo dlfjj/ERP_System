@@ -106,26 +106,15 @@
 
                         <h4><i class="icon-reorder"></i> Order History</h4>
 
-                        {{--<div class="toolbar no-padding">--}}
-
-                            {{--<div class="btn-group">--}}
-
-                                {{--<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
-
-                            {{--</div>--}}
-
-                        {{--</div>--}}
-
                     </div>
 
-                    <div class="widget-content no-padding">
+                    <div class="panel-body">
 
-                        <table class="table table-striped table-bordered table-hover datatable" data-dataTable='{"bServerSide": true, "sAjaxSource": "/customers/dt-orders/{{$customer->id}}"  }'>
+                        <table class="table table-striped table-bordered table-hover" id="order_history_table" style="width:100%;">
 
                             <thead>
 
                             <tr>
-
                                 <th>ID</th>
 
                                 <th>Status</th>
@@ -161,10 +150,29 @@
         </div>
 
     @endif
-
-
-
-
-
 @stop
+
+@push('scripts')
+    <script>
+        // jquery getting data for purchase table
+        $(function() {
+            $('#order_history_table').DataTable({
+
+                processing: true,
+                serverSide: true,
+                ajax: '{!! route('history/getdata',[$customer->id]) !!}',
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'order_status.name' },
+                    { data: 'order_date', name: 'order_date' },
+                    { data: 'customer_order_number', name: 'customer_order_number' },
+                    { data: 'currency_code', name: 'currency_code' },
+                    { data: 'total_gross', name: 'total_gross' },
+                    { data: 'total_paid', name: 'total_paid' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false}
+                ],
+            });
+        });
+    </script>
+@endpush
 

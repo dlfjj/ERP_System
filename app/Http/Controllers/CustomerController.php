@@ -343,7 +343,10 @@ class CustomerController extends Controller
         ->make();
     }
 
-	public function _getOutstandingBalance($currency_code="USD"){
+
+
+
+    public function _getOutstandingBalance($currency_code="USD"){
 		$invoices = Invoice::whereIn('status',array('UNPAID','PARTIAL'))
 			->get();
 		$total = 0;
@@ -408,17 +411,21 @@ class CustomerController extends Controller
         return view('customers.products.show',compact('select_currency_codes','select_payment_terms','select_taxcodes','select_groups','select_users','select_contacts','customer','outstandings','outstanding_currency ','overdue','overdue_currency','years','customer_products','product','created_user','updated_user'));
 	}
 
-    public function getRelatedProducts($id){
+//    public function getRelatedProducts($id){
+//
+//        $orders = Order::where('customer_id', $id)->get();
+//
+//        $product = '';
+//
+//        return \DataTables::of($products)
+//            ->addColumn('action', function ($product) {
+//                return '<a href="/products/'.$product->id.'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';})
+//            ->make(true);
+//    }
 
-        $orders = Order::where('customer_id', $id)->get();
 
-        $product = '';
 
-        return \DataTables::of($products)
-            ->addColumn('action', function ($product) {
-                return '<a href="/products/'.$product->id.'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';})
-            ->make(true);
-    }
+
 
 	public function postDestroy($id) {
         $customer = Customer::findOrFail($id);
@@ -427,31 +434,7 @@ class CustomerController extends Controller
             ->with('flash_success','Operation success');
 	}
 
-    public function anyDtOrders($customer_id){
-        $orders = Order::Leftjoin('customers','orders.customer_id','=','customers.id')
-            ->Leftjoin('order_status','orders.status_id','=','order_status.id')
-			->select(
-            array(
-				'orders.id',
-				'orders.order_no',
-                'order_status.name',
-                'orders.order_date',
-                'orders.customer_order_number',
-                'orders.currency_code',
-                'orders.total_gross',
-                'orders.total_paid'
-            ))
-            ->where("orders.customer_id",$customer_id)
-            ->where('orders.company_id',return_company_id())
-        ;
-        return Datatables::of($orders)
-			->add_column('operations','<ul class="table-controls"><li><a href="/orders/show/{{ $id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a> </li></ul>')
-            ->edit_column('total_paid', function($row){
-                return round($row->total_gross - $row->total_paid,2);
-            })
-			->remove_column('id')
-			->make();
-    }
+
 
 
 

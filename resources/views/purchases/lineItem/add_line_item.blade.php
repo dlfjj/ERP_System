@@ -62,7 +62,7 @@
                     <h4><i class="icon-reorder"></i> Choose Purchase Item</h4>
                 </div>
                 <div class="panel-body">
-                    <table class="table table-striped table-bordered table-hover" id="product_table_for_purchase" data-dataTable='{"bServerSide": true, "bPaginate": true, "sAjaxSource": "/purchases/dt-available-products"}'>
+                    <table class="table table-striped table-bordered table-hover" id="product_table_for_purchase">
                         <thead>
                         <tr>
                             <th class="">Part Number</th>
@@ -89,11 +89,6 @@
         // jquery getting data for product table
         $(function() {
             $('#product_table_for_purchase').DataTable({
-                // "oLanguage": {
-
-                    // "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
-
-                // },
                 processing: true,
                 serverSide: true,
                 ajax: '{!! route('purchase_line_items/getdata',[$purchase->id]) !!}',
