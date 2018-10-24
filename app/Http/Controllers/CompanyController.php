@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use Validator;
 use Redirect;
+use Auth;
+use App\Models\CustomerGroup;
 
 class CompanyController extends Controller
 {
@@ -34,7 +36,47 @@ class CompanyController extends Controller
      */
     public function create()
     {
-        //
+        $company = New Company();
+        $company->created_by = Auth::user()->id;
+        $company->updated_by = Auth::user()->id;
+        $company->currency_code = "USD";
+        $company->save();
+
+        $id = $company->id;
+
+        setupCompany($id);
+
+
+        $new = new CustomerGroup();
+        $new->company_id = $id;
+        $new->group      = "Price Group 1";
+        $new->surcharge_20 = 0.95;
+        $new->surcharge_40 = 0.95;
+        $new->save();
+
+        $new = new CustomerGroup();
+        $new->company_id = $id;
+        $new->group      = "Price Group 2";
+        $new->surcharge_20 = 0.95;
+        $new->surcharge_40 = 0.95;
+        $new->save();
+
+        $new = new CustomerGroup();
+        $new->company_id = $id;
+        $new->group      = "Price Group 3";
+        $new->surcharge_20 = 0.95;
+        $new->surcharge_40 = 0.95;
+        $new->save();
+
+        if (request()->ajax()){
+            $data['ret_type'] = 'success';
+            $data['ret_msg'] = "Success";
+            $data['ret_url'] = "/users/$id";
+            return json_encode($data);
+        } else {
+            return redirect('companies/'.$id)
+                ->with('flash_success','Operation success');
+        }
     }
 
     /**
@@ -128,6 +170,22 @@ class CompanyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if($id == Auth::user()->company_id){
+            return Redirect::to('users/'.$id)->with('flash_error','I will not let you destroy yourself');
+        }
+        if($id == 1){
+            return Redirect::to('users/'.$id)->with('flash_error','He can neither be created nor destroyed');
+        }
+        $company = Company::find($id);
+        $company->delete();
+
+        $data['ret_type'] = 'success';
+        $data['ret_msg'] = "Success";
+        $data['ret_url'] = "/users";
+        if (request()->ajax()){
+            return json_encode($data);
+        } else {
+            return Redirect::to('companies/')->with('flash_success','Operation success');
+        }
     }
 }

@@ -220,7 +220,7 @@
                     <div class="form-actions">
                         {!! Form::open(['method'=>'DELETE','action'=>['UserController@destroy',$user->id]], array('enctype'=>'multipart/form-data')) !!}
                         {{--{{ Form::button('<a class="btn btn-danger" ><i class="icon-trash"></i> DELETE THIS USER</a>', ['type' => 'submit', 'class' => 'btn btn-danger pull-right'] )  }}--}}
-                        {{ Form::button('<i class="icon-trash"><span> DELETE THIS USER</span></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-lg form-submit-conf pull-right'] )  }}
+                            {{ Form::button('<i class="icon-trash"><span> DELETE THIS USER</span></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-lg form-submit-conf pull-right'] )  }}
                         {{ Form::close() }}
                     </div>
                 </div>
