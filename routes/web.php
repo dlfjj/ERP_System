@@ -188,3 +188,5 @@ Route::get('orders/customersList/getdata', 'OrderController@getCustomerslist')->
 Route::resource('orders', 'OrderController');
 
 
+/** Order */
+Route::resource('value_lists','ValueListController');

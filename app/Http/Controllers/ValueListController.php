@@ -2,31 +2,67 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\ValueList;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ValueListController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
     public function __construct(){
-        $this->beforeFilter('auth');
+        $this->middleware('auth');
         has_role('admin',1);
     }
 
-    public $layout = 'layouts.default';
-
-    public function getIndex() {
+    public function index()
+    {
         $value_lists = DB::table('value_lists')
             ->groupBy('module')
             ->groupBy('uid')
             ->orderBy('uid')
             ->get();
-        $this->layout->module_title = "Value Lists";
-        $this->layout->module_sub_title = "Valuelists";
-        $this->layout->content = View::make('value_lists.index')
-            ->with('value_lists', $value_lists);
+
+        return view('value_lists.index',compact('value_lists'));
+//        $this->layout->module_title = "Value Lists";
+//        $this->layout->module_sub_title = "Valuelists";
+//        $this->layout->content = View::make('value_lists.index')
+//            ->with('value_lists', $value_lists);
     }
 
-    public function getShow($id) {
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
         $value_list = ValueList::findOrFail($id);
 
         $list_entries = DB::table('value_lists')
@@ -34,28 +70,45 @@ class ValueListController extends Controller
             ->where('module',$value_list->module)
             ->where('uid',$value_list->uid)
             ->get();
-        $this->layout->module_title = "Value Lists";
-        $this->layout->module_sub_title = "Valuelists";
-        $this->layout->content = View::make('value_lists.show')
-            ->with('value_list', $value_list)
-            ->with('list_entries', $list_entries);
+
+        return view('value_lists.show',compact('value_list','list_entries'));
     }
 
-    public function postUpdate($id){
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
         $value_list = ValueList::findOrFail($id);
         $module = $value_list->module;
         $uid = $value_list->uid;
 
-        $new_values = Input::get('name');
+        $new_values = $request->name;
 
         if(count($new_values) == 0){
-            return Redirect::to('value_lists/show/'.$id)
+            return redirect('value_lists/'.$id)
                 ->with('flash_error','Need at least 1 entry');
         }
 
-        $value_list = ValueList::where('module',$module)->where('uid',$uid)->delete();
+       ValueList::where('module',$module)->where('uid',$uid)->delete();
 
         foreach($new_values as $new_value){
+
             $new_value_list = new ValueList();
             $new_value_list->uid = $uid;
             $new_value_list->module = $module;
@@ -63,8 +116,18 @@ class ValueListController extends Controller
             $new_value_list->save();
         }
 
-        return Redirect::to('value_lists/show/'.$new_value_list->id)
+        return redirect('value_lists/'.$new_value_list->id)
             ->with('flash_success','Operation success');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+
+    }
 }
