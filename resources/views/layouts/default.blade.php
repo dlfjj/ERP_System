@@ -300,7 +300,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
                     <li><a href="/userProfiles"><i class="icon-user"></i> My Profile</a></li>
                     <li><a href="/currency_calculator"><i class="icon-calendar"></i> Rates Calculator</a></li><!--remove link convert_currency-->
                     <!-- if(has_role('company_admin')) -->
-                    <li><a href="/settings/getIndex"><i class="icon-tasks"></i> Settings</a></li>
+                    <li><a href="/setting"><i class="icon-tasks"></i> Settings</a></li>
                     <!-- endif -->
                     @if(has_role('admin'))
                     {{--<li><a href="/webshop_settings/getIndex"><i class="icon-tasks"></i> Webshop Settings</a></li>--}}

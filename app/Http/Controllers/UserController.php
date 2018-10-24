@@ -96,6 +96,8 @@ class UserController extends Controller
         $role_user = User::find($id)->roles;
         $select_companies = Company::pluck('name','id');
 
+
+
         return view('users.show',compact('user','roles','role_user','select_companies'));
     }
 
@@ -197,14 +199,21 @@ class UserController extends Controller
         if($id == 1){
             return Redirect::to('usersList/'.$id)->with('flash_error','He can neither be created nor destroyed');
         }
+
+
         $user = User::find($id);
+
+        if($user_avatar_path = file_exists(public_path() ."/users/".$user->picture && $user->picture != "")){
+            unlink(public_path() ."/users/".$user->picture);
+        }
+
         User::find($id)->roles()->detach();
         $user->delete();
 
         $data['ret_type'] = 'success';
         $data['ret_msg'] = "Success";
         $data['ret_url'] = "/users";
-        if (Request::ajax()){
+        if (request()->ajax()){
             return json_encode($data);
         } else {
             return Redirect::to('usersList/')->with('flash_success','Operation success');

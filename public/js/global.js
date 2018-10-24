@@ -78,6 +78,15 @@ $(document).ready(function() {
 			}
 		});
 	});
+    // $("body").on("click", "button .form-submit-conf", function(e){
+    //     e.preventDefault();
+    //     var form = $(this).closest("form");
+    //     bootbox.confirm("Are you sure?", function(result) {
+    //         if(result){
+    //             $(form).submit();
+    //         }
+    //     });
+    // });
 
 	$("body").on("click", "a.form-submit-conf", function(e){
 		e.preventDefault();

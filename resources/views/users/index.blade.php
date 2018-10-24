@@ -77,10 +77,10 @@
 @stop
 
 
-@push('scripts')
-    <script>
-        $(".form-submit-conf").on("submit", function(){
-            return confirm("Are you sure? 你确定吗？ bist du sicher？");
-        });
-    </script>
-@endpush
+{{--@push('scripts')--}}
+    {{--<script>--}}
+        {{--$(".form-submit-conf1").on("submit", function(){--}}
+            {{--return confirm("Are you sure? 你确定吗？ bist du sicher？");--}}
+        {{--});--}}
+    {{--</script>--}}
+{{--@endpush--}}

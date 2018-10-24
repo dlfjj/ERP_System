@@ -211,15 +211,57 @@
                             <div class="form-actions">
                                 @if(has_role('users_edit'))
                                     <input type="submit" value="SAVE" class="btn btn-success pull-right">
-                                    <a class="btn btn-danger pull-right conf" href="/usersList/destroy/{{$user->id}}"><i class="icon-trash"></i> Delete</a>
+                                    {{--<a class="btn btn-danger pull-right deleteAttribute" data-id="{{ $user->id }}"><i class="icon-trash"></i> Delete</a>--}}
                                 @endif
                                 <a href="/users" class="btn btn-default pull-right">Cancel</a>
                             </div>
                         </div>
                     {{ Form::close() }}
+                    <div class="form-actions">
+                        {!! Form::open(['method'=>'DELETE','action'=>['UserController@destroy',$user->id]], array('enctype'=>'multipart/form-data')) !!}
+                        {{--{{ Form::button('<a class="btn btn-danger" ><i class="icon-trash"></i> DELETE THIS USER</a>', ['type' => 'submit', 'class' => 'btn btn-danger pull-right'] )  }}--}}
+                        {{ Form::button('<i class="icon-trash"><span> DELETE THIS USER</span></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-lg form-submit-conf pull-right'] )  }}
+                        {{ Form::close() }}
+                    </div>
                 </div>
+
             </div>
+
         </div>
     </div>
 
 @stop
+@push('scripts')
+    <script>
+        {{--$(".deleteAttribute").click(function(){--}}
+            {{--var id = $(this).data("id");--}}
+            {{--console.log(id);--}}
+            {{--$.ajaxSetup({--}}
+                {{--headers: {--}}
+                    {{--'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+                {{--}--}}
+            {{--});--}}
+            {{--$.ajax(--}}
+                {{--{--}}
+                    {{--url:  "{!! url('usersList' ) !!}" + "/" + id,--}}
+                    {{--type: 'POST',--}}
+                    {{--dataType: "JSON",--}}
+                    {{--data: {--}}
+                        {{--"id": id,--}}
+                        {{--"_method": 'DELETE',--}}
+                    {{--},--}}
+                    {{--// url: "products/attributes/"+id,--}}
+                    {{--success: function (response)--}}
+                    {{--{--}}
+                        {{--alert("You delete this user successfully");--}}
+                        {{--window.location.href = "/usersList";--}}
+                    {{--}--}}
+                {{--});--}}
+
+        {{--});--}}
+
+        {{--$(document).ajaxStop(function(){--}}
+            {{--window.location.reload();--}}
+        {{--});--}}
+    </script>
+@endpush

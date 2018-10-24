@@ -41,6 +41,10 @@ Route::resource('companies','CompanyController');
 Route::resource('currency_calculator','CurrencyCalculatorController');
 
 
+/** Setting */
+Route::resource('setting','SettingController');
+
+
 /** Customer Related */
 Route::group(['prefix' => 'customers'], function () {
 
