@@ -128,15 +128,15 @@ class Category extends Node {
     }
 
 	public function downloads(){
-		return $this->hasMany('CategoryDownload');
+		return $this->hasMany('App\Models\CategoryDownload');
 	}
 
 	public function attributes(){
-		return $this->hasMany('CategoryAttribute');
+		return $this->hasMany('App\Models\CategoryAttribute');
 	}
 
 	public function images(){
-		return $this->hasMany('CategoryImage');
+		return $this->hasMany('App\Models\CategoryImage');
 	}
 
     public function getDescription(){

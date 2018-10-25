@@ -1,8 +1,8 @@
 <?php
-namespace model;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-class CategoryAttribute extends Eloquent {
+class CategoryAttribute extends Model {
 
 	protected $guarded = array(
 	);

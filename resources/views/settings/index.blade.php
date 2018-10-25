@@ -99,13 +99,13 @@
                 </div>
                 <div class="widget-content">
                     @if(has_role('admin'))
-                        <a class="btn btn-default btn-sm" href="/value_lists">Value Lists</a>
-                        <a class="btn btn-default btn-sm" href="/product_categories">Product Categories</a>
-                        <a class="btn btn-default btn-sm" href="/companies">Companies</a>
-                        <a class="btn btn-default btn-sm" href="/exchange_rates">Exchange Rates</a>
-                        <a class="btn btn-default btn-sm" href="/taxcodes">Tax Codes</a>
-                        <a class="btn btn-default btn-sm" href="/payment_terms">Payment Terms</a>
-                        <a class="btn btn-default btn-sm" href="/shipping_terms">Shipping Terms</a>
+                        <a class="btn btn-default btn-sm" href="settings/value_lists">Value Lists</a>
+                        <a class="btn btn-default btn-sm" href="settings/product_categories">Product Categories</a>
+                        <a class="btn btn-default btn-sm" href="settings/companies">Companies</a>
+                        <a class="btn btn-default btn-sm" href="settings/exchange_rates">Exchange Rates</a>
+                        <a class="btn btn-default btn-sm" href="settings/taxcodes">Tax Codes</a>
+                        <a class="btn btn-default btn-sm" href="settings/payment_terms">Payment Terms</a>
+                        <a class="btn btn-default btn-sm" href="settings/shipping_terms">Shipping Terms</a>
                     @endif
                     <a class="btn btn-default btn-sm" href="/chart_of_accounts">Chart of Accounts</a>
                 </div>

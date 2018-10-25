@@ -1,8 +1,8 @@
 <?php
-namespace model;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-class CategoryImage extends Eloquent {
+class CategoryImage extends Model {
 
 	protected $guarded = array(
 	);

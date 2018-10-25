@@ -7,10 +7,10 @@
 			<a href="/">Dashboard</a>
 		</li>
         <li>
-            <a href="/setting">Setting</a>
+            <a href="/settings">Setting</a>
         </li>
 		<li class="current">
-			<a href="/value_lists/" title="">Value Lists</a>
+			<a href="value_lists/" title="">Value Lists</a>
 		</li>
 	</ul>
 
@@ -54,7 +54,7 @@
 								<td>{{$value_list->uid}}</td>
 								<td class="align-right">
 									<span class="btn-group">
-										<a href="/value_lists/{{$value_list->id}}" class="btn btn-xs"><i class="icon-edit"></i></a>
+										<a href="/settings/value_lists/{{$value_list->id}}" class="btn"><i class="icon-edit"></i></a>
 									</span>
 								</td>
 							</tr>

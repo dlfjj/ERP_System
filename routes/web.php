@@ -36,13 +36,25 @@ Route::resource('usersList', 'UserController');
 /** User */
 Route::resource('companies','CompanyController');
 
-
 /** Currency Calculator */
 Route::resource('currency_calculator','CurrencyCalculatorController');
 
-
 /** Setting */
-Route::resource('setting','SettingController');
+Route::group(['prefix' => 'settings'], function () {
+    Route::resource('/','SettingController');
+    /** Value List */
+    Route::resource('/value_lists','ValueListController');
+    /** Product Categories */
+    Route::patch('/product_categories/update/{id}','ProductCategoryController@updateAddThumbnail');
+    Route::get('/product_categories/update/{id}','ProductCategoryController@getUpdate');
+    Route::delete('/product_categories/update/category_image_delete/{id}','ProductCategoryController@deleteImage');
+    Route::patch('/product_categories/update/update_downloadable_files/{id}','ProductCategoryController@updateDownloadableFile');
+    Route::patch('/product_categories/update/category_atrributes/{id}','ProductCategoryController@updateAttributes');
+    Route::resource('/product_categories','ProductCategoryController');
+});
+
+
+
 
 
 /** Customer Related */
@@ -188,5 +200,3 @@ Route::get('orders/customersList/getdata', 'OrderController@getCustomerslist')->
 Route::resource('orders', 'OrderController');
 
 
-/** Order */
-Route::resource('value_lists','ValueListController');

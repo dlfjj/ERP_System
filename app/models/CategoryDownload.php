@@ -1,8 +1,8 @@
 <?php
-namespace model;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-class CategoryDownload extends Eloquent {
+class CategoryDownload extends Model {
 
 	protected $guarded = array(
 	);

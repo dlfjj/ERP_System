@@ -27,7 +27,7 @@ class ValueListController extends Controller
             ->orderBy('uid')
             ->get();
 
-        return view('value_lists.index',compact('value_lists'));
+        return view('settings.value_lists.index',compact('value_lists'));
 //        $this->layout->module_title = "Value Lists";
 //        $this->layout->module_sub_title = "Valuelists";
 //        $this->layout->content = View::make('value_lists.index')
@@ -71,7 +71,7 @@ class ValueListController extends Controller
             ->where('uid',$value_list->uid)
             ->get();
 
-        return view('value_lists.show',compact('value_list','list_entries'));
+        return view('settings.value_lists.show',compact('value_list','list_entries'));
     }
 
     /**
@@ -101,7 +101,7 @@ class ValueListController extends Controller
         $new_values = $request->name;
 
         if(count($new_values) == 0){
-            return redirect('value_lists/'.$id)
+            return redirect('settings/value_lists/'.$id)
                 ->with('flash_error','Need at least 1 entry');
         }
 
@@ -116,7 +116,7 @@ class ValueListController extends Controller
             $new_value_list->save();
         }
 
-        return redirect('value_lists/'.$new_value_list->id)
+        return redirect('settings/value_lists/'.$new_value_list->id)
             ->with('flash_success','Operation success');
     }
 

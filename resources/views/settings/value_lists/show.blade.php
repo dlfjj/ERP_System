@@ -7,13 +7,13 @@
 			<a href="/">Dashboard</a>
 		</li>
 		<li>
-			<a href="/setting">Setting</a>
+			<a href="/settings">Setting</a>
 		</li>
 		<li>
-			<a href="/value_lists/" title="">Value Lists</a>
+			<a href="/settings/value_lists/" title="">Value Lists</a>
 		</li>
 		<li class="current">
-			<a href="/value_lists/show/{{$value_list->id}}" title="">{{ucfirst($value_list->uid)}}</a>
+			<a href="/settings/value_lists/{{$value_list->id}}" title="">{{ucfirst($value_list->uid)}}</a>
 		</li>
 	</ul>
 
@@ -29,7 +29,7 @@
 @section('page-header')
 	<div class="page-header">
 		<div class="page-title">
-			<a class="btn btn-default" href="/value_lists"><i class="icon-check"></i> Done</a>
+			<a class="btn btn-default" href="/settings/value_lists"><i class="icon-check"></i> Done</a>
 		</div>
 	</div>
 @stop
@@ -82,7 +82,7 @@
                             <a href="javascript:void(0);" class="btn btn-sm btn-info pull-right add_item">Add New</a>
                             <input type="submit" value="Save" class="btn btn-sm btn-success pull-right">
                             {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
-							<a href="/value_lists/{{$value_list->id}}" class="btn btn-sm btn-default pull-right">Undo</a>
+							<a href="/settings/value_lists/{{$value_list->id}}" class="btn btn-sm btn-default pull-right">Undo</a>
 						</div>
 					</div>
                 {{ Form::close() }}
@@ -105,6 +105,5 @@
 
             });
         });
-
     </script>
 @endpush
