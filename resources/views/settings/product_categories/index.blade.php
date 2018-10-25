@@ -10,7 +10,7 @@
 			<a href="/settings/" title="">Settings</a>
 		</li>
 		<li class="current">
-			<a href="product_categories/" title="">Product Categories</a>
+			<a href="/settings/product_categories/" title="">Product Categories</a>
 		</li>
 	</ul>
 
@@ -48,14 +48,15 @@
 					@else
 						<h4><i class="icon-reorder"></i> Add new top-level category</h4>
 					@endif
-					<div class="toolbar no-padding">
-						<div class="btn-group">
-							<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
-						</div>
-					</div>
+					{{--<div class="toolbar no-padding">--}}
+						{{--<div class="btn-group">--}}
+							{{--<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
+						{{--</div>--}}
+					{{--</div>--}}
 				</div>
 				<div class="widget-content">
-					<form enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" action="/product_categories/create" method="POST">
+					{!! Form::open(['method'=>'POST','action'=>['ProductCategoryController@create']], array('enctype'=>'multipart/form-data','id'=>'main','class' => 'form-vertical row-border form-validate')) !!}
+					{{--<form enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" action="/product_categories/create" method="POST">--}}
 						<div class="form-group">
 							<div class="row">
 								<div class="col-md-3">
@@ -68,7 +69,8 @@
 								<input type="submit" value="Add Category" class="btn btn-success pull-right">
 							</div>
 						</div>
-					</form>
+					{{--</form>--}}
+					{{ Form::close() }}
 				</div>
 			</div>
 		</div>

@@ -43,9 +43,51 @@ class ProductCategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $rules = array(
+            'parent_id' => 'integer|digits_between:1,6',
+            "name" => "required|between:1,100",
+            'description' => 'between:1,1000'
+        );
+        $input = $request->all();
+        $validation = Validator::make($input, $rules);
+
+        $parent_id = $request->parent_id;
+
+        if($validation->fails()){
+            return Redirect::to('/settings/product_categories/'.$parent_id)
+                ->with('flash_error','Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+            if($parent_id){
+                $parent_category = Category::where("id",$parent_id)->first();
+                $parent_category->children()->create(array(
+                    'name' => $request->name,
+                    'description' => $request->description
+                ));
+            } else {
+                Category::create(array(
+                        'name' => Input::get('name'),
+                        'description' => Input::get('description'),
+                        'sort_by' => Input::get('sort_by')
+                    )
+                );
+            }
+            //$root = Category::create(array('name' => 'Electronic Components'));
+            //$root->children()->create(array('name' => 'PCBA'));
+            //$root->children()->create(array('name' => 'Resistors'));
+
+            if(is_numeric($parent_id)){
+                return Redirect::to('/settings/product_categories/'.$parent_id)
+                    ->with('flash_success','Operation success');
+            } else {
+                return Redirect::to('/settings/product_categories/')
+                    ->with('flash_success','Operation success');
+            }
+
+        }
     }
 
     /**
