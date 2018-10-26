@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\CategoryAttribute;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\CategoryImage;
 use App\Models\CategoryDownload;
@@ -34,8 +35,8 @@ class ProductCategoryController extends Controller
             $ancestors = $category->ancestorsAndSelf()->get();
             $categories = $category->immediateDescendants()->get();
         }
-        $category_id = $id;
-        return view('settings.product_categories.index',compact('category','category_id','ancestors','categories'));
+//        $category_id = $id;
+        return view('settings.product_categories.index',compact('category','ancestors','categories'))->with('category_id',$id);
     }
 
     /**
@@ -46,7 +47,7 @@ class ProductCategoryController extends Controller
     public function create(Request $request)
     {
         $rules = array(
-            'parent_id' => 'integer|digits_between:1,6',
+            'parent_id' => 'integer|digits_between:1,6|nullable',
             "name" => "required|between:1,100",
             'description' => 'between:1,1000'
         );
@@ -69,9 +70,9 @@ class ProductCategoryController extends Controller
                 ));
             } else {
                 Category::create(array(
-                        'name' => Input::get('name'),
-                        'description' => Input::get('description'),
-                        'sort_by' => Input::get('sort_by')
+                        'name' => $request->name,
+                        'description' => $request->description,
+                        'sort_by' => $request->sort_by
                     )
                 );
             }
@@ -438,6 +439,39 @@ class ProductCategoryController extends Controller
 
     public function destroy($id)
     {
-        //
+//        $rules = array(
+//            'category_id' => 'required|integer|digits_between:1,6',
+//        );
+//        $input = $id;
+//        $validation = Validator::make($input, $rules);
+//        return dd(is_numeric($id));
+
+        if(!is_numeric($id)){
+            return Redirect::to('/settings/product_categories/')
+                ->with('flash_error','Operation failed')
+                ->withInput();
+        } else {
+            $category_id = $id;
+
+            $category = Category::where('id', '=', $category_id)->first();
+            $categories = $category->Descendants()->get();
+
+            $category_ids = [];
+            $category_ids[] = $category_id;
+            foreach($categories as $desc){
+                $category_ids[] = $desc->id;
+            }
+
+            $products = Product::whereIn('category_id',$category_ids)->get();
+            if($products->count() > 0){
+                return Redirect::to('/settings/product_categories/')
+                    ->with('flash_error','Category still contains products');
+            }
+
+            $category->delete();
+
+            return Redirect::to('/settings/product_categories/')
+                ->with('flash_success','Operation success');
+        }
     }
 }

@@ -51,6 +51,9 @@ Route::group(['prefix' => 'settings'], function () {
     Route::patch('/product_categories/update/update_downloadable_files/{id}','ProductCategoryController@updateDownloadableFile');
     Route::patch('/product_categories/update/category_atrributes/{id}','ProductCategoryController@updateAttributes');
     Route::resource('/product_categories','ProductCategoryController');
+    /** Taxcode */
+    Route::resource('/taxcodes','TaxcodeController');
+
 });
 
 

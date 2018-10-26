@@ -55,7 +55,7 @@
 					{{--</div>--}}
 				</div>
 				<div class="widget-content">
-					{!! Form::open(['method'=>'POST','action'=>['ProductCategoryController@create']], array('enctype'=>'multipart/form-data','id'=>'main','class' => 'form-vertical row-border form-validate')) !!}
+					{!! Form::open(['method'=>'GET','action'=>['ProductCategoryController@create']], array('enctype'=>'multipart/form-data','id'=>'main','class' => 'form-vertical row-border form-validate')) !!}
 					{{--<form enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" action="/product_categories/create" method="POST">--}}
 						<div class="form-group">
 							<div class="row">
@@ -100,7 +100,10 @@
 						<tbody>
 						@if($categories->count()>0)
 							@foreach($categories as $category)
-								<tr>
+                                {!! Form::open(['method'=>'DELETE', 'action'=> ['ProductCategoryController@destroy', $category->id],'enctype'=>'multipart/form-data']) !!}
+
+
+                                <tr>
 									<td>{{$category->sort_by}}</td>
 									<td>{{$category->name}}</td>
 									<td>{{$category->banner }}</td>
@@ -108,10 +111,12 @@
 										<ul class="table-controls">
 											<li><a href="/settings/product_categories/{{ $category->id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a></li>
 											<li><a href="/settings/product_categories/update/{{ $category->id }}" class="bs-tooltip" title="Update"><i class="icon-edit"></i></a></li>
-											<li><a href="/product_categories/delete/{{ $category->id }}" class="bs-tooltip" title="Delete"><i class="icon-remove"></i></a></li>
-										</ul>
+											{{--<li><input type="submit" class="bs-tooltip" title="Delete"><i class="icon-remove"></i></input></li>--}}
+                                            {{ Form::button('<i class="icon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm'] )  }}
+                                        </ul>
 									</td>
 								</tr>
+                                {!! Form::close() !!}
 							@endforeach
 						@else
 							<tr>
