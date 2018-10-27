@@ -181,7 +181,7 @@ class ProductCategoryController extends Controller
         $path = " » ";
         if($ancestors){
             foreach($ancestors as $ancestor){
-                $path .= "<a href='/settings/product_categories/$ancestor->id'>$ancestor->name</a>" . " &raquo; ";
+                $path .= "<a href='/settings/product_categories/lower_level/$ancestor->id'>$ancestor->name</a>" . " &raquo; ";
             }
         }
         $path = substr_replace($path,"",-8);

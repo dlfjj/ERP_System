@@ -161,7 +161,7 @@ class ChartOfAccountController extends Controller
         $path = " » ";
         if($ancestors){
             foreach($ancestors as $ancestor){
-                $path .= "<a href='/chart_of_accounts/show/$ancestor->id'>$ancestor->name</a>" . " &raquo; ";
+                $path .= "<a href='/settings/chart_of_accounts/lower-level/$ancestor->id'>$ancestor->name</a>" . " &raquo; ";
             }
         }
         $path = substr_replace($path,"",-8);
