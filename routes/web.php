@@ -45,6 +45,7 @@ Route::group(['prefix' => 'settings'], function () {
     /** Value List */
     Route::resource('/value_lists','ValueListController');
     /** Product Categories */
+    Route::get('/product_categories/lower_level/{id}','ProductCategoryController@showDifferentLevel');
     Route::patch('/product_categories/update/{id}','ProductCategoryController@updateAddThumbnail');
     Route::get('/product_categories/update/{id}','ProductCategoryController@getUpdate');
     Route::delete('/product_categories/update/category_image_delete/{id}','ProductCategoryController@deleteImage');
@@ -53,7 +54,13 @@ Route::group(['prefix' => 'settings'], function () {
     Route::resource('/product_categories','ProductCategoryController');
     /** Taxcode */
     Route::resource('/taxcodes','TaxcodeController');
-
+    /** Payment Terms */
+    Route::resource('/payment_terms','PaymentTermController');
+    /** Shipping Terms */
+    Route::resource('/shipping_terms','ShippingTermController');
+    /** Chart of Accounts Terms */
+    Route::get('/chart_of_accounts/lower-level/{id}','ChartOfAccountController@showDifferentLevel');
+    Route::resource('/chart_of_accounts','ChartOfAccountController');
 });
 
 

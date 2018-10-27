@@ -10,7 +10,7 @@
 			<a href="/settings/" title="">Settings</a>
 		</li>
 		<li class="current">
-			<a href="/settings/product_categories/" title="">Product Categories</a>
+			<a href="/settings/product_categories/" title="">Product Categories Top</a>
 		</li>
 	</ul>
 
@@ -109,7 +109,7 @@
 									<td>{{$category->banner }}</td>
 									<td class="no-break">
 										<ul class="table-controls">
-											<li><a href="/settings/product_categories/{{ $category->id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a></li>
+											<li><a href="/settings/product_categories/lower_level/{{ $category->id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a></li>
 											<li><a href="/settings/product_categories/update/{{ $category->id }}" class="bs-tooltip" title="Update"><i class="icon-edit"></i></a></li>
 											{{--<li><input type="submit" class="bs-tooltip" title="Delete"><i class="icon-remove"></i></input></li>--}}
                                             {{ Form::button('<i class="icon-remove"></i>', ['type' => 'submit', 'class' => 'btn btn-sm'] )  }}

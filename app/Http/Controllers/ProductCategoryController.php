@@ -150,7 +150,7 @@ class ProductCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show ($id)
     {
         if($id == NULL){
             $category = NULL;
@@ -164,6 +164,32 @@ class ProductCategoryController extends Controller
         $category_id = $id;
         return view('settings.product_categories.index',compact('category','category_id','ancestors','categories'));
     }
+
+    public function showDifferentLevel($id){
+
+        if($id == NULL){
+            $category = NULL;
+            $categories = Category::roots()->get();
+            $ancestors = NULL;
+        } else {
+            $category = Category::where('id', '=', $id)->first();
+            $ancestors = $category->ancestorsAndSelf()->get();
+            $categories = $category->immediateDescendants()->get();
+        }
+        $category_id = $id;
+
+        $path = " » ";
+        if($ancestors){
+            foreach($ancestors as $ancestor){
+                $path .= "<a href='/settings/product_categories/$ancestor->id'>$ancestor->name</a>" . " &raquo; ";
+            }
+        }
+        $path = substr_replace($path,"",-8);
+
+
+        return view('settings.product_categories.lower_level',compact('category','category_id','ancestors','categories', 'path'));
+    }
+
 
     public function getUpdate($id = NULL) {
 

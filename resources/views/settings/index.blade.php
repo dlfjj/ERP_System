@@ -7,7 +7,7 @@
             <a href="/">Dashboard</a>
         </li>
         <li class="current">
-            <a href="/setting">Setting</a>
+            <a href="/settings">Setting</a>
         </li>
     </ul>
 
@@ -107,11 +107,9 @@
                         <a class="btn btn-default btn-sm" href="settings/payment_terms">Payment Terms</a>
                         <a class="btn btn-default btn-sm" href="settings/shipping_terms">Shipping Terms</a>
                     @endif
-                    <a class="btn btn-default btn-sm" href="/chart_of_accounts">Chart of Accounts</a>
+                    <a class="btn btn-default btn-sm" href="settings/chart_of_accounts">Chart of Accounts</a>
                 </div>
             </div>
         </div>
     </div>
-
-
 @stop

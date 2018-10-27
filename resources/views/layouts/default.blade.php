@@ -193,10 +193,10 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
 <body>
 
-<div id="dvLoading">
-    <img src="{{asset('/assets/img/loader.gif')}}" id="loading_image">
+{{--<div id="dvLoading">--}}
+{{--    <img src="{{asset('/assets/img/loader.gif')}}" id="loading_image">--}}
     <!-- <input type="hidden" value="" class="loading_img"> -->
-</div>
+{{--</div>--}}
 @if (Session::has('flash_error'))
 <script type="text/javascript">
     noty({
@@ -476,13 +476,13 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 <script src="{{ asset('/js/orders.js') }}"></script>
 
 <script>
-    $(window).unload(function(){
-        $("#dvLoading").show();
-        $('#dvLoading').fadeOut(116000);
-    });
-    $(window).load(function(){
-        $("#dvLoading").hide();
-    })
+    // $(window).unload(function(){
+    //     $("#dvLoading").show();
+    //     $('#dvLoading').fadeOut(116000);
+    // });
+    // $(window).load(function(){
+    //     $("#dvLoading").hide();
+    // })
 </script>
 {{--<script src="{{ asset('js/app.js') }}"></script>--}}
 @stack('scripts')
