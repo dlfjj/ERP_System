@@ -93,23 +93,30 @@ class VendorController extends Controller {
 
     public function addContact(Request $request, int $id)
     {
+
         $rules = array(
             'vendor_id' => 'required|between:1,50',
             'name' => 'required|between:1,50',
             'email' => 'required|email|between:1,50',
-            'mobile' => 'required|between:1,50',
-            'skype' => 'between:1,50|nullable',
-            'position' => 'between:1,50|nullable'
+            'mobile' => 'between:1,50',
+            'skype' => 'between:1,50',
+            'position' => 'between:1,50'
         );
-        if($request->skype === null){
-            $request->skype = "";
-        }
 
         $input = $request->all();
         $validation = Validator::make($input, $rules);
+
+//        return dd($validation);
         if ($validation->fails()) {
             return $this->redirectWithErrors('vendors/' . $id, $validation->getMessageBag()->getMessages());
         } else {
+
+//            transfer null value to empty string
+            foreach ($input as $key => $value) {
+                if (is_null($value)) {
+                    $input[$key] = "";
+                }
+            }
             VendorContact::create($input);
 
             return $this->redirectWithSuccessMessage('vendors/' . $id);
@@ -118,6 +125,7 @@ class VendorController extends Controller {
 
     public function updateContact(Request $request, int $id, int $contactId)
     {
+
         $vendor_contact = VendorContact::findOrFail($contactId);
         $vendor = Vendor::findOrFail($id);
 
@@ -137,6 +145,7 @@ class VendorController extends Controller {
         if ($validation->fails()) {
             return $this->redirectWithErrors('/vendors/' . $id, $validation->getMessageBag()->getMessages(), 'flash_error', 'Operation failed');
         } else {
+
             $vendor_contact->fill($input);
             $vendor_contact->save();
 
@@ -154,23 +163,23 @@ class VendorController extends Controller {
     /** ========================================================================================================= */
     /** ========================================================================================================= */
 
-    public function anyDatatable(){
-        $vendors = Vendor::select(
-            array(
-				'vendors.status',
-                'vendors.id',
-                'vendors.company_name',
-                'vendors.company_name_localized',
-                'vendors.city',
-                'vendors.country'
-            ))
-            ->where('vendors.company_id',return_company_id())
-        ;
-        return Datatables::of($vendors)
-        ->remove_column('id')
-        ->add_column('operations','<ul class="table-controls"><li><a href="/vendors/show/{{ $id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a> </li></ul>')
-        ->make();
-    }
+//    public function anyDatatable(){
+//        $vendors = Vendor::select(
+//            array(
+//				'vendors.status',
+//                'vendors.id',
+//                'vendors.company_name',
+//                'vendors.company_name_localized',
+//                'vendors.city',
+//                'vendors.country'
+//            ))
+//            ->where('vendors.company_id',return_company_id())
+//        ;
+//        return Datatables::of($vendors)
+//        ->remove_column('id')
+//        ->add_column('operations','<ul class="table-controls"><li><a href="/vendors/show/{{ $id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a> </li></ul>')
+//        ->make();
+//    }
 
 	public function createNew() {
         $select_payment_terms = ValueList::where('uid', '=', 'payment_terms')->orderBy('name', 'asc')->pluck('name', 'name');
@@ -233,9 +242,11 @@ class VendorController extends Controller {
             die("Access violation");
         }
 
-        $this->layout->content = View::make('vendors.changelog')
-            ->with('vendor',$vendor)
-            ;
+        return view('vendors.changelog',compact('vendor'));
+
+//        $this->layout->content = View::make('vendors.changelog')
+//            ->with('vendor',$vendor)
+//            ;
 	}
 
 }

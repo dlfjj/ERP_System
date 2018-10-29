@@ -71,7 +71,7 @@
 					</div>
 					<div class="form-actions">
 						<input type="submit" value="Save" class="btn btn-success pull-right">
-						<a href="/vendors/show/{{$vendor->id}}" class="btn btn-default pull-right">Cancel</a>
+						<a href="/vendors/{{$vendor->id}}" class="btn btn-default pull-right">Cancel</a>
 					</div>
 				</div>
 			</form>
