@@ -393,7 +393,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
                 <!-- if(has_role('reports')) -->
                 <li>
-                    <a href="/report/getIndex">
+                    <a href="/reports">
                         <i class="icon-bar-chart"></i>
                         <div class="sidebar-text">Reports</div>
                     </a>

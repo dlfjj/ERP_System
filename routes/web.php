@@ -217,6 +217,14 @@ Route::get('orders/changelog/{id}','OrderController@getChangelog');
 Route::get('orders/changelog/invoices/{id}','OrderController@getInvoices');
 
 
+/** Report */
+Route::group(['prefix' => 'reports'], function () {
+
+    Route::resource('/','ReportController');
+
+});
+
+
 
 
 
