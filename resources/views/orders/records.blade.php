@@ -21,7 +21,7 @@
                 </div>
                 <div class="widget-content">
                     {{--<form enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" method="POST">--}}
-                        {!! Form::open(['method'=>'POST','action'=>['OrderController@postRecord'],'files' =>false], array('enctype'=>'multipart/form-data','id'=>'main','class' => 'form-vertical row-border form-validate')) !!}
+                        {!! Form::open(['method'=>'POST','action'=>['OrderController@postRecord', $order->id],'files' =>false], array('enctype'=>'multipart/form-data','id'=>'main','class' => 'form-vertical row-border form-validate')) !!}
                         <div class="tabbable box-tabs">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#box_tab1" data-toggle="tab">General</a></li>
@@ -103,7 +103,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="control-label">Message Body:</label>
-                                                {{ Form::textarea('mail_body', $mail_body, array("rows"=>"3","cols"=>"5","class"=>"form-control", "id" => "history_comment")) }}
+                                                {{ Form::textarea('mail_body', $mail_body, array("rows"=>"12","cols"=>"5","class"=>"form-control", "id" => "history_comment")) }}
                                             </div>
                                         </div>
                                         <div class="form-actions">

@@ -68,7 +68,7 @@
                                 <div class="col-md-6 text-right">
                                     @if($user->picture != "")
 {{--                                        <img height="50" src="{{$user_avatar}}" /><br />--}}
-                                        <img style="margin-bottom: 10px;" src="/timthumb.php?src=/public/users/{{ $user->picture }}&w=100" /><br />
+                                        <img style="margin-bottom: 0px;display: block;max-width: 100%; height: 150px"  src="/users/{{ $user->picture }}" class="pull-right" /><br />
                                     @endif
                                 </div>
                             </div>

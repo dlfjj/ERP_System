@@ -154,6 +154,10 @@ Route::group(['prefix' => 'vendors'], function () {
     Route::post('/create','VendorController@store');
     Route::post('/{id}','VendorController@update');
 
+    Route::get('/history/{id}/getdata', 'VendorController@anyDtPurchases')->name('history/getdata');
+    Route::get('/history/{id}','VendorController@getHistory');
+
+
     Route::post('/{id}/contacts','VendorController@addContact');
     Route::get('/{id}/contacts/{contactId}','VendorController@getContact');
     Route::post('/{id}/contacts/{contactId}','VendorController@updateContact');
@@ -204,9 +208,15 @@ Route::get('orders/line_item_add/{id}','OrderController@showLineItemAdd');
 Route::get('orders/line_item_add/{id}/getdata', 'OrderController@anyDtAvailableProducts')->name('line_items/getdata');
 Route::post('orders/line_item_add/','OrderController@postLineItemAdd')->name('add_line_items');
 
-Route::post('orders/records','OrderController@postRecord');
+Route::post('orders/records/{id}','OrderController@postRecord');
 Route::get('orders/customersList','OrderController@customersList');
 Route::get('orders/customersList/getdata', 'OrderController@getCustomerslist')->name('cusomtersList/getdata');
 Route::resource('orders', 'OrderController');
+
+Route::get('orders/changelog/{id}','OrderController@getChangelog');
+Route::get('orders/changelog/invoices/{id}','OrderController@getInvoices');
+
+
+
 
 

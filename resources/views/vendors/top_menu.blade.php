@@ -1,2 +1,2 @@
-<li><a href="/vendor/getShow/{{$vendor->id}}">General</a></li>
-<li><a href="/vendor/getHistory/{{$vendor->id}}">History</a></li>
+<li><a href="/vendors/{{$vendor->id}}">General</a></li>
+<li><a href="/vendors/history/{{$vendor->id}}">History</a></li>

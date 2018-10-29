@@ -119,7 +119,7 @@ class OrderItem extends Model {
         if($this->product->pack_unit>0){
             $cartons = $this->quantity / $this->product->pack_unit;
         } else {
-            $cartons = 0;	
+            $cartons = 0;
         }
 
         if($this->order->container_type == 4){
@@ -169,5 +169,4 @@ class OrderItem extends Model {
         }
         return $cbm;
     }
-
 }

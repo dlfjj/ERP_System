@@ -57,6 +57,16 @@ class LoginController extends Controller
         return redirect('login');
     }
 
+    public function showLoginForm(){
+        session(['link'=> url()->previous()]);
+        return view('auth.login');
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        return redirect(session('link'));
+    }
+
     protected function attemptLogin(Request $request)
     {
         return $this->guard()->attempt(
@@ -68,4 +78,5 @@ class LoginController extends Controller
     {
         return $request->only('username', 'company_id', 'password');
     }
+
 }

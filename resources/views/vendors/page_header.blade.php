@@ -6,7 +6,7 @@
         <li>
             <div class="summary">
                 <span>Status</span>
-                <h3>{{ $vendor->status }}</h4>
+                <h4>{{ $vendor->status }}</h4>
             </div>
         </li>
     </ul>

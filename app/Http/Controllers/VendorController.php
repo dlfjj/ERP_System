@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PurchaseItem;
 use Yajra\DataTables\DataTables;
 use App\Models\VendorContact;
 use Illuminate\Http\Request;
@@ -41,9 +42,9 @@ class VendorController extends Controller {
     {
         $vendor = Vendor::findOrFail($id);
 
-        if ($vendor->company_id != return_company_id()) {
-            die("Access violation. Click <a href='/'>here</a> to get back.");
-        }
+//        if ($vendor->company_id != return_company_id()) {
+//            die("Access violation. Click <a href='/'>here</a> to get back.");
+//        }
 
         $select_payment_terms = ValueList::where('uid', '=', 'payment_terms')->orderBy('name', 'asc')->pluck('name', 'name');
         $select_currency_codes = ValueList::where('uid', '=', 'currency_codes')->orderBy('name', 'asc')->pluck('name', 'name');
@@ -97,9 +98,12 @@ class VendorController extends Controller {
             'name' => 'required|between:1,50',
             'email' => 'required|email|between:1,50',
             'mobile' => 'required|between:1,50',
-            'skype' => 'between:1,50',
-            'position' => 'between:1,50'
+            'skype' => 'between:1,50|nullable',
+            'position' => 'between:1,50|nullable'
         );
+        if($request->skype === null){
+            $request->skype = "";
+        }
 
         $input = $request->all();
         $validation = Validator::make($input, $rules);
@@ -189,9 +193,9 @@ class VendorController extends Controller {
 
     public function anyDtPurchases($vendor_id){
         $vendor = Vendor::find($vendor_id);
-        if($vendor->company_id != return_company_id()){
-            die("Access violation");
-        }
+//        if($vendor->company_id != return_company_id()){
+//            die("Access violation");
+//        }
 
         $purchases = PurchaseItem::Leftjoin('purchases','purchase_items.purchase_id','=','purchases.id')
 			->Leftjoin('products','purchase_items.product_id','=','products.id')
@@ -206,20 +210,20 @@ class VendorController extends Controller {
             ))
             ->where("purchases.vendor_id",$vendor_id);
         return Datatables::of($purchases)
-			->add_column('operations','<ul class="table-controls"><li><a href="/purchases/show/{{ $id }}" class="bs-tooltip" title="View"><i class="icon-search"></i></a> </li></ul>')
+			->addColumn('action',function ($purchase) { return '<ul class="table-controls"><li><a href="/purchases/'.$purchase->id.'" class="bs-tooltip" title="View"><i class="icon-search"></i></a> </li></ul>';})
 			->make();
     }
 
 	public function getHistory($id) {
 	    $vendor = Vendor::findOrFail($id);
 
-        if($vendor->company_id != return_company_id()){
-            die("Access violation");
-        }
-
-        $this->layout->content = View::make('vendors.history')
-            ->with('vendor',$vendor)
-        ;
+//        if($vendor->company_id != return_company_id()){
+//            die("Access violation");
+//        }
+        return view('vendors.history',compact('vendor'));
+//        $this->layout->content = View::make('vendors.history')
+//            ->with('vendor',$vendor)
+//        ;
 	}
 
 	public function getChangelog($id){

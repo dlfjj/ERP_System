@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Container;
 use App\Models\Customer;
+use App\Models\CustomerContact;
 use App\Models\CustomerPayment;
 use App\Models\OrderItem;
 use App\Models\PaymentTerm;
@@ -14,11 +15,13 @@ use App\Models\ChartOfAccount;
 use App\Models\OrderStatus;
 use App\OrderHistory;
 use App\Models\Product;
+use Illuminate\Support\Facades\URL;
 use Yajra\Datatables\Datatables;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use Auth;
 use Validator;
+use Mail;
 use Illuminate\Support\Facades\Session;
 
 class OrderController extends Controller
@@ -183,6 +186,27 @@ EOT;
 
         return view('orders.records', compact('mail_to', 'mail_cc', 'mail_bcc', 'mail_subject', 'mail_body', 'order',
             'customer', 'select_status','order_history','the_user_created_this_order','the_user_updated_this_order'));
+    }
+
+    public function getChangelog($id){
+        $order = Order::findOrFail($id);
+
+        return view('orders.changelog',compact('order'));
+//        $this->layout->module_title = "";
+//        $this->layout->module_sub_title = "";
+//        $this->layout->content = View::make('orders.changelog')
+//            ->with('order',$order);
+    }
+
+    public function getInvoices($id){
+        $order = Order::findOrFail($id);
+
+        return $order->items;
+        return view('orders.invoices',compact('order'));
+//        $this->layout->module_title = "";
+//        $this->layout->module_sub_title = "";
+//        $this->layout->content = view::make('orders.invoices')
+//            ->with('order',$order);
     }
 
     public function showLineItemAdd($id)
@@ -353,24 +377,22 @@ EOT;
         }
     }
 
-    public function postRecord(Request $request){
+    public function postRecord(Request $request, $id){
 
-        return $request;
-        $id = $reuqest->order_id;
         if(count($_POST) == 0){
             die("Illegal Request");
         }
-        $private_folder = Config::get('app.private_folder') . return_company_id() . "/orders/";
+        $private_folder = config('app.private_folder') . return_company_id() . "/orders/";
 
         $order_id = $id;
-        $comment  = Input::get('mail_body');
+        $comment  = $request->mail_body;
 
         $order 		= Order::findOrFail($id);
         $customer 	= Customer::findOrFail($order->customer_id);
         $customer_contact = CustomerContact::find($order->customer_contact_id);
 
         $contacts = $customer->contacts;
-        $mail_to = Input::get('mail_to');
+        $mail_to = $request->mail_to;
 
         $uid = Auth::user()->id;
         $sup = Auth::user()->superior_id;
@@ -378,7 +400,7 @@ EOT;
         if($order->created_by != $uid){
             if($order->customer->salesman_id != $uid){
                 if(!has_role('company_admin')){
-                    return Redirect::to('orders/show/'.$id)
+                    return redirect('orders/'.$id)
                         ->with('flash_error','Permission Denied')
                         ->withErrors($validation->Messages())
                         ->withInput();
@@ -400,13 +422,13 @@ EOT;
         $comment = str_replace("<<ESTIMATED_FINISH_DATE>>",$order->estimated_finish_date,$comment);
 
         $preserve_current_order_status = false;
-        if(Input::get('status_id') == 9){
+        if(($request->status_id) == 9){
             $preserve_current_order_status = true;
             $original_order_status = $order->status_id;
         }
 
-        if(Input::get('status_id')){
-            $order->status_id = Input::get('status_id');
+        if($request->has('status_id')){
+            $order->status_id = $request->input('status_id');
         }
 
         $status = OrderStatus::findOrFail($order->status_id);
@@ -415,7 +437,7 @@ EOT;
         $order_status = strtolower($order_status);
 
 
-        if(Input::get('inform_customer')){
+        if($request->has('inform_customer')){
             $inform_customer = 1;
         } else {
             $inform_customer = 0;
@@ -432,7 +454,7 @@ EOT;
                 foreach($order->items as $oi){
                     if($oi->product->track_stock == 0){ continue; }
                     if($oi->product->stock - $oi->quantity < 0){
-                        return Redirect::to('orders/history/'.$order->id)
+                        return redirect('orders/records/'.$order->id)
                             ->with('flash_error','Insufficient stock')
                             ->withInput()
                             ;
@@ -493,7 +515,7 @@ EOT;
 
         $filepath = "";
 
-        if(Input::get('record_file') && $file_to_store != ""){
+        if($request->has('record_file') && $file_to_store != ""){
             $record_file = 1;
             $printurl = $file_to_store;
             $filepath = $private_folder . $filename;
@@ -546,7 +568,7 @@ EOT;
 
         // If notify_customer is set, inform the customer
 
-        $record = New OrderHistory1;
+        $record = New OrderHistory;
         $record->order_id = $order_id;
         $record->date_added = date("Y-m-d");
         $record->notify_customer = $inform_customer;
@@ -566,6 +588,7 @@ EOT;
         return redirect("/orders/records/$order_id")
             ->with('flash_success','Operation success');
     }
+
 
 
     /**

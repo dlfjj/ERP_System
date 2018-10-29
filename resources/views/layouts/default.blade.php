@@ -484,7 +484,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     //     $("#dvLoading").hide();
     // })
 </script>
-{{--<script src="{{ asset('js/app.js') }}"></script>--}}
+{{--<script src="{{ asset('js/app.js') }}" defer></script>--}}
 @stack('scripts')
 </body>
 </html>
