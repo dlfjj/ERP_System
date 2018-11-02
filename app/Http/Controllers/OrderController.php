@@ -132,7 +132,10 @@ class OrderController extends Controller
         }
 
         $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toHierarchy();
-        $select_accounts = printSelect($tree,13);
+//        $select_accounts = printSelect($tree,13);
+//        $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toHierarchy();
+        $select_accounts = printSelect($tree,176,'account_id');
+        $select_bank_accounts  = ValueList::where('uid','=','BANK_ACCOUNTS')->orderBy('name', 'asc')->pluck('name','name')->toArray();
 
         $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
         $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
@@ -152,7 +155,7 @@ class OrderController extends Controller
         );
         return view('orders.payments',compact('select_status','select_payment_methods','select_customer_contacts',
             'select_payment_terms', 'select_currency_codes', 'select_shipping_methods', 'select_shipping_terms', 'select_accounts',
-            'order','customer'));
+            'order','customer','select_bank_accounts'));
     }
 
     public function getRecords($id)
@@ -316,7 +319,7 @@ EOT;
     }
 
     public function postPayments(Request $request,  $id) {
-
+        return $request;
         $order = Order::findOrFail($id);
         $rules = array(
             'amount' => "required",

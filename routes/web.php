@@ -106,7 +106,6 @@ Route::group(['prefix' => 'customers'], function () {
 /** Products Related */
 Route::group(['prefix' => 'products'], function () {
 
-
     Route::resource('setup', 'SetupController')->except([
         'index'
     ]);

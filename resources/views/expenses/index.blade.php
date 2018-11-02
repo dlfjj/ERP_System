@@ -1,11 +1,12 @@
 @extends('layouts.default')
 
 @section('page-module-menu')
+
     <li><a href="/expenses">Expenses</a></li>
     @if(has_role('expenses_export'))
     @endif
-@stop
 
+@stop
 @section('page-crumbs')
     <ul id="breadcrumbs" class="breadcrumb">
         <li>
@@ -16,23 +17,22 @@
             <a href="/expenses/" title="">Expenses</a>
         </li>
     </ul>
-
     <ul class="crumb-buttons">
         <li>
             <a href="javascript:void(0);" title=""><i class="icon-calendar"></i><span><?=date('F d, Y \(\K\W:W) H:i:s');?></span></a>
         </li>
     </ul>
 @stop
-
 @section('page-header')
     <div class="page-header">
         <div class="page-title">
             @if(has_role('expenses_edit'))
-                <a class="btn btn-success btn" data-toggle="modal" href="#modal_expense"><i class="icon-plus-sign"></i> Add Expense</a>
+                <a class="btn btn-success btn" data-toggle="modal" href="#modal_Transaction"><i class="icon-plus-sign"></i> Add Transaction</a>
             @endif
-            @if(has_role('expenses_edit'))
-                <a class="btn btn-info btn" data-toggle="modal"><i class="icon-plus-sign"></i> Add Income</a>
-            @endif
+
+            {{--@if(has_role('expenses_edit'))--}}
+                {{--<a class="btn btn-info btn" data-toggle="modal" href="#modal_income"><i class="icon-plus-sign"></i> Add Income</a>--}}
+            {{--@endif--}}
         </div>
         <ul class="page-stats">
             <li>
@@ -43,19 +43,19 @@
             </li>
         </ul>
     </div>
-
 @stop
 
 @section('content')
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                    <div class="panel-heading"><i class="icon-reorder"></i> Expense Index</div>
+                    <div class="panel-heading"><i class="icon-reorder"></i> Transaction</div>
                 <div class="panel-body">
-                    <table class="table table-striped table-bordered table-hover table-chooser" id="expense_table">
+                    <table class="table table-striped table-bordered table-hover table-chooser" id="expense_table" style="width: 100%;">
                         <thead>
                         <tr>
                             <th>Serial</th>
+                            <th>Type</th>
                             <th>Created</th>
                             <th>By</th>
                             <th>Account</th>
@@ -71,12 +71,12 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal_expense">
+    <div class="modal fade" id="modal_Transaction">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Record new Expense</h4>
+                    <h4 class="modal-title">Record New Transaction</h4>
                 </div>
                 {{--<form autocomplete="off" enctype="multipart/form-data" id="customer_contact" class="form-validate1" action="ExpenseController@create" method="GET">--}}
                 {!! Form::open(['method'=>'POST','action'=>['ExpenseController@store'],'files' =>false], array('enctype'=>'multipart/form-data','id'=>'customer_contact','class' => 'form-validate1')) !!}
@@ -87,7 +87,15 @@
                                 <div class="col-md-6">
                                     {{ Form::text('date_created', date("Y-m-d"), array("class"=>"form-control datepicker")) }}
                                     <span class="help-block">Date</span>
-                                </div>
+                                {{--</div>--}}
+                                {{--<div class="col-md-6">--}}
+                                    {{--<div style="text-overflow: ellipsis;">--}}
+{{--                                        {{ Form::select('cash_flow_type', ['income' => 'Income', 'expense' => 'Expense'], 'income', array("class"=>"dropdown-toggle form-control")) }}--}}
+
+{{--                                        {{ Form::select('account_id', $account_name, null, array("class"=>"dropdown-toggle form-control")) }}--}}
+                                    {{--</div>--}}
+                                    {{--<span class="help-block">Cash Flow Type</span>--}}
+                                {{--</div>--}}
                             </div>
                         </div>
                         <div class="form-group">
@@ -96,12 +104,6 @@
                                     {{ Form::select('bank_account', $select_bank_accounts, "", array("class"=>"form-control")) }}
                                     <span class="help-block">Account</span>
                                 </div>
-                                {{--<div class="col-md-6">--}}
-                                    {{--<div style="text-overflow: ellipsis;">--}}
-                                        {{--{{ Form::select('account_id', $account_name,null, array("class"=>"dropdown-toggle form-control",'placeholder'=>'Please select ...')) }}--}}
-                                    {{--</div>--}}
-                                    {{--<span class="help-block">Account Categories</span>--}}
-                                {{--</div>--}}
                                 <div class="col-md-6">
                                     {!! $select_accounts !!}
                                     <span class="help-block">Account Categories</span>
@@ -142,9 +144,7 @@
             </div>
         </div>
     </div>
-
-
-
+    </div>
 @stop
 
 @push('scripts')
@@ -162,17 +162,18 @@
                 // },
                 "pagingType": "full_numbers",
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{!! route('expenses/getdata') !!}',
                 columns: [
                     { data: 'id', name: 'id' },
+                    { data: 'type', name: 'chart_of_accounts.type' },
                     { data: 'date_created', name: 'date_created' },
                     { data: 'username', name: 'users.username' },
-                    { data: 'name', name: 'chart_of_accounts.name' },
+                    { data: 'name', name: 'name' },
                     { data: 'currency_code', name: 'currency_code' },
                     { data: 'amount', name: 'amount' },
                     { data: 'description', name: 'description' },
-                    {data: 'action', name: 'action', orderable: false, searchable: false}
+                    { data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
             });
         });

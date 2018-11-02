@@ -54,6 +54,18 @@
                                     {{ Form::text('bank_charges', "", array("class"=>"form-control")) }}
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label class="control-label">Payment Type</label>
+
+                                    {{ Form::select('bank_account', $select_bank_accounts, "", array("class"=>"form-control")) }}
+                                </div>
+                                <div class="col-md-3">
+                                <label class="control-label">Account Categories</label>
+
+                                {!! $select_accounts !!}
+                                </div>
+                            </div>
                             <div class="form-actions">
                                 <input type="submit" value="Record Payment" class="btn btn-sm btn-success pull-right">
                             </div>
@@ -137,5 +149,83 @@
         </div>
         <!-- /Vertical Forms -->
     </div>
+
+
+
+    {{--<div class="modal fade" id="modal_Transaction">--}}
+        {{--<div class="modal-dialog">--}}
+            {{--<div class="modal-content">--}}
+                {{--<div class="modal-header">--}}
+                    {{--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>--}}
+                    {{--<h4 class="modal-title">Record New Transaction</h4>--}}
+                {{--</div>--}}
+                {{--<form autocomplete="off" enctype="multipart/form-data" id="customer_contact" class="form-validate1" action="ExpenseController@create" method="GET">--}}
+                {{--{!! Form::open(['method'=>'POST','action'=>['ExpenseController@store'],'files' =>false], array('enctype'=>'multipart/form-data','id'=>'customer_contact','class' => 'form-validate1')) !!}--}}
+
+                {{--<div class="modal-body">--}}
+                    {{--<div class="form-group">--}}
+                        {{--<div class="row">--}}
+                            {{--<div class="col-md-6">--}}
+                                {{--{{ Form::text('date_created', date("Y-m-d"), array("class"=>"form-control datepicker")) }}--}}
+                                {{--<span class="help-block">Date</span>--}}
+                                {{--</div>--}}
+                                {{--<div class="col-md-6">--}}
+                                {{--<div style="text-overflow: ellipsis;">--}}
+                                {{--                                        {{ Form::select('cash_flow_type', ['income' => 'Income', 'expense' => 'Expense'], 'income', array("class"=>"dropdown-toggle form-control")) }}--}}
+
+                                {{--                                        {{ Form::select('account_id', $account_name, null, array("class"=>"dropdown-toggle form-control")) }}--}}
+                                {{--</div>--}}
+                                {{--<span class="help-block">Cash Flow Type</span>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group">--}}
+                            {{--<div class="row">--}}
+                                {{--<div class="col-md-6">--}}
+                                    {{--{{ Form::select('bank_account', $select_bank_accounts, "", array("class"=>"form-control")) }}--}}
+                                    {{--<span class="help-block">Account</span>--}}
+                                {{--</div>--}}
+                                {{--<div class="col-md-6">--}}
+                                    {{--{!! $select_accounts !!}--}}
+                                    {{--<span class="help-block">Account Categories</span>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group">--}}
+                            {{--<div class="row">--}}
+                                {{--<div class="col-md-6">--}}
+                                    {{--{{ Form::select('currency_code', $select_currency_codes, Auth::user()->company->currency_code, array("class"=>"form-control")) }}--}}
+                                    {{--<span class="help-block">Currency</span>--}}
+                                {{--</div>--}}
+                                {{--<div class="col-md-6">--}}
+                                    {{--<input type="text" name="amount" class="form-control" value="">--}}
+                                    {{--<span class="help-block">Amount</span>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--<div class="form-group">--}}
+                            {{--<div class="row">--}}
+                                {{--<div class="col-md-6">--}}
+                                    {{--{{ Form::text('transaction_reference', "", array("class"=>"form-control")) }}--}}
+                                    {{--<span class="help-block">Transaction Reference</span>--}}
+                                {{--</div>--}}
+                                {{--<div class="col-md-6">--}}
+                                    {{--<input type="text" name="description" class="form-control" value="">--}}
+                                    {{--<span class="help-block">Description</span>--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+
+                    {{--</div>--}}
+                    {{--<div class="modal-footer">--}}
+                        {{--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>--}}
+                        {{--<input type="submit" class="btn btn-primary" value="Submit">--}}
+                    {{--</div>--}}
+                    {{--{!! Form::close() !!}--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+
 
 @stop

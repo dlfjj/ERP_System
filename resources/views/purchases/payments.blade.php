@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modal_expense">
+    <div class="modal fade" id="modal_journal_entries">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -98,7 +98,7 @@
                                     <span class="help-block">Account</span>
                                 </div>
                                 <div class="col-md-6">
-                                    {{ $select_accounts }}
+                                    {!!  $select_accounts !!}
                                     <span class="help-block">Account</span>
                                 </div>
                             </div>

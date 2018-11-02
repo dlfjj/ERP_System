@@ -82,6 +82,9 @@ if(Session::get('browser_name') == 'Internet Explorer'){
             font-weight: 700;
             src: url("/fonts/opensans/OpenSans-Bold.ttf");
         }
+        .form-group .row{
+            padding-bottom: 10px;
+        }
     </style>
 
     <!--=== JavaScript ===-->
@@ -369,7 +372,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
                 <li class="<?=($segment == 'expensesdsfsd' ? "current" : "");?>">
                     <a href="/expenses">
                         <i class="icon-money"></i>
-                        <div class="sidebar-text">Expenses</div>
+                        <div class="sidebar-text">Accounting</div>
                     </a>
                 </li>
                 <!-- endif -->

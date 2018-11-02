@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePhotosTable extends Migration
+class AddAccountIdToCustomerPayments extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreatePhotosTable extends Migration
      */
     public function up()
     {
-        Schema::create('photos', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('file');
-            $table->timestamps();
+        Schema::table('customer_payments', function($table) {
+            $table->integer('account_id')->nullable();
         });
     }
 
@@ -27,6 +25,9 @@ class CreatePhotosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('photos');
+        Schema::table('customer_payments', function($table) {
+            $table->dropColumn('account_id');
+        });
     }
+
 }

@@ -69,7 +69,7 @@
 
 
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-6">d
 			<div class="widget box">
 				<div class="widget-header">
 					<h4><i class="icon-reorder"></i> Basic Reports</h4>
@@ -80,7 +80,7 @@
 					{{--</div>--}}
 				</div>
 				<div class="widget-content">
-                    @if(has_role('products')) 
+                    @if(has_role('products'))
                         <a href="/reports/customer-products">Product by Customer (Orders)</a><br />
                         <a href="/reports/products-customer">Customer by Product (Orders)</a><br />
                         <a href="/reports/top-customer">Top 50 Customer (Orders)</a><br />
@@ -89,7 +89,6 @@
                         <a href="/reports/stocklist">Stocklist</a><br />
                         <a href="/reports/expenses-by-category">Expenses by category</a><br />
                     @endif
-                      
 				</div>
 			</div>
 		</div>

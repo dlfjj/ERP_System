@@ -46,6 +46,7 @@ class ExpenseController extends Controller
             ->select(
                 array(
                     'expenses.id',
+                    'chart_of_accounts.type',
                     'expenses.date_created',
                     'users.username',
                     'chart_of_accounts.name',
@@ -54,8 +55,6 @@ class ExpenseController extends Controller
                     'expenses.description'
                 ))
             ->where('expenses.company_id',return_company_id())->get();
-//        $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toArray();
-//        $select_accounts = printSelect($tree,10,'account_id');
         $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toHierarchy();
         $select_accounts = printSelect($tree,10,'account_id');
         $select_bank_accounts  = ValueList::where('uid','=','BANK_ACCOUNTS')->orderBy('name', 'asc')->pluck('name','name')->toArray();
@@ -74,6 +73,7 @@ class ExpenseController extends Controller
             ->select(
                 array(
                     'expenses.id',
+                    'chart_of_accounts.type',
                     'expenses.date_created',
                     'users.username',
                     'chart_of_accounts.name',
@@ -134,6 +134,7 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
+        return $request;
 //        return $request->all();
         $rules = [
 //            'account_id' => 'required|integer|digits_between:1,6',
@@ -191,6 +192,7 @@ class ExpenseController extends Controller
      */
     public function show($id)
     {
+
         $expense = Expense::findOrFail($id);
         if($expense->company_id != return_company_id()){
             die("Access Violation!");
@@ -207,7 +209,6 @@ class ExpenseController extends Controller
         $select_bank_accounts  = ValueList::where('uid','=','BANK_ACCOUNTS')->orderBy('name', 'asc')->pluck('name','name');
         return view('expenses.show',compact('expense','select_accounts','select_bank_accounts','select_currency_codes'));
     }
-
 
     public function edit(Expense $expense)
     {

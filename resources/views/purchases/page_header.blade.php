@@ -1,13 +1,13 @@
 <div class="page-header">
     <div class="page-title">
         @if(Request::segment(2) == "payments")
-            <a class="btn btn-success btn-lg" data-toggle="modal" href="#modal_expense" style="margin-top: 40px"><i class="icon-plus-sign"></i> Add Payment</a>
+            <a class="btn btn-success" data-toggle="modal" href="#modal_journal_entries" style="margin-top: 40px"><i class="icon-plus-sign"></i> Add Payment</a>
         @endif
 
         @if(Request::segment(2) == "show")
             @if(has_role('purchases_edit'))
                 @if($purchase->status == 'Draft' || $purchase->status == 'Void')
-                    <a class="btn btn-success btn-lg form-submit-conf" data-target-form="post" href="javascript:void(0);"><i class="icon-th"></i> Post P.O</a>
+                    <a class="btn btn-success form-submit-conf" data-target-form="post" href="javascript:void(0);"><i class="icon-th"></i> Post P.O</a>
                 @endif
             @endif
         @endif
