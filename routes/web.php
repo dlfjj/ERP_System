@@ -220,9 +220,14 @@ Route::get('orders/changelog/invoices/{id}','OrderController@getInvoices');
 Route::group(['prefix' => 'reports'], function () {
 
     Route::resource('/','ReportController');
-
 });
-
+Route::get('/pdf/purchase-pdf/{id}','PDFController@samplePDF');
+Route::get('/pdf/quotation/{id}','PDFController@quotation');
+Route::get('/pdf/acknowledgement/{id}','PDFController@order_acknowledgement');
+Route::get('/pdf/order-confirmation/{id}','PDFController@order_confirmation');
+Route::get('/pdf/performa_invoice/{id}','PDFController@performa_invoice');
+Route::get('/pdf/commercial_invoice/{id}','PDFController@commercial_invoice');
+Route::get('/pdf/packing_list/{id}','PDFController@package_list');
 
 
 

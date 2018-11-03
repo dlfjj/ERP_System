@@ -50,14 +50,14 @@ $uri_segment = Request::segment(2);
     {{--@endif--}}
     <li class="dropdown">
         <a href="#" title="" data-toggle="dropdown"><i class="icon-print"></i><span>Printing</span><i class="icon-angle-down left-padding"></i></a>
-        <ul class="dropdown-menu">
-            <li><a target="_new" href="/pdf/print-order/quote/{{$order->id}}/1" class="" title=""><i class="icon-print"></i><span>Quote</span></a></li>
-            <li><a target="_new" href="/pdf/print-order/con/{{$order->id}}/1" class="" title=""><i class="icon-print"></i><span>Acknowledgement</span></a></li>
-            <li><a target="_new" href="/pdf/print-order/sc/{{$order->id}}/1" class="" title=""><i class="icon-print"></i><span>Confirmation</span></a></li>
-            <li><a target="_new" href="/pdf/print-order/pi/{{$order->id}}/1" class="" title=""><i class="icon-print"></i><span>Proforma Invoice</span></a></li>
-            <li><a target="_new" href="/pdf/print-order/ci/{{$order->id}}/1" class="" title=""><i class="icon-print"></i><span>Commercial Invoice</span></a></li>
-            <li><a target="_new" href="/pdf/print-order/pod/{{$order->id}}/1" class="" title=""><i class="icon-print"></i><span>POD</span></a></li>
-            <li><a target="_new" href="/pdf/print-order/pl/{{$order->id}}/1" class="" title=""><i class="icon-print"></i><span>PL</span></a></li>
+             <ul class="dropdown-menu">
+            <li><a target="_new" href="/pdf/quotation/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Quote</span></a></li>
+            <li><a target="_new" href="/pdf/acknowledgement/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Acknowledgement</span></a></li>
+            <li><a target="_new" href="/pdf/order-confirmation/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Confirmation</span></a></li>
+            <li><a target="_new" href="/pdf/performa_invoice/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Proforma Invoice</span></a></li>
+            <li><a target="_new" href="/pdf/commercial_invoice/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Commercial Invoice</span></a></li>
+            <li><a target="_new" href="/pdf/packing_list/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Packing List</span></a></li>
+           
         </ul>
     </li>
     <li>
