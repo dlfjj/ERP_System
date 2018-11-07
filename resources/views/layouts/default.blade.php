@@ -85,6 +85,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         .form-group .row{
             padding-bottom: 10px;
         }
+
     </style>
 
     <!--=== JavaScript ===-->

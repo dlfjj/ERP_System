@@ -51,7 +51,7 @@
             <div class="panel panel-default">
                     <div class="panel-heading"><i class="icon-reorder"></i> Transaction</div>
                 <div class="panel-body">
-                    <table class="table table-striped table-bordered table-hover table-chooser" id="expense_table" style="width: 100%;">
+                    <table class="table table-bordered table-hover table-chooser" id="expense_table" style="width: 100%;">
                         <thead>
                         <tr>
                             <th>Serial</th>
@@ -147,11 +147,19 @@
     </div>
 @stop
 
+@push('styles')
+    <style>
+        td.red {
+            background-color: #e97278;
+        }
+    </style>
+@endpush
+
 @push('scripts')
     <script>
         // jquery getting data for purchase table
         $(function() {
-            $('#expense_table').DataTable({
+                $('#expense_table').DataTable({
                 // "oLanguage": {
                     // "sSearch": "<i class='icon-search icon-large table-search-icon'></i>",
                     // "oPaginate": {
@@ -174,7 +182,16 @@
                     { data: 'amount', name: 'amount' },
                     { data: 'description', name: 'description' },
                     { data: 'action', name: 'action', orderable: false, searchable: false}
-                ]
+                ],
+                "createdRow": function( row, data, dataIndex){
+                    if( data.type ===  "Expense"){
+                        $(row).find('td:eq(1)').css('background-color', '#e97278');
+                        // $('td',row).addClass('red');
+                    }else if(data.type ===  "Bank"){
+                        $(row).find('td:eq(1)').css('background-color', '#8baeff');
+                    }
+                }
+
             });
         });
     </script>

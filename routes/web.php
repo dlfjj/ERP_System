@@ -221,6 +221,9 @@ Route::group(['prefix' => 'reports'], function () {
 
     Route::resource('/','ReportController');
 });
+
+
+/** PDF Generator */
 Route::get('/pdf/purchase-pdf/{id}','PDFController@samplePDF');
 Route::get('/pdf/quotation/{id}','PDFController@quotation');
 Route::get('/pdf/acknowledgement/{id}','PDFController@order_acknowledgement');
