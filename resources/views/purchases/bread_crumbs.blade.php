@@ -29,7 +29,7 @@ $uri_segment = Request::segment(2);
         <a href="/purchases/duplicate/{{$purchase->id}}" class="conf" title=""><i class="icon-print"></i><span>Duplicate</span></a>
     </li>
     <li>
-        <a target="_new" href="/pdf/purchases-purchase-order/{{$purchase->id}}" class="" title=""><i class="icon-print"></i><span>Print</span></a>
+        <a target="_new" href="/pdf/purchase-pdf/{{$purchase->id}}" class="" title=""><i class="icon-print"></i><span>Print</span></a>
     </li>
     <li>
         <a href="javascript:void(0);" title=""><i class="icon-calendar"></i><span><?=date('F d, Y \(\K\W:W) H:i:s');?></span></a>

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\CustomerPayment;
 use App\Models\Expense;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -41,20 +41,28 @@ class ExpenseController extends Controller
 //            return $expense;
 //        }
 
-        $expenses = Expense::Leftjoin('users','expenses.user_id','=','users.id')
-            ->Leftjoin('chart_of_accounts','expenses.account_id','=','chart_of_accounts.id')
-            ->select(
-                array(
-                    'expenses.id',
-                    'chart_of_accounts.type',
-                    'expenses.date_created',
-                    'users.username',
-                    'chart_of_accounts.name',
-                    'expenses.currency_code',
-                    'expenses.amount',
-                    'expenses.description'
-                ))
-            ->where('expenses.company_id',return_company_id())->get();
+
+//        return $transaction;
+
+
+//        $expenses = $transaction;
+
+
+//        $expenses = Expense::Leftjoin('users','expenses.user_id','=','users.id')
+//            ->Leftjoin('chart_of_accounts','expenses.account_id','=','chart_of_accounts.id')
+//            ->select(
+//                array(
+//                    'expenses.id',
+//                    'chart_of_accounts.type',
+//                    'expenses.date_created',
+//                    'users.username',
+//                    'chart_of_accounts.name',
+//                    'expenses.currency_code',
+//                    'expenses.amount',
+//                    'expenses.description'
+//                ))
+//            ->where('expenses.company_id',return_company_id())->get();
+
         $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toHierarchy();
         $select_accounts = printSelect($tree,10,'account_id');
         $select_bank_accounts  = ValueList::where('uid','=','BANK_ACCOUNTS')->orderBy('name', 'asc')->pluck('name','name')->toArray();
@@ -63,31 +71,112 @@ class ExpenseController extends Controller
         $account_name = getChartofaccountName();
 //        return $account_name;
 
-        return view('expenses.index',compact('select_accounts','select_bank_accounts','select_currency_codes','account_name' ,'expenses'));
+        return view('expenses.index',compact('select_accounts','select_bank_accounts','select_currency_codes','account_name'));
 
     }
 
     public function getExpenseData(){
-        $expenses = Expense::Leftjoin('users','expenses.user_id','=','users.id')
+
+        $transactions = Expense::Leftjoin('users','expenses.user_id','=','users.id')
             ->Leftjoin('chart_of_accounts','expenses.account_id','=','chart_of_accounts.id')
             ->select(
                 array(
-                    'expenses.id',
-                    'chart_of_accounts.type',
-                    'expenses.date_created',
-                    'users.username',
-                    'chart_of_accounts.name',
-                    'expenses.currency_code',
-                    'expenses.amount',
-                    'expenses.description'
+                    'expenses.id as id',
+                    'chart_of_accounts.type as type',
+                    'expenses.date_created as date',
+                    'users.username as username',
+                    'chart_of_accounts.name as account',
+                    'expenses.currency_code as cur',
+                    'expenses.amount as amount',
+                    'expenses.description as description',
+                    'expenses.user_id as hidden'
                 ))
-            ->where('expenses.company_id',return_company_id())->get();
+            ->addSelect(DB::raw("'expenses' as Table_name"))
+            ->where('expenses.company_id',return_company_id())
+            ->union(
+                DB::table('customer_payments')
+                    ->leftJoin('users','customer_payments.created_by','=','users.id')
+                    ->leftjoin('chart_of_accounts','customer_payments.account_id','=','chart_of_accounts.id')
+                    ->select(
+                        array(
+                            'customer_payments.id as id',
+                            'customer_payments.type as type',
+                            'customer_payments.date as date',
+                            'users.username as username',
+                            'chart_of_accounts.name as account',
+                            'customer_payments.currency_code as cur',
+                            'customer_payments.amount as amount',
+                            'customer_payments.remark as description',
+                            'customer_payments.order_id as hidden'
+                        )
+                    )
+                    ->addSelect(DB::raw("'customer_payments' as Table_name"))
+                    ->where('customer_payments.company_id',return_company_id())
+            )
+            ->union(
+                DB::table('purchase_payments')
+                ->leftJoin('users', 'users.id','=','purchase_payments.created_by')
+                ->leftJoin('chart_of_accounts','chart_of_accounts.id','=','purchase_payments.account_id')
+                ->select(
+                    array(
+                        'purchase_payments.id as id',
+                        'chart_of_accounts.type as type',
+                        'purchase_payments.date_created',
+                        'users.username as username',
+                        'chart_of_accounts.name as account',
+                        'purchase_payments.currency_code as cur',
+                        'purchase_payments.amount as amount',
+                        'purchase_payments.description as description',
+                        'purchase_payments.purchase_id as hidden'
+                    )
+                )
+                    ->addSelect(DB::raw("'purchase_payments' as Table_name"))
+                ->where('purchase_payments.company_id', return_company_id())
+            )
+            ->get();
+//        foreach($transactions as $transaction){
+//            if($transaction->Table_name == 'customer_payments'){
+//                return $transaction;
+//                $order_id = CustomerPayment::where('id','=', $transaction->id)->pluck('order_id');
+//                return $order_id;
+//            }
+//        }
 
-        return Datatables::of($expenses)
-            ->addColumn('action', function ($expense) {
-                return '<a href="/expenses/'.$expense->id.'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
+
+        return Datatables::of($transactions)
+            ->addColumn('action', function ($transaction) {
+                if($transaction->Table_name == 'expenses') {
+                    return '<a href="/expenses/' . $transaction->id . '" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
+                }elseif($transaction->Table_name == 'customer_payments'){
+                    return '<a href="/orders/payments/' . $transaction->hidden . '" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
+                }elseif($transaction->Table_name == 'purchase_payments'){
+                    return '<a href="/purchases/payments/' . $transaction->hidden . '" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
+
+                }
             })
             ->make(true);
+
+
+//        $expenses = Expense::Leftjoin('users','expenses.user_id','=','users.id')
+//            ->Leftjoin('chart_of_accounts','expenses.account_id','=','chart_of_accounts.id')
+//            ->select(
+//                array(
+//                    'expenses.id',
+//                    'chart_of_accounts.type',
+//                    'expenses.date_created',
+//                    'users.username',
+//                    'chart_of_accounts.name',
+//                    'expenses.currency_code',
+//                    'expenses.amount',
+//                    'expenses.description'
+//                ))
+//            ->where('expenses.company_id',return_company_id())->get();
+//
+//        return Datatables::of($expenses)
+//            ->addColumn('action', function ($expense) {
+//                return '<a href="/expenses/'.$expense->id.'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
+//            })
+//            ->make(true);
 
     }
 
@@ -132,9 +221,9 @@ class ExpenseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+//    need some work on this
     public function store(Request $request)
     {
-        return $request;
 //        return $request->all();
         $rules = [
 //            'account_id' => 'required|integer|digits_between:1,6',
@@ -163,7 +252,7 @@ class ExpenseController extends Controller
             if($request->account_id === NULL or return_company_id() === 1) {
                 $account_id = "";
             } else {
-                $account_id = DB::select('select id from chart_of_accounts where type =\'Expense\' LIMIT '.$request->account_id.',1;')[0]->id;
+                $account_id = $request->account_id;
             }
             $expense->account_id = $account_id;
 
@@ -239,7 +328,6 @@ class ExpenseController extends Controller
             'purchase_id' => 'nullable|integer'
         ];
         $input = $request->all();
-        return  $input;
         $validation = Validator::make($input, $rules);
         if($validation->fails()){
             return redirect('expenses'.'/'.$id)
@@ -255,7 +343,6 @@ class ExpenseController extends Controller
             return redirect('expenses'.'/')
                 ->with('flash_success','Operation success');
         }
-
     }
 
     /**

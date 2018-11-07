@@ -166,11 +166,11 @@
                 ajax: '{!! route('expenses/getdata') !!}',
                 columns: [
                     { data: 'id', name: 'id' },
-                    { data: 'type', name: 'chart_of_accounts.type' },
-                    { data: 'date_created', name: 'date_created' },
-                    { data: 'username', name: 'users.username' },
-                    { data: 'name', name: 'name' },
-                    { data: 'currency_code', name: 'currency_code' },
+                    { data: 'type', name: 'type' },
+                    { data: 'date', name: 'date' },
+                    { data: 'username', name: 'username' },
+                    { data: 'account', name: 'account' },
+                    { data: 'cur', name: 'cur' },
                     { data: 'amount', name: 'amount' },
                     { data: 'description', name: 'description' },
                     { data: 'action', name: 'action', orderable: false, searchable: false}

@@ -1,0 +1,58 @@
+
+
+/* quotation css start*/
+hr{
+	width:35%;
+	float:right;
+	margin-right:0px;
+	background-color:#e5e3e3;
+	padding-top:4px;
+	border:0px;
+}
+.quotation{
+	padding-right:180px;
+	font-size:28px;
+}
+.order p{
+	padding-right:190px;
+
+}
+.payment{
+	padding-right:250px;
+	text-align:right;
+}
+.company-details{
+	padding-left:20px;
+}
+.logo-quotation{
+	height:150px;
+	width:300px;
+	padding-top:30px;
+}
+.adrress-tab tr{
+padding:20px
+}
+.content{
+	padding:30px;
+}
+.company-address{
+	padding-top:20px;
+}
+.invoice{
+	padding-right:80px;
+}
+table{
+	width:100%;
+}
+ th,td{
+	padding-left:10px;
+	height:30px;
+	padding-right:20px;
+}
+.outer-address-content{
+	margin-top:50px;
+}
+/**/
+.company_details{
+	padding-top:150px;
+}

@@ -1,0 +1,81 @@
+.logo{
+	height:60px;
+	width:150px;
+}
+
+.inner-content-purchase{
+	margin-top:30px;
+	padding-top:30px;
+}
+.logo-div{
+	border-bottom: 2px solid black;
+}
+.order-details{
+	padding-top:190px;
+}
+table{
+	width:100%;
+}
+ th,td{
+	padding-left:10px;
+	height:30px;
+	padding-right:20px;
+}
+th{
+	background-color:#F9F9F9
+}
+.inner_div{
+	padding-top:80px;
+}
+.issue-text td{
+	text-decoration:underline;
+}
+.acknowledge table{
+	margin-top:40px;
+}
+
+
+
+/* quotation css start*/
+hr{
+	width:35%;
+	float:right;
+	margin-right:0px;
+	background-color:#e5e3e3;
+	padding-top:10px;
+	border:0px;
+}
+.quotation{
+	padding-right:180px;
+	font-size:28px;
+}
+.order p{
+	padding-right:190px;
+
+}
+.payment{
+	padding-right:50px;
+	text-align:right;
+}
+.company-details{
+	padding-left:20px;
+}
+.logo-quotation{
+	height:100px;
+	padding-top:20px;
+}
+.adrress-tab tr{
+padding:20px
+}
+.content{
+	padding:30px;
+}
+.company-address{
+	padding-top:20px;
+}
+/*.purchase-table:first-child{
+	border-bottom:2px solid black;
+
+}*/
+
+/**/
