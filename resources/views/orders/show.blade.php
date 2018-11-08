@@ -254,7 +254,7 @@
                                             {{ Form::text('order_rev', $order->order_rev, array("class"=>"form-control")) }}
                                         </div>
                                         <div class="col-md-2">
-                                            <label class="control-label">Customer (<a href="/customers/show/{{ $customer->id }}">View</a>)</label>
+                                            <label class="control-label">Customer (<a href="/customers/{{ $customer->id }}">View</a>)</label>
                                             {{ Form::text('', $customer->customer_name, array("class"=>"form-control", 'readonly')) }}
                                         </div>
                                         <div class="col-md-2">

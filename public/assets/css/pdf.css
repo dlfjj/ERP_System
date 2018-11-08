@@ -1,3 +1,14 @@
+@page { margin: 0.1rem; }
+
+body, h1, h2, h3, h4, h5, h6{
+    font-family: 'Arial', serif;
+}
+
+
+.container{
+    padding:20px;
+}
+
 .logo{
 	height:60px;
 	width:150px;
@@ -16,10 +27,10 @@
 table{
 	width:100%;
 }
- th,td{
-	padding-left:10px;
-	height:30px;
-	padding-right:20px;
+th,td{
+	padding-left:0px;
+	height:15px;
+	padding-right:0px;
 }
 th{
 	background-color:#F9F9F9
@@ -33,19 +44,31 @@ th{
 .acknowledge table{
 	margin-top:40px;
 }
-
-
-
-/* quotation css start*/
-hr{
-	width:35%;
-	float:right;
-	margin-right:0px;
-	background-color:#e5e3e3;
-	padding-top:10px;
-	border:0px;
+li{
+    padding-bottom: 5px;
 }
+
+
+/*!* quotation css start*!*/
+hr{
+     width:42%;
+     float:right;
+     margin-right:0px;
+     background-color:#e5e3e3;
+     padding-top:10px;
+     border:0px;
+ }
+.linebreak{
+     width:100%;
+     float:left;
+     margin-right:0px;
+     background-color:#e5e3e3;
+     padding-top:15px;
+     border:0px;
+}
+
 .quotation{
+    padding-top:24px;
 	padding-right:180px;
 	font-size:28px;
 }
@@ -58,24 +81,56 @@ hr{
 	text-align:right;
 }
 .company-details{
-	padding-left:20px;
+	padding-left:0px;
 }
 .logo-quotation{
-	height:100px;
-	padding-top:20px;
+	height:80px;
+	padding-top:10px;
 }
-.adrress-tab tr{
-padding:20px
+.address-tab tr{
+    padding-right:20px;
+}
+.address-tab td:nth-child(1){
+    padding-right:20px
+}
+.address-detail td{
+    padding: 20px 40px 20px 0px;
+}
+.remark-detail td{
+    padding: 20px 40px 20px 0px;
 }
 .content{
 	padding:30px;
 }
+
 .company-address{
 	padding-top:20px;
 }
-/*.purchase-table:first-child{
-	border-bottom:2px solid black;
 
-}*/
 
-/**/
+.wrapper {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(5, [col] 100px ) ;
+    grid-template-rows: repeat(3, [row] auto  );
+    /*background-color: #fff;*/
+    /*color: #444;*/
+}
+
+.box {
+    background-color: #444;
+    color: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    font-size: 150%;
+    z-index:10;
+}
+
+.a {
+    grid-column: col / span  3;
+    grid-row: row ;
+}
+.b {
+    grid-column: col 3 / span  2 ;
+    grid-row: row ;
+}

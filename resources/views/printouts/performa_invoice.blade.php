@@ -1,6 +1,6 @@
 <html>
 <head>
-	<link href="{{ public_path('assets/css/commercial_pdf.css') }}" rel="stylesheet" type="text/css" />
+	<link href="{{ asset('assets/css/pdf.css') }}" rel="stylesheet"/>
 </head>
 <body>
 	<div class="content" style="border:3px solid  #e5e3e3;">
@@ -10,7 +10,6 @@
 		<h1 class="invoice" align="right" >Performa Invoice  </h1>
 		<hr>
 		<div class="div-right" align="right" style="width:300px;float: right; padding-top:20px;">
-
 
 			<table>
 				<tr>
