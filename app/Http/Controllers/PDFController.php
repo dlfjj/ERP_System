@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-
 use PDF;
 use Dompdf\Dompdf;
 use App\Models\PurchaseItem;
-
 use App\Models\Purchase;
 use App\Models\PurchaseDelivery;
 use App\Models\Vendor;
@@ -62,7 +60,7 @@ class PDFController extends Controller
         $created_by_user = User::find($purchase->created_by)->username;
         $updated_by_user = User::find($purchase->updated_by)->username;
         $html_content = '<h1>Generate a PDF using TCPDF in laravel </h1>
-  <h4>by<br/>Learn Infinity</h4>';
+                            <h4>by<br/>Learn Infinity</h4>';
         //   echo "<pre>";
         // print_R($updated_by_user);die;
 
