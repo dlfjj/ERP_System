@@ -69,7 +69,7 @@
 
 
 	<div class="row">
-		<div class="col-md-6">d
+		<div class="col-md-6">
 			<div class="widget box">
 				<div class="widget-header">
 					<h4><i class="icon-reorder"></i> Basic Reports</h4>

@@ -7,9 +7,24 @@
     <link href="{{ asset('assets/css/pdf.css') }}" rel="stylesheet"/>
     <style>
         @import url(http://fonts.googleapis.com/css?family=Bree+Serif);
+
     </style>
 </head>
 <body>
     @yield('content')
+    <script type="text/php">
+if ( isset($pdf) ) {
+    $pdf->page_script('
+        if ($PAGE_COUNT > 1) {
+            $font = $fontMetrics->get_font("Arial, Helvetica, sans-serif", "normal");
+            $size = 12;
+            $pageText = "Page " . $PAGE_NUM . " of " . $PAGE_COUNT;
+            $y = 15;
+            $x = 520;
+            $pdf->text($x, $y, $pageText, $font, $size);
+        }
+    ');
+}
+</script>
 </body>
 </html>

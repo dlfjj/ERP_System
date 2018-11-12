@@ -110,6 +110,7 @@ class PDFController extends Controller
     public function commercial_invoice($id){
         $order    = Order::findOrFail($id);
         $customer = Customer::findOrFail($order->customer_id);
+
         $order_status = OrderStatus::leftJoin('orders','orders.status_id','=','order_status.id')->where('orders.id',$id)->get()->toArray();
         // echo "<pre>";
         // print_r($order_status);die;
@@ -136,10 +137,19 @@ class PDFController extends Controller
         $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
 
         exit(0);}
+
+    /**
+     * @param $id
+     */
     public function quotation($id){
         $order    = Order::findOrFail($id);
+
 //        return $order->delivery_address;
         $customer = Customer::findOrFail($order->customer_id);
+
+
+//        return $customer;
+
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
         $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get()->toArray();
         // echo "<pre>";
@@ -153,6 +163,9 @@ class PDFController extends Controller
         // ob_end_clean();
         // PDF::Output('quotation.pdf');
         $dompdf = new Dompdf();
+
+        $dompdf->set_option("isPhpEnabled", true);
+
         $dompdf->loadHtml(view('printouts.quotation',compact('order','customer','customers_details','order_items','payment_terms')));
         // ob_end_clean(););
 
