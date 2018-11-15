@@ -234,4 +234,16 @@ Route::get('/pdf/packing_list/{id}','PDFController@package_list');
 
 
 
+/** email */
+Route::get('testmail','TestController@testmail');
+//testing route
+Route::get('testmailpreview', function(){
+    return new App\Mail\TestEmail();
+});
+
+Route::post('orders/records/{id}/sendEmail','EmailController@sendOrderEmail');
+
+
+
+
 

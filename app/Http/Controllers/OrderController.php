@@ -380,217 +380,218 @@ EOT;
         }
     }
 
-    public function postRecord(Request $request, $id){
+//    public function postRecord(Request $request, $id){
 
-        if(count($_POST) == 0){
-            die("Illegal Request");
-        }
-        $private_folder = config('app.private_folder') . return_company_id() . "/orders/";
+//
+//        if(count($_POST) == 0){
+//            die("Illegal Request");
+//        }
+//        $private_folder = config('app.private_folder') . return_company_id() . "/orders/";
+//
+//        $order_id = $id;
+//        $comment  = $request->mail_body;
+//
+//        $order 		= Order::findOrFail($id);
+//        $customer 	= Customer::findOrFail($order->customer_id);
+//        $customer_contact = CustomerContact::find($order->customer_contact_id);
+//
+//        $contacts = $customer->contacts;
+//        $mail_to = $request->mail_to;
+//
+//        $uid = Auth::user()->id;
+//        $sup = Auth::user()->superior_id;
+//
+//        if($order->created_by != $uid){
+//            if($order->customer->salesman_id != $uid){
+//                if(!has_role('company_admin')){
+//                    return redirect('orders/'.$id)
+//                        ->with('flash_error','Permission Denied')
+//                        ->withErrors($validation->Messages())
+//                        ->withInput();
+//                }
+//            }
+//        }
+//
+//        if(!$customer_contact){
+//            die("Invalid contact info for this customer");
+//        }
+//
+//        $comment = str_replace("<<MAIN_CONTACT>>",$customer_contact->contact_name,$comment);
+//        $comment = str_replace("<<VESSEL_ETD>>",$order->vessel_etd,$comment);
+//        $comment = str_replace("<<VESSEL_ETA>>",$order->vessel_eta,$comment);
+//        $comment = str_replace("<<DAYS_OVERDUE>>",$order->getDaysOverdue(),$comment);
+//        $comment = str_replace("<<CUSTOMER_ORDER_NUMBER>>",$order->customer_order_number,$comment);
+//        $comment = str_replace("<<CUSTOMER_ORDER_ID>>",$order->customer_order_number,$comment);
+//        $comment = str_replace("<<ORDER_ID>>",$order->order_no,$comment);
+//        $comment = str_replace("<<ESTIMATED_FINISH_DATE>>",$order->estimated_finish_date,$comment);
+//
+//        $preserve_current_order_status = false;
+//        if(($request->status_id) == 9){
+//            $preserve_current_order_status = true;
+//            $original_order_status = $order->status_id;
+//        }
+//
+//        if($request->has('status_id')){
+//            $order->status_id = $request->input('status_id');
+//        }
+//
+//        $status = OrderStatus::findOrFail($order->status_id);
+//
+//        $order_status = $status->name;
+//        $order_status = strtolower($order_status);
+//
+//
+//        if($request->has('inform_customer')){
+//            $inform_customer = 1;
+//        } else {
+//            $inform_customer = 0;
+//        }
+//
+//        $unique_id = uniqid();
 
-        $order_id = $id;
-        $comment  = $request->mail_body;
-
-        $order 		= Order::findOrFail($id);
-        $customer 	= Customer::findOrFail($order->customer_id);
-        $customer_contact = CustomerContact::find($order->customer_contact_id);
-
-        $contacts = $customer->contacts;
-        $mail_to = $request->mail_to;
-
-        $uid = Auth::user()->id;
-        $sup = Auth::user()->superior_id;
-
-        if($order->created_by != $uid){
-            if($order->customer->salesman_id != $uid){
-                if(!has_role('company_admin')){
-                    return redirect('orders/'.$id)
-                        ->with('flash_error','Permission Denied')
-                        ->withErrors($validation->Messages())
-                        ->withInput();
-                }
-            }
-        }
-
-        if(!$customer_contact){
-            die("Invalid contact info for this customer");
-        }
-
-        $comment = str_replace("<<MAIN_CONTACT>>",$customer_contact->contact_name,$comment);
-        $comment = str_replace("<<VESSEL_ETD>>",$order->vessel_etd,$comment);
-        $comment = str_replace("<<VESSEL_ETA>>",$order->vessel_eta,$comment);
-        $comment = str_replace("<<DAYS_OVERDUE>>",$order->getDaysOverdue(),$comment);
-        $comment = str_replace("<<CUSTOMER_ORDER_NUMBER>>",$order->customer_order_number,$comment);
-        $comment = str_replace("<<CUSTOMER_ORDER_ID>>",$order->customer_order_number,$comment);
-        $comment = str_replace("<<ORDER_ID>>",$order->order_no,$comment);
-        $comment = str_replace("<<ESTIMATED_FINISH_DATE>>",$order->estimated_finish_date,$comment);
-
-        $preserve_current_order_status = false;
-        if(($request->status_id) == 9){
-            $preserve_current_order_status = true;
-            $original_order_status = $order->status_id;
-        }
-
-        if($request->has('status_id')){
-            $order->status_id = $request->input('status_id');
-        }
-
-        $status = OrderStatus::findOrFail($order->status_id);
-
-        $order_status = $status->name;
-        $order_status = strtolower($order_status);
-
-
-        if($request->has('inform_customer')){
-            $inform_customer = 1;
-        } else {
-            $inform_customer = 0;
-        }
-
-        $unique_id = uniqid();
-
-        $order_id = $order->id;
-        $order_no = $order->order_no;
-
-        if($status->id == 7){
-            if($order->stock_booked == 0){
-                // Check first...
-                foreach($order->items as $oi){
-                    if($oi->product->track_stock == 0){ continue; }
-                    if($oi->product->stock - $oi->quantity < 0){
-                        return redirect('orders/records/'.$order->id)
-                            ->with('flash_error','Insufficient stock')
-                            ->withInput()
-                            ;
-                    }
-                }
+//        $order_id = $order->id;
+//        $order_no = $order->order_no;
+//
+//        if($status->id == 7){
+//            if($order->stock_booked == 0){
+//                // Check first...
+//                foreach($order->items as $oi){
+//                    if($oi->product->track_stock == 0){ continue; }
+//                    if($oi->product->stock - $oi->quantity < 0){
+//                        return redirect('orders/records/'.$order->id)
+//                            ->with('flash_error','Insufficient stock')
+//                            ->withInput()
+//                            ;
+//                    }
+//                }
 
                 // Now book stock
-                foreach($order->items as $oi){
-                    if($oi->product->track_stock == 0){ continue; }
-                    warehouse_transaction($oi->product_id, -$oi->quantity,"Booked for order {$order->order_no}");
-                    $order->stock_booked = 1;
-                    $order->save();
-                }
-            }
-        }
+//                foreach($order->items as $oi){
+//                    if($oi->product->track_stock == 0){ continue; }
+//                    warehouse_transaction($oi->product_id, -$oi->quantity,"Booked for order {$order->order_no}");
+//                    $order->stock_booked = 1;
+//                    $order->save();
+//                }
+//            }
+//        }
 
-        $file_to_store = "";
-        if(stristr($order_status,"quotation")){
-            $file_to_store = URL::to('/pdf/print-order/quote/'.$order_id);
-            $filename = "quotation-{$order_no}-{$unique_id}.pdf";
-            $mail_subject = "Oemserv Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"confirmation")){
-            $file_to_store = URL::to('/pdf/print-order/sc/'.$order_id);
-            $filename = "sc-{$order_no}-{$unique_id}.pdf";
-            $mail_subject = "Oemserv Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"acknowledged")){
-            $file_to_store = URL::to('/pdf/print-order/con/'.$order_id);
-            $filename = "acknowledged-{$order_no}-{$unique_id}.pdf";
-            $mail_subject = "Oemserv Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"pending")){
-            $file_to_store = URL::to('/pdf/print-order/con/'.$order_id);
-            $filename = "pending-{$order_no}-{$unique_id}.pdf";
-            $mail_subject = "Oemserv Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"processing")){
-            $file_to_store = URL::to('/pdf/print-order/sc/'.$order_id);
-            $filename = "processing-{$order_no}-{$unique_id}.pdf";
-            $mail_subject = "Oemserv Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"proforma invoice")){
-            $file_to_store = URL::to('/pdf/print-order/pi/'.$order_id);
-            $filename = "pi-{$order_no}-{$unique_id}.pdf";
-            $mail_subject = "Oemserv Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"shipped out")){
-            $file_to_store = URL::to('/pdf/print-order/ci/'.$order_id);
-            $filename = "ci-{$order_no}-{$unique_id}.pdf";
-            $mail_subject = "Oemserv Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"canceled")){
-            $file_to_store = URL::to('/pdf/print-order/ci/'.$order_id);
-            $filename = "canceled-{$order_no}-{$unique_id}.pdf";
-            $mail_subject = "Oemserv Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"overdue")){
-            $file_to_store = URL::to('/pdf/print-order/invoice_reminder/'.$order_id);
-            $filename = "reminder-{$order_no}-{$unique_id}.pdf";
-            $mail_subject = "Oemserv Gentle Payment Reminder #$order_no";
-        } else {
-            $filename = md5(uniqid()) . ".pdf";
-            $mail_subject = "Oemserv Order Info for Order #$order_no";
-        }
+//        $file_to_store = "";
+//        if(stristr($order_status,"quotation")){
+//            $file_to_store = URL::to('/pdf/print-order/quote/'.$order_id);
+//            $filename = "quotation-{$order_no}-{$unique_id}.pdf";
+//            $mail_subject = "Oemserv Order Info for Order #$order_no";
+//        } elseif(stristr($order_status,"confirmation")){
+//            $file_to_store = URL::to('/pdf/print-order/sc/'.$order_id);
+//            $filename = "sc-{$order_no}-{$unique_id}.pdf";
+//            $mail_subject = "Oemserv Order Info for Order #$order_no";
+//        } elseif(stristr($order_status,"acknowledged")){
+//            $file_to_store = URL::to('/pdf/print-order/con/'.$order_id);
+//            $filename = "acknowledged-{$order_no}-{$unique_id}.pdf";
+//            $mail_subject = "Oemserv Order Info for Order #$order_no";
+//        } elseif(stristr($order_status,"pending")){
+//            $file_to_store = URL::to('/pdf/print-order/con/'.$order_id);
+//            $filename = "pending-{$order_no}-{$unique_id}.pdf";
+//            $mail_subject = "Oemserv Order Info for Order #$order_no";
+//        } elseif(stristr($order_status,"processing")){
+//            $file_to_store = URL::to('/pdf/print-order/sc/'.$order_id);
+//            $filename = "processing-{$order_no}-{$unique_id}.pdf";
+//            $mail_subject = "Oemserv Order Info for Order #$order_no";
+//        } elseif(stristr($order_status,"proforma invoice")){
+//            $file_to_store = URL::to('/pdf/print-order/pi/'.$order_id);
+//            $filename = "pi-{$order_no}-{$unique_id}.pdf";
+//            $mail_subject = "Oemserv Order Info for Order #$order_no";
+//        } elseif(stristr($order_status,"shipped out")){
+//            $file_to_store = URL::to('/pdf/print-order/ci/'.$order_id);
+//            $filename = "ci-{$order_no}-{$unique_id}.pdf";
+//            $mail_subject = "Oemserv Order Info for Order #$order_no";
+//        } elseif(stristr($order_status,"canceled")){
+//            $file_to_store = URL::to('/pdf/print-order/ci/'.$order_id);
+//            $filename = "canceled-{$order_no}-{$unique_id}.pdf";
+//            $mail_subject = "Oemserv Order Info for Order #$order_no";
+//        } elseif(stristr($order_status,"overdue")){
+//            $file_to_store = URL::to('/pdf/print-order/invoice_reminder/'.$order_id);
+//            $filename = "reminder-{$order_no}-{$unique_id}.pdf";
+//            $mail_subject = "Oemserv Gentle Payment Reminder #$order_no";
+//        } else {
+//            $filename = md5(uniqid()) . ".pdf";
+//            $mail_subject = "Oemserv Order Info for Order #$order_no";
+//        }
+//
+//        $filepath = "";
+//
+//        if($request->has('record_file') && $file_to_store != ""){
+//            $record_file = 1;
+//            $printurl = $file_to_store;
+//            $filepath = $private_folder . $filename;
+//            print_pdf($printurl,$filename,$filepath);
+//        } else {
+//            $record_file = 0;
+//            $filename = "";
+//        }
 
-        $filepath = "";
-
-        if($request->has('record_file') && $file_to_store != ""){
-            $record_file = 1;
-            $printurl = $file_to_store;
-            $filepath = $private_folder . $filename;
-            print_pdf($printurl,$filename,$filepath);
-        } else {
-            $record_file = 0;
-            $filename = "";
-        }
-
-        if($inform_customer == 1){
-            $mail_data = array(
-                'from_name' => Auth::user()->first_name . " " . Auth::user()->last_name,
-                'from_email' => Auth::user()->email,
-                'reply_to_name' => Auth::user()->first_name . " " . Auth::user()->last_name,
-                'reply_to_email' => Auth::user()->email,
-                'to_email' => $customer_contact->username,
-                'subject' => $mail_subject,
-                'mail_body' => $comment,
-                'file_path' => $filepath,
-                'signature' => Auth::user()->signature,
-                'mail_to'  => $mail_to,
-                'order' => $order
-            );
-            Mail::send(array('text' => 'emails.orders'), $mail_data, function($message) use ($mail_data){
-                //$message->from($mail_data['from_email'],$mail_data['from_name']);
-                $message->replyTo($mail_data['reply_to_email']);
-                foreach($mail_data['mail_to'] as $mail_to_address){
-                    $message->to($mail_to_address);
-                }
-                //$message->to($mail_data['to_email']);
-                $message->cc($mail_data['from_email']);
-                $message->subject($mail_data['subject']);
-                if($mail_data['file_path'] != ""){
-
-                    $o = $mail_data['order'];
-
-                    if($o->status_id == 7){
-                        $message->bcc('account@oemserv.hk');
-                    }
-
-                    if(file_exists($mail_data['file_path'])){
-                        $message->attach($mail_data['file_path']);
-                    }
-                }
-            });
-        }
+//        if($inform_customer == 1){
+//            $mail_data = array(
+//                'from_name' => Auth::user()->first_name . " " . Auth::user()->last_name,
+//                'from_email' => Auth::user()->email,
+//                'reply_to_name' => Auth::user()->first_name . " " . Auth::user()->last_name,
+//                'reply_to_email' => Auth::user()->email,
+//                'to_email' => $customer_contact->username,
+//                'subject' => $mail_subject,
+//                'mail_body' => $comment,
+//                'file_path' => $filepath,
+//                'signature' => Auth::user()->signature,
+//                'mail_to'  => $mail_to,
+//                'order' => $order
+//            );
+//            Mail::send(array('text' => 'emails.orders'), $mail_data, function($message) use ($mail_data){
+//                //$message->from($mail_data['from_email'],$mail_data['from_name']);
+//                $message->replyTo($mail_data['reply_to_email']);
+//                foreach($mail_data['mail_to'] as $mail_to_address){
+//                    $message->to($mail_to_address);
+//                }
+//                //$message->to($mail_data['to_email']);
+//                $message->cc($mail_data['from_email']);
+//                $message->subject($mail_data['subject']);
+//                if($mail_data['file_path'] != ""){
+//
+//                    $o = $mail_data['order'];
+//
+//                    if($o->status_id == 7){
+//                        $message->bcc('account@oemserv.hk');
+//                    }
+//
+//                    if(file_exists($mail_data['file_path'])){
+//                        $message->attach($mail_data['file_path']);
+//                    }
+//                }
+//            });
+//        }
 
         // If record_file is set, create the file based on
         // Order status, and save it
 
         // If notify_customer is set, inform the customer
 
-        $record = New OrderHistory;
-        $record->order_id = $order_id;
-        $record->date_added = date("Y-m-d");
-        $record->notify_customer = $inform_customer;
-        $record->record_file = $record_file;
-        $record->file_name = $filename;
-        $record->comment = $comment;
-        $record->username = Auth::user()->username;
-        $record->order_status_id = $order->status_id;
-        $record->created_by = Auth::user()->id;
-        $record->save();
-
-        if($preserve_current_order_status){
-            $order->status_id = $original_order_status;
-        }
-        $order->save();
-
-        return redirect("/orders/records/$order_id")
-            ->with('flash_success','Operation success');
-    }
+//        $record = New OrderHistory;
+//        $record->order_id = $order_id;
+//        $record->date_added = date("Y-m-d");
+//        $record->notify_customer = $inform_customer;
+//        $record->record_file = $record_file;
+//        $record->file_name = $filename;
+//        $record->comment = $comment;
+//        $record->username = Auth::user()->username;
+//        $record->order_status_id = $order->status_id;
+//        $record->created_by = Auth::user()->id;
+//        $record->save();
+//
+//        if($preserve_current_order_status){
+//            $order->status_id = $original_order_status;
+//        }
+//        $order->save();
+//
+//        return redirect("/orders/records/$order_id")
+//            ->with('flash_success','Operation success');
+//    }
 
 
 

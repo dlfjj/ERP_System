@@ -21,7 +21,7 @@
                 </div>
                 <div class="widget-content">
                     {{--<form enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" method="POST">--}}
-                        {!! Form::open(['method'=>'POST','action'=>['OrderController@postRecord', $order->id],'files' =>false], array('enctype'=>'multipart/form-data','id'=>'main','class' => 'form-vertical row-border form-validate')) !!}
+                        {!! Form::open(['method'=>'POST','action'=>['EmailController@sendOrderEmail', $order->id],'files' =>false], array('enctype'=>'multipart/form-data','id'=>'main','class' => 'form-vertical row-border form-validate')) !!}
                         <div class="tabbable box-tabs">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#box_tab1" data-toggle="tab">General</a></li>
@@ -107,7 +107,9 @@
                                             </div>
                                         </div>
                                         <div class="form-actions">
-                                            <input type="submit" value="Save" class="btn btn-sm btn-success pull-right">
+                                            {{--<a href="/testmail" class="btn btn-info" role="button">Send Mail</a>--}}
+
+                                            <input type="submit" value="Send Email and Record Message" class="btn btn-sm btn-success pull-right">
                                             {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
                                             {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
                                         </div>
@@ -131,9 +133,9 @@
                 </div>
                 <div class="widget-content">
                     <div class="tabbable">
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#box_tab1" data-toggle="tab">General</a></li>
-                        </ul>
+                        {{--<ul class="nav nav-tabs">--}}
+                            {{--<li class="active"><a href="#box_tab1" data-toggle="tab">General</a></li>--}}
+                        {{--</ul>--}}
                         <div class="tab-content">
                             {{--<div class="tab-pane active" id="box_tab1">--}}
                                 <table class="table table-hover" id="email-record-table" style="width:100%;">

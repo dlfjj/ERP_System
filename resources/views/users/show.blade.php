@@ -126,7 +126,7 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <textarea rows="3" cols="5" name="signature" class="form-control">{{ $user->signature }}</textarea>
+                                    <textarea rows="10" cols="5" name="signature" class="form-control">{{ $user->signature }}</textarea>
                                     <span class="help-block">E-Mail Signature</span>
                                 </div>
                             </div>

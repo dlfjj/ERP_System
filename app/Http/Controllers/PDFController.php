@@ -164,8 +164,6 @@ class PDFController extends Controller
         // PDF::Output('quotation.pdf');
         $dompdf = new Dompdf();
 
-        $dompdf->set_option("isPhpEnabled", true);
-
         $dompdf->loadHtml(view('printouts.quotation',compact('order','customer','customers_details','order_items','payment_terms')));
         // ob_end_clean(););
 

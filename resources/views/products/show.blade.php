@@ -132,11 +132,11 @@
 
                                                 @if($product->picture != "")
 
-                                                    <img src="/products/view-main-image/{{$product->id}}" />
+{{--                                                    <img src="/products/view-main-image/{{$product->id}}" />--}}
+                                                    <img src="{{ asset('storage/app/public/products/').$product->id }}" />
 
                                                 @else
-
-                                                    <img src="http://placehold.it/100x100">
+                                                    <img src="{{ asset('/img/placeholder_200x200.jpg') }}">
 
                                                 @endif
 
