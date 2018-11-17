@@ -1,116 +1,169 @@
-<html>
-<head>
-	<link href="{{ public_path('assets/css/commercial_pdf.css') }}" rel="stylesheet" type="text/css" />
+@extends('layouts.print')
 
-</head>
-<body>
-	<div class="content" style="border:3px solid #e5e3e3;">
-		<div class="div-left" aligh="left">
-			<img src="{{public_path('public/global/companies/').$order->company->company_logo}}" height="70" width="150" align="left" class="logo-quotation" >
-		</div>
-		<h1 class="invoice" align="right">commercial Invoice  </h1>
-			<hr>
-		<div class="div-right" align="right" style="width:300px;float: right; padding-top:20px;">
-			
-				<table>
+
+@section('content')
+	<header>
+		@if( $order->company->id == "8" )
+			<img src="{{public_path('public/global/companies/8.png')}}" class="header-logo">
+		@else
+			<img src="{{public_path('public/global/companies/').$order->company->company_logo}}"  class="header-logo" align="left">
+		@endif
+	</header>
+	<h2 align="center">Invoice</h2>
+	<hr>
+	<div class="content">
+		<div class="row">
+			<div class="col-xs-6">
+				<ul class="company-details">
+					<li align="left">Company Name:<strong> {{ $customer->customer_name }}</strong></li>
+					<li align="left" >Contact Name: {{ $order->customerContact->contact_name }}</li>
+					<li align="left" >Customer Order: {{ $order->customer_order_number }}</li>
+					<li align="left">Ship by: {{ $order->container->name }}</li>
+                    <li align="left">Tax ID: {{ $order->customer->tax_id }}</li>
+
+					{{--<li>Number: {{$order->order_no}} </li>--}}
+				</ul>
+			</div>
+			<div class="col-xs-6">
+				<table class="order-info">
 					<tr>
-						<td>Number</td>
+						<td>Number:</td>
 						<td>{{$order->order_no}}</td>
 					</tr>
 					<tr>
-						<td>Date</td>
+						<td>Date:</td>
 						<td> {{$order->order_date}}</td>
 					</tr>
 					<tr>
-						<td>shipping</td>
+						<td>Shipping:</td>
 						<td>{{$order->from_port}}</td>
 					</tr>
-
 					<tr>
-						<td>payment</td>
+						<td>Payment:</td>
 						<td> {{$payment_terms[0]['name']}}</td>
 					</tr>
-
 					<tr>
-						<td>Shipping date</td>
-						<td> {{$order->estimated_finish_date}}</td>
+						<td>Shipping Date:</td>
+						<td>{{ $order->estimated_finish_date }}</td>
 					</tr>
-
-					<tr>
-						<td>Packages</td>
-						<td> {{$order->stock_booked}}</td>
-					</tr>
-					<tr>
-						<td>Weight</td>
-						<td> {{$order->net_weight}}/{{$order->gross_weight}}</td>
-					</tr>
-					<tr>
-						<td>volume</td>
-						<td> </td>
-					</tr>
-
+                    @if($order->vessel_etd != "0000-00-00")
+                        <tr>
+                            <td>Vessel ETD</td>
+                            <td>{{ $order->vessel_etd }}</td>
+                        </tr>
+                    @endif
+                    @if($order->vessel_eta != "0000-00-00")
+                        <tr>
+                            <td>Vessel ETA</td>
+                            <td>{{ $order->vessel_eta }}</td>
+                        </tr>
+                    @endif
+                    {{--<tr>--}}
+                        {{--<td>Packages</td>--}}
+                        {{--<td>{{ $order->getNumberOfPackages() }}</td>--}}
+                    {{--</tr>--}}
+                    <tr>
+                        <td>Weight&nbsp;(NT/GR)</td>
+{{--                        <td>{{ number_format(getNetWeight($order),2) }}KG / {{ number_format($order->getGrossWeight(),2) }}KG</td>--}}
+                        <td>{{ number_format($net_weight,2) }}KG </td>
+                    </tr>
+                    {{--<tr>--}}
+                        {{--<td>Volume</td>--}}
+                        {{--<td><?=number_format($order->getCbm(),3);?> m&sup3;</td>--}}
+                    {{--</tr>--}}
 				</table>
-			
+			</div>
 		</div>
-		<div class="company_details" style="padding-top:180px;">
-
-			<p align="left"> company Name: {{$customers_details[0]['name']}}</p>
-			<p align="left" > Contact name:{{$customers_details[0]['contact_person']}}</p>
-			<p align="left" > customer Order {{$customers_details[0]['ids_orders']}}</p>
-			<p align="left" > Ship By {{$order->shipping_method}}</p>
-		</div>
-		<div class="outer-address-content" >
-			<table>
-				<tr style="background-color:#e5e3e3; color:black;">
+		<div class="row-fluid" style="padding-top: 20px;">
+			<table class="address-tab">
+				<tr style="background-color:#e5e3e3; color:black; font-weight: bold;">
 					<td align="left">Address</td>
-					<td  align="right">Shipping To</td>	
+					<td align="left">Shipping To</td>
 				</tr>
-				<tr>
-					<td align="left"></td>
-					<td  align="right">{{$order->delivery_Address}}</td>	
+				<tr class="address-detail">
+					<td align="left">{{ $order->delivery_address }}</td>
+					<td  align="left">{{ $order->delivery_address }}</td>
 				</tr>
 			</table>
 			<table>
-				<tr style="background-color:#e5e3e3; color:black;">
+				@if($order->order_remarks_public != "")
+					<tr style="background-color:#e5e3e3; color:black; font-weight: bold">
+						<td>Remarks:</td>
+					</tr>
+					<tr class="remark-detail">
+						<td>{{ $order->order_remarks_public }}</td>
+					</tr>
+				@endif
+			</table>
+			<table class="table table-bordered table-condensed table-invoice">
+				<tr style="background-color:#e5e3e3; color:black; font-weight: bold;">
 					<td align="left">Item</td>
-					<td  align="right">QTY</td>	
-					<td  align="right">in ctn/total ctn </td>	
-					<td  align="right">price  </td>	
-					<td  align="right">line total </td>	
+					<td  align="left">Qty</td>
+					<td  align="left">in ctn/total ctn</td>
+					<td  align="left">Price</td>
+					<td  align="right">Line total</td>
 				</tr>
-				<tr>
-					<td align="left"></td>
-					<td  align="right">{{$order->delivery_Address}}</td>	
-				</tr>
-				<tr >
-					<td align="left">{{$order_items[0]['product_name']}}</td>
-					<td  align="right">{{$order_items[0]['quantity']}}</td>	
-					<td  align="right">{{$order_items[0]['cbm']}}</td>	
-					<td  align="right">{{$order_items[0]['unit_price_net']}}  </td>	
-					<td  align="right">{{$order_items[0]['amount_net']}} </td>	
-				</tr>
-				<tr>
-					<td align="left"></td>
-					<td  align="right">{{$order->delivery_Address}}</td>	
-				</tr>
-			</table>
-			<table>
-				<tr style="background-color:#e5e3e3; color:black;"><td></td></tr>
-				<tr><td>
-					<p>{{$customers_details[0]['name']}}</p>
-					<p>{{$customers_details[0]['ship_to']}}</p>
-				</td>
-			</tr>
-			<tr>
-				<td> <p>Subtotal USD:{{$customers_details[0]['currency_code']}}</p>
-					<p>Total Amount:{{$order_items[0]['amount_net']}}</p>
-				</td></tr>
 
+				@foreach($order->items as $okey=>$order_item)
+					<tr>
+						<td>{{ $order_item->product_name }}</td>
+						<td>{{ $order_item->quantity }}</td>
+						<td>{{ $order_item->cbm }}</td>
+						<td>{{ $order_item->unit_price_net }}</td>
+						<td align="right">{{ $order_item->amount_net }} </td>
+					</tr>
+				@endforeach
+
+				<tr>
+					<td colspan="5" align="right">Subtotal {{ $order->currency_code }}: {{ number_format($order->getLineTotal(),2) }}</td>
+				</tr>
+				@if($order->discount != 0)
+					<tr>
+						<td colspan="5" align="right">Discount: {{ $order->discount }}%</td>
+					</tr>
+					<tr>
+						<td colspan="5" align="right">Subtotal: {{ number_format($order->sub_total_net,2) }}</td>
+					</tr>
+				@endif
+				@if($order->shipping_cost > 0)
+					<tr>
+						<td colspan="5" align="right">Freight Charge: {{ number_format($order->shipping_cost,2) }}</td>
+					</tr>
+				@endif
+				@if($order->taxcode->percent > 0)
+					<tr>
+						<td colspan="5" align="right">{{ $order->taxcode->name }} {{ $order->tax_total }}</td>
+					</tr>
+				@endif
+				<tr>
+					<td colspan="5" align="right" >Total amount: {{ number_format($order->total_gross,2) }}</td>
+				</tr>
 
 			</table>
-			<h1 align="right" style="border-bottom:3px solid #e5e3e3; border-bottom-width:13px;"></h1>
-			<p class="company-address">{{$customers_details[0]['bank_info']}}    call on:{{$customers_details[0]['contact_phone']}}</p>
+
+			@if(count($order->orderitems) > 8)
+				<div class="row-fluid" id="inv_oi_line"></div>
+				<div style="page-break-after:always"></div>
+			@else
+				<div class="row-fluid" id="inv_oi_line"></div>
+			@endif
+
 		</div>
 	</div>
-</body>
-</html>
+	<footer>
+		<div class="row">
+			<div class="col-xs-5 footer-section1">
+				<p>{{ $order->company->name }}</p>
+				<p>{!! nl2br($order->company->ship_to) !!}</p>
+			</div>
+
+
+			<div class="col-xs-6 footer-section2">
+				<p>{!! $order->company->bank_info !!}</p>
+				<p style="font-style:italic; font-size: 11px; line-height: 12px;">
+					{{ $order->company->df_quote }}
+				</p>
+			</div>
+		</div>
+	</footer>
+@endsection

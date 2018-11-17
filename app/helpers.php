@@ -1063,6 +1063,37 @@ function getSalePrice(&$product,&$order,&$customer,$currency_code=null){
 }
 
 
+function getNetWeight($order){
+    $nt_weight_total = 0;
+    foreach($order->items as $value=>$orderitem){
+//            return dd($orderitem->product->pluck('pack_unit'));
+        if($orderitem->product->pluck('pack_unit')[0] > 0){
+            $cartons = $orderitem->quantity / $orderitem->product->pluck('pack_unit')[0];
+        } else {
+            $cartons = 0;
+        }
+//            return "you got here";
+        if($order->container_type == 4){
+            if($orderitem->product->pluck('pack_unit_hq')[0] > 0){
+                $cartons = $orderitem->quantity / $orderitem->product->pluck('pack_unit_hq')[0];
+            } else {
+                $cartons = 0;
+            }
+        }
+        if($order->container_type == 4){
+            $unit_nt_weight = $orderitem->product->pluck('pack_unit_net_weight_hq')[0];
+            $line_nt_weight = $unit_nt_weight * $cartons;
+        } else {
+            $unit_nt_weight = $orderitem->product->pluck('pack_unit_net_weight')[0];
+            $line_nt_weight = $unit_nt_weight * $cartons;
+        }
+        $nt_weight_total += $line_nt_weight;
+    }
+
+    return $nt_weight_total;
+}
+
+
 /*
 |--------------------------------------------------------------------------
 | Maintenance Mode Handler

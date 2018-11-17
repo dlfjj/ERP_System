@@ -9,7 +9,7 @@
 			<img src="{{public_path('public/global/companies/').$order->company->company_logo}}"  class="header-logo" align="left">
 		@endif
 	</header>
-	<h2 align="center">Order confirmation</h2>
+	<h2 align="center">Proforma invoice</h2>
 	<hr>
 	<div class="content">
 		<div class="row">

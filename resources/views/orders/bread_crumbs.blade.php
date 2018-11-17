@@ -54,7 +54,7 @@ $uri_segment = Request::segment(2);
             <li><a target="_new" href="/pdf/quotation/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Quote</span></a></li>
             <li><a target="_new" href="/pdf/acknowledgement/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Acknowledgement</span></a></li>
             <li><a target="_new" href="/pdf/order-confirmation/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Confirmation</span></a></li>
-            <li><a target="_new" href="/pdf/performa_invoice/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Proforma Invoice</span></a></li>
+            <li><a target="_new" href="/pdf/proforma_invoice/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Proforma Invoice</span></a></li>
             <li><a target="_new" href="/pdf/commercial_invoice/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Commercial Invoice</span></a></li>
             <li><a target="_new" href="/pdf/packing_list/{{$order->id}}" class="" title=""><i class="icon-print"></i><span>Packing List</span></a></li>
            

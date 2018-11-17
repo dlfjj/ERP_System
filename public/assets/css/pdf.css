@@ -16,7 +16,7 @@ header {
     /*line-height: 35px;*/
 }
 .header-logo{
-    width:735px;
+    width:740px;
     height: auto;
     /*padding-bottom:100px;*/
     /*padding-top:10px;*/
@@ -95,7 +95,7 @@ li{
 }
 /*!* quotation css start*!*/
 hr{
-     width:192%;
+     width:100%;
      /*float:left;*/
      margin-left:0px;
      background-color:#e5e3e3;
@@ -132,7 +132,7 @@ hr{
 .order-info{
     /*margin-right:300px;*/
     /*list-style-type:none;*/
-    padding-top: 120px;
+    padding-top: 0px;
 }
 
 .address-tab tr{

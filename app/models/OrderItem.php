@@ -65,7 +65,7 @@ class OrderItem extends Model {
 	}
 
     public function getNumberOfPackages(){
-        if($this->product->pack_unit>0){
+        if($this->product->pack_unit > 0){
             $cartons = $this->quantity / $this->product->pack_unit;
         } else {
             $cartons = 0;	
@@ -78,39 +78,39 @@ class OrderItem extends Model {
                 $cartons = 0;	
             }
         }
-
         return ceil($cartons);
     }
 
+//move this to helper function
 
-    public function getNetWeight(){
-        $nt_weight_total = 0;
-
-        if($this->product->pack_unit>0){
-            $cartons = $this->quantity / $this->product->pack_unit;
-        } else {
-            $cartons = 0;	
-        }
-
-        if($this->order->container_type == 4){
-            if($this->product->pack_unit_hq>0){
-                $cartons = $this->quantity / $this->product->pack_unit_hq;
-            } else {
-                $cartons = 0;	
-            }
-        }
-
-        if($this->order->container_type == 4){
-            $unit_nt_weight = $this->product->pack_unit_net_weight_hq;
-            $line_nt_weight = $unit_nt_weight * $cartons;
-        } else {
-            $unit_nt_weight = $this->product->pack_unit_net_weight;
-            $line_nt_weight = $unit_nt_weight * $cartons;
-        }
-        $nt_weight_total += $line_nt_weight;
-
-        return $nt_weight_total;
-    }
+//    public function getNetWeight(){
+//        $nt_weight_total = 0;
+//
+//        if($this->product->pack_unit > 0){
+//            $cartons = $this->quantity / $this->product->pack_unit;
+//        } else {
+//            $cartons = 0;
+//        }
+//
+//        if($this->order->container_type == 4){
+//            if($this->product->pack_unit_hq > 0){
+//                $cartons = $this->quantity / $this->product->pack_unit_hq;
+//            } else {
+//                $cartons = 0;
+//            }
+//        }
+//
+//        if($this->order->container_type == 4){
+//            $unit_nt_weight = $this->product->pack_unit_net_weight_hq;
+//            $line_nt_weight = $unit_nt_weight * $cartons;
+//        } else {
+//            $unit_nt_weight = $this->product->pack_unit_net_weight;
+//            $line_nt_weight = $unit_nt_weight * $cartons;
+//        }
+//        $nt_weight_total += $line_nt_weight;
+//
+//        return $nt_weight_total;
+//    }
 
 
     public function getGrossWeight(){

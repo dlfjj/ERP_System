@@ -10,6 +10,8 @@
     </header>
 
     <div class="content">
+        <h1 class="text-center">Quotation</h1>
+        <hr>
         <div class="row">
             {{--<div class="div-left">--}}
             {{--<img src="{{public_path('public/global/companies/').$order->company->company_logo}}"  class="logo-quotation" align="left">--}}
@@ -20,17 +22,16 @@
             {{--<hr>--}}
             <div class="col-xs-6">
                 <ul class="company-details">
-                    <li><h1>Quotation</h1></li>
-                    <li><hr></li>
+                    {{--<li><h1>Quotation</h1></li>--}}
+                    {{--<li><hr></li>--}}
                     <li align="left"> Company Name:<strong> {{ $customer->customer_name }}</strong></li>
                     <li align="left" > Contact Name: {{$order->customerContact->contact_name}}</li>
                     <li align="left" > Customer Order: {{ $order->customer_order_number }}</li>
-{{--                    <li>Number: {{$order->order_no}}</li>--}}
                 </ul>
             </div>
             {{--</div>--}}
             {{--<div class="col-sm-6">--}}
-            <div class="col-xs-6 text-left">
+            <div class="col-xs-6">
                 {{--<ul class="order-info">--}}
                 {{--<li>Number: {{$order->order_no}}</li>--}}
                 {{--</ul>--}}

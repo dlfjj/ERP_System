@@ -88,17 +88,19 @@ class PDFController extends Controller
     public function order_confirmation($id){
         $order    = Order::findOrFail($id);
         $customer = Customer::findOrFail($order->customer_id);
+        $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
+
         // PDF::SetTitle('confirmation PDF');
         // PDF::AddPage();
         // PDF::writeHTML(view('printouts.order_confirmation',compact('order','customer')));
         // ob_end_clean();
         // PDF::Output('order-confirm.pdf');
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.order_confirmation',compact('order','customer')));
+        $dompdf->loadHtml(view('printouts.order_confirmation',compact('order','customer','payment_terms')));
         // ob_end_clean(););
 
 // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->setPaper('A4', 'portrait');
 
 // Render the HTML as PDF
         $dompdf->render();
@@ -117,18 +119,17 @@ class PDFController extends Controller
         $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get()->toArray();
         $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
-        // PDF::SetTitle('confirmation PDF');
-        // PDF::AddPage();
-        // PDF::writeHTML(view('printouts.commercial_invoice',compact('order','customer','customers_details','order_status','order_items','payment_terms')));
-        // ob_end_clean();
-        // PDF::Output('invoice.pdf');
+
+
+        $net_weight = getNetWeight($order);
+
 
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.commercial_invoice',compact('order','customer','customers_details','order_status','order_items','payment_terms')));
+        $dompdf->loadHtml(view('printouts.commercial_invoice',compact('order','customer','customers_details','order_status','order_items','payment_terms','net_weight')));
         // ob_end_clean(););
 
 // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->setPaper('A4', 'portrait');
 
 // Render the HTML as PDF
         $dompdf->render();
@@ -185,6 +186,8 @@ class PDFController extends Controller
         $order_status = OrderStatus::leftJoin('orders','orders.status_id','=','order_status.id')->where('orders.id',$id)->get()->toArray();
         // echo "<pre>";
         // print_r($order_status);die;
+        $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
+
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
         // PDF::SetTitle('acknowledgement PDF');
         // PDF::AddPage();
@@ -192,11 +195,11 @@ class PDFController extends Controller
         // ob_end_clean();
         // PDF::Output('acknowledgement.pdf');
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.acknowledgement',compact('order','customer','customers_details','order_items','order_status')));
+        $dompdf->loadHtml(view('printouts.acknowledgement',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
         // ob_end_clean(););
 
 // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->setPaper('A4', 'portrait');
 
 // Render the HTML as PDF
         $dompdf->render();
@@ -231,7 +234,7 @@ class PDFController extends Controller
         $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
         exit(0);
     }
-    public function performa_invoice($id){
+    public function proforma_invoice($id){
         $order    = Order::findOrFail($id);
         $customer = Customer::findOrFail($order->customer_id);
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
@@ -243,11 +246,11 @@ class PDFController extends Controller
         // ob_end_clean();
         // PDF::Output('performa_invoice.pdf');
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.performa_invoice',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
+        $dompdf->loadHtml(view('printouts.proforma_invoice',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
         // ob_end_clean(););
 
 // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->setPaper('A4', 'portrait');
 
 // Render the HTML as PDF
         $dompdf->render();
