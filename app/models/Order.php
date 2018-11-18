@@ -259,39 +259,39 @@ class Order extends Model {
         return $no_of_pallets;
     }
 
-    public function getCbm(){
-        $cbm_total = 0;
-
-        if($this->real_cbm > 0){
-            return $this->real_cbm;
-        }
-
-        foreach($this->items as $okey=>$orderitem){
-            if($orderitem->product->pack_unit>0){
-                $cartons = $orderitem->quantity / $orderitem->product->pack_unit;
-            } else {
-                $cartons = 0;
-            }
-
-            if($this->container_type == 4){
-                if($orderitem->product->pack_unit_hq>0){
-                    $cartons = $orderitem->quantity / $orderitem->product->pack_unit_hq;
-                } else {
-                    $cartons = 0;
-                }
-            }
-
-            // carton_size_w carton_size_w_hq
-            if($this->container_type == 4){
-                $cbm          = $orderitem->product->carton_size_w_hq * $orderitem->product->carton_size_d_hq * $orderitem->product->carton_size_h_hq / 1000000;
-            } else {
-                $cbm          = $orderitem->product->carton_size_w * $orderitem->product->carton_size_d * $orderitem->product->carton_size_h / 1000000;
-            }
-            $cbm_total   += $cbm * $cartons;
-        }
-
-        return $cbm_total;
-    }
+//    public function getCbm(){
+//        $cbm_total = 0;
+//
+//        if($this->real_cbm > 0){
+//            return $this->real_cbm;
+//        }
+//
+//        foreach($this->items as $okey=>$orderitem){
+//            if($orderitem->product->pack_unit>0){
+//                $cartons = $orderitem->quantity / $orderitem->product->pack_unit;
+//            } else {
+//                $cartons = 0;
+//            }
+//
+//            if($this->container_type == 4){
+//                if($orderitem->product->pack_unit_hq>0){
+//                    $cartons = $orderitem->quantity / $orderitem->product->pack_unit_hq;
+//                } else {
+//                    $cartons = 0;
+//                }
+//            }
+//
+//            // carton_size_w carton_size_w_hq
+//            if($this->container_type == 4){
+//                $cbm          = $orderitem->product->carton_size_w_hq * $orderitem->product->carton_size_d_hq * $orderitem->product->carton_size_h_hq / 1000000;
+//            } else {
+//                $cbm          = $orderitem->product->carton_size_w * $orderitem->product->carton_size_d * $orderitem->product->carton_size_h / 1000000;
+//            }
+//            $cbm_total   += $cbm * $cartons;
+//        }
+//
+//        return $cbm_total;
+//    }
 
     public function getDaysOverdue(){
         if($this->status_id == 6 || $this->status_id == 7){

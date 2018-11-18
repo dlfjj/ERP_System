@@ -42,10 +42,17 @@
 						<td>Payment:</td>
 						<td> {{$payment_terms[0]['name']}}</td>
 					</tr>
+                    @if($order->estimated_finish_date != null)
 					<tr>
 						<td>Shipping Date:</td>
 						<td>{{ $order->estimated_finish_date }}</td>
 					</tr>
+                        @else
+                        <tr>
+                            <td>Shipping Date:</td>
+                            <td>TBD</td>
+                        </tr>
+                    @endif
                     @if($order->vessel_etd != "0000-00-00")
                         <tr>
                             <td>Vessel ETD</td>
@@ -99,7 +106,13 @@
 					<td align="left">Item</td>
 					<td  align="left">Qty</td>
 					<td  align="left">in ctn/total ctn</td>
-					<td  align="left">Price</td>
+                    @if($order->taxcode->percent > 0)
+					    <td  align="left">Nt Price</td>
+					    <td  align="left">Tax</td>
+					    <td  align="left">Gr Price</td>
+                    @else
+                        <td  align="left">Price</td>
+                    @endif
 					<td  align="right">Line total</td>
 				</tr>
 
@@ -108,7 +121,23 @@
 						<td>{{ $order_item->product_name }}</td>
 						<td>{{ $order_item->quantity }}</td>
 						<td>{{ $order_item->cbm }}</td>
-						<td>{{ $order_item->unit_price_net }}</td>
+
+                        @if($order->taxcode->percent > 0)
+                            <td>
+                                {{ number_format($orderitem->unit_price_net,2) }}
+                            </td>
+                            <td>
+                                {{ $order->taxcode->perc }} %
+                            </td>
+                            <td>
+                                {{ number_format($order_item->unit_price_gross,2) }}
+                            </td>
+                        @else
+                            <td>
+                                {{ number_format($order_item->unit_price_net,2) }}
+                            </td>
+                        @endif
+
 						<td align="right">{{ $order_item->amount_net }} </td>
 					</tr>
 				@endforeach

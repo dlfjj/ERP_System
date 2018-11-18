@@ -123,7 +123,7 @@ class PDFController extends Controller
         $gross_weight =  getGrossWeight($order);
         $package_count = getNumberOfPackages($order);
         $volumn = getCbm($order);
-//        return $volumn;
+//        return dd($order->estimated_finish_date);
 
         $dompdf = new Dompdf();
         $dompdf->loadHtml(view('printouts.commercial_invoice',compact('order','volumn','customer','customers_details','order_status','payment_terms','package_count','net_weight','gross_weight')));

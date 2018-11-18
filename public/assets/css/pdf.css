@@ -54,7 +54,7 @@ footer {
     padding:20px;
 }
 .content{
-    padding:10px;
+    padding:0px 10px 10px 10px;
 }
 .logo{
 	height:60px;
@@ -95,7 +95,7 @@ li{
 }
 /*!* quotation css start*!*/
 hr{
-     width:100%;
+     width:98%;
      /*float:left;*/
      margin-left:0px;
      background-color:#e5e3e3;
@@ -103,7 +103,7 @@ hr{
      border:0px;
  }
 .linebreak{
-     width:100%;
+     /*width:100%;*/
      float:left;
      margin-right:0px;
      background-color:#e5e3e3;
@@ -133,6 +133,8 @@ hr{
     /*margin-right:300px;*/
     /*list-style-type:none;*/
     padding-top: 0px;
+    padding-bottom: 5px;
+    padding-right:4px;
 }
 
 .address-tab tr{
