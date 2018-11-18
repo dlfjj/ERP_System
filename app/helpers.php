@@ -1093,7 +1093,98 @@ function getNetWeight($order){
     return $nt_weight_total;
 }
 
+function getGrossWeight($order){
+    $gr_weight_total = 0;
 
+    foreach($order->items as $okey=>$orderitem){
+        if($orderitem->product->pluck('pack_unit')[0] > 0){
+            $cartons = $orderitem->quantity / $orderitem->product->pluck('pack_unit')[0];
+        } else {
+            $cartons = 0;
+        }
+
+        if($order->container_type == 4){
+            if($orderitem->product->pluck('pack_unit_hq')[0]>0){
+                $cartons = $orderitem->quantity / $orderitem->product->pluck('pack_unit_hq')[0];
+            } else {
+                $cartons = 0;
+            }
+        }
+
+        if($order->container_type == 4){
+            $unit_gr_weight = $orderitem->product->pluck('pack_unit_gross_weight_hq')[0];
+            $line_gr_weight = $unit_gr_weight * $cartons;
+        } else {
+            $unit_gr_weight = $orderitem->product->pluck('pack_unit_gross_weight')[0];
+            $line_gr_weight = $unit_gr_weight * $cartons;
+        }
+
+        $gr_weight_total += $line_gr_weight;
+    }
+
+    $gr_weight_total += $order->weight_of_pallets;
+
+    return $gr_weight_total;
+}
+
+function getNumberOfPackages($order){
+    $cartons_total = 0;
+    foreach($order->items as $okey=>$orderitem){
+        $cartons_total += getNumberOfItemPackages($orderitem);
+    }
+    return $cartons_total;
+}
+function getNumberOfItemPackages($orderitem){
+    if($orderitem->product->pluck('pack_unit')[0] > 0){
+        $cartons = $orderitem->quantity / $orderitem->product->pluck('pack_unit')[0];
+    } else {
+        $cartons = 0;
+    }
+
+    if($orderitem->order->container_type == 4){
+        if($orderitem->product->pluck('pack_unit_hq')[0] > 0){
+            $cartons = $orderitem->quantity / $orderitem->product->pluck('pack_unit_hq')[0];
+        } else {
+            $cartons = 0;
+        }
+    }
+    return ceil($cartons);
+}
+
+
+function getCbm($order){
+    $cbm_total = 0;
+
+    if($order->real_cbm > 0){
+        return $order->real_cbm;
+    }
+
+    foreach($order->items as $okey=>$orderitem){
+        if($orderitem->product->pluck('pack_unit')[0] > 0   ){
+            $cartons = $orderitem->quantity / $orderitem->product->pluck('pack_unit')[0];
+        } else {
+            $cartons = 0;
+        }
+
+        if($order->container_type == 4){
+            if($orderitem->product->pluck('pack_unit_hq')[0] > 0){
+                $cartons = $orderitem->quantity / $orderitem->product->pluck('pack_unit_hq')[0];
+            } else {
+                $cartons = 0;
+            }
+        }
+
+        // carton_size_w carton_size_w_hq
+        if($order->container_type == 4){
+            $cbm          = $orderitem->product->pluck('carton_size_w_hq')[0]* $orderitem->product->pluck('carton_size_d_hq')[0] * $orderitem->product->pluck('carton_size_h_hq')[0] / 1000000;
+        } else {
+            $cbm          = $orderitem->product->pluck('carton_size_w')[0] * $orderitem->product->pluck('carton_size_d')[0]* $orderitem->product->pluck('carton_size_h')[0] / 1000000;
+        }
+        $cbm_total   += $cbm * $cartons;
+    }
+
+    return $cbm_total;
+}
 /*
 |--------------------------------------------------------------------------
 | Maintenance Mode Handler

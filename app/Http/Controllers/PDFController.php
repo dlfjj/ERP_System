@@ -112,22 +112,22 @@ class PDFController extends Controller
     public function commercial_invoice($id){
         $order    = Order::findOrFail($id);
         $customer = Customer::findOrFail($order->customer_id);
-
         $order_status = OrderStatus::leftJoin('orders','orders.status_id','=','order_status.id')->where('orders.id',$id)->get()->toArray();
         // echo "<pre>";
-        // print_r($order_status);die;
-        $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get()->toArray();
+//        $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get()->toArray();
         $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
 
 
         $net_weight = getNetWeight($order);
-
+        $gross_weight =  getGrossWeight($order);
+        $package_count = getNumberOfPackages($order);
+        $volumn = getCbm($order);
+//        return $volumn;
 
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.commercial_invoice',compact('order','customer','customers_details','order_status','order_items','payment_terms','net_weight')));
+        $dompdf->loadHtml(view('printouts.commercial_invoice',compact('order','volumn','customer','customers_details','order_status','payment_terms','package_count','net_weight','gross_weight')));
         // ob_end_clean(););
-
 // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'portrait');
 

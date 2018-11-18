@@ -58,18 +58,19 @@
                             <td>{{ $order->vessel_eta }}</td>
                         </tr>
                     @endif
-                    <tr>
-                        <td>Packages</td>
-                        <td>{{ $package_count }}</td>
-                    </tr>
+                    {{--<tr>--}}
+                        {{--<td>Packages</td>--}}
+                        {{--<td>{{ $order->getNumberOfPackages() }}</td>--}}
+                    {{--</tr>--}}
                     <tr>
                         <td>Weight&nbsp;(NT/GR)</td>
-                        <td>{{ number_format($net_weight,2) }}KG / {{ number_format($gross_weight,2) }}KG  </td>
+{{--                        <td>{{ number_format(getNetWeight($order),2) }}KG / {{ number_format($order->getGrossWeight(),2) }}KG</td>--}}
+                        <td>{{ number_format($net_weight,2) }}KG / {{ number_format($order->getGrossWeight(),2) }}KG </td>
                     </tr>
-                    <tr>
-                        <td>Volume</td>
-                        <td>{{ number_format($volumn,3) }} m&sup3;</td>
-                    </tr>
+                    {{--<tr>--}}
+                        {{--<td>Volume</td>--}}
+                        {{--<td><?=number_format($order->getCbm(),3);?> m&sup3;</td>--}}
+                    {{--</tr>--}}
 				</table>
 			</div>
 		</div>
