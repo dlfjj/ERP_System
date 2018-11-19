@@ -1093,6 +1093,35 @@ function getNetWeight($order){
     return $nt_weight_total;
 }
 
+function getItemNetWeight($orderItem){
+        $nt_weight_total = 0;
+
+        if($orderItem->product->pluck('pack_unit')[0] > 0){
+            $cartons = $orderItem->quantity / $orderItem->product->pluck('pack_unit')[0];
+        } else {
+            $cartons = 0;
+        }
+
+        if($orderItem->order->container_type == 4){
+            if($orderItem->product->pluck('pack_unit_hq')[0] > 0){
+                $cartons = $orderItem->quantity / $orderItem->product->pluck('pack_unit_hq')[0];
+            } else {
+                $cartons = 0;
+            }
+        }
+
+        if($orderItem->order->container_type == 4){
+            $unit_nt_weight = $orderItem->product->pluck('pack_unit_net_weight_hq')[0];
+            $line_nt_weight = $unit_nt_weight * $cartons;
+        } else {
+            $unit_nt_weight = $orderItem->product->pluck('pack_unit_net_weight')[0];
+            $line_nt_weight = $unit_nt_weight * $cartons;
+        }
+        $nt_weight_total += $line_nt_weight;
+
+        return $nt_weight_total;
+}
+
 function getGrossWeight($order){
     $gr_weight_total = 0;
 
@@ -1127,6 +1156,36 @@ function getGrossWeight($order){
     return $gr_weight_total;
 }
 
+function getItemGrossWeight($orderItem){
+    $gr_weight_total = 0;
+
+    if($orderItem->product->pluck('pack_unit')[0] > 0){
+        $cartons = $orderItem->quantity / $orderItem->product->pluck('pack_unit')[0];
+    } else {
+        $cartons = 0;
+    }
+
+    if($orderItem->order->container_type == 4){
+        if($orderItem->product->pluck('pack_unit_hq')[0] > 0){
+            $cartons = $orderItem->quantity / $orderItem->product->pluck('pack_unit_hq')[0];
+        } else {
+            $cartons = 0;
+        }
+    }
+
+    if($orderItem->order->container_type == 4){
+        $unit_gr_weight = $orderItem->product->pluck('pack_unit_gross_weight_hq')[0];
+        $line_gr_weight = $unit_gr_weight * $cartons;
+    } else {
+        $unit_gr_weight = $orderItem->product->pluck('pack_unit_gross_weight')[0];
+        $line_gr_weight = $unit_gr_weight * $cartons;
+    }
+
+    $gr_weight_total += $line_gr_weight;
+
+    return $gr_weight_total;
+}
+
 function getNumberOfPackages($order){
     $cartons_total = 0;
     foreach($order->items as $okey=>$orderitem){
@@ -1134,6 +1193,7 @@ function getNumberOfPackages($order){
     }
     return $cartons_total;
 }
+
 function getNumberOfItemPackages($orderitem){
     if($orderitem->product->pluck('pack_unit')[0] > 0){
         $cartons = $orderitem->quantity / $orderitem->product->pluck('pack_unit')[0];
@@ -1150,7 +1210,6 @@ function getNumberOfItemPackages($orderitem){
     }
     return ceil($cartons);
 }
-
 
 function getCbm($order){
     $cbm_total = 0;
@@ -1184,6 +1243,10 @@ function getCbm($order){
     }
 
     return $cbm_total;
+}
+
+function getUom($orderItem){
+    return $orderItem->product->pluck('uom')[0];
 }
 /*
 |--------------------------------------------------------------------------

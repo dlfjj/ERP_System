@@ -113,35 +113,35 @@ class OrderItem extends Model {
 //    }
 
 
-    public function getGrossWeight(){
-        $gr_weight_total = 0;
-
-        if($this->product->pack_unit>0){
-            $cartons = $this->quantity / $this->product->pack_unit;
-        } else {
-            $cartons = 0;
-        }
-
-        if($this->order->container_type == 4){
-            if($this->product->pack_unit_hq>0){
-                $cartons = $this->quantity / $this->product->pack_unit_hq;
-            } else {
-                $cartons = 0;	
-            }
-        }
-
-        if($this->order->container_type == 4){
-            $unit_gr_weight = $this->product->pack_unit_gross_weight_hq;
-            $line_gr_weight = $unit_gr_weight * $cartons;
-        } else {
-            $unit_gr_weight = $this->product->pack_unit_gross_weight;
-            $line_gr_weight = $unit_gr_weight * $cartons;
-        }
-
-        $gr_weight_total += $line_gr_weight;
-
-        return $gr_weight_total;
-    }
+//    public function getGrossWeight(){
+//        $gr_weight_total = 0;
+//
+//        if($this->product->pack_unit>0){
+//            $cartons = $this->quantity / $this->product->pack_unit;
+//        } else {
+//            $cartons = 0;
+//        }
+//
+//        if($this->order->container_type == 4){
+//            if($this->product->pack_unit_hq>0){
+//                $cartons = $this->quantity / $this->product->pack_unit_hq;
+//            } else {
+//                $cartons = 0;
+//            }
+//        }
+//
+//        if($this->order->container_type == 4){
+//            $unit_gr_weight = $this->product->pack_unit_gross_weight_hq;
+//            $line_gr_weight = $unit_gr_weight * $cartons;
+//        } else {
+//            $unit_gr_weight = $this->product->pack_unit_gross_weight;
+//            $line_gr_weight = $unit_gr_weight * $cartons;
+//        }
+//
+//        $gr_weight_total += $line_gr_weight;
+//
+//        return $gr_weight_total;
+//    }
 
 	public function getLineTotal(){
 		return $this->amount_net;

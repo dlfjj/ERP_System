@@ -87,7 +87,7 @@
 					<td align="left">Shipping To</td>
 				</tr>
 				<tr class="address-detail">
-					<td align="left">{{ $order->delivery_address }}</td>
+					<td align="left">{{ $order->billing_address }}</td>
 					<td  align="left">{{ $order->delivery_address }}</td>
 				</tr>
 			</table>

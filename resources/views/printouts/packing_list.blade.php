@@ -9,40 +9,36 @@
             <img src="{{public_path('public/global/companies/').$order->company->company_logo}}"  class="header-logo" align="left">
         @endif
     </header>
-    <h2 align="center">Acknowledgement</h2>
+    <h2 align="center">Packing List</h2>
     <hr>
     <div class="content">
         <div class="row">
-            <div class="col-xs-6">
+            <div class="col-xs-6" >
                 <ul class="company-details">
                     <li align="left">Company Name:<strong> {{ $customer->customer_name }}</strong></li>
                     <li align="left" >Contact Name: {{ $order->customerContact->contact_name }}</li>
                     <li align="left" >Customer Order: {{ $order->customer_order_number }}</li>
                     <li align="left">Ship by: {{ $order->container->name }}</li>
-                    {{--<li>Number: {{$order->order_no}} </li>--}}
                 </ul>
             </div>
-            <div class="col-xs-6">
+
+            <div class="col-xs-6" >
                 <table class="order-info">
                     <tr>
-                        <td>Number:</td>
+                        <td>Number</td>
                         <td>{{$order->order_no}}</td>
                     </tr>
                     <tr>
-                        <td>Date:</td>
+                        <td>Date</td>
                         <td> {{$order->order_date}}</td>
                     </tr>
                     <tr>
-                        <td>Shipping:</td>
-                        <td>{{$order->from_port}}</td>
+                        <td>Shipping Date</td>
+                        <td> {{$order->estimated_finish_date}}</td>
                     </tr>
                     <tr>
-                        <td>Payment:</td>
-                        <td> {{$payment_terms[0]['name']}}</td>
-                    </tr>
-                    <tr>
-                        <td>Finish Date:</td>
-                        <td>{{ $order->estimated_finish_date }}</td>
+                        <td>Container Number</td>
+                        <td>{{ $order->container_number }}</td>
                     </tr>
                 </table>
             </div>
@@ -72,55 +68,51 @@
                 <tr style="background-color:#e5e3e3; color:black; font-weight: bold;">
                     <td align="left">Item</td>
                     <td  align="left">Qty</td>
-                    <td  align="left">in ctn/total ctn</td>
-                    <td  align="left">Price</td>
-                    <td  align="right">Line total</td>
+                    <td  align="left">Unit</td>
+                    <td  align="left">Unit/Box</td>
+                    <td  align="left">Pkg</td>
+                    <td  align="left">N.W (KG)</td>
+                    <td  align="right">G.W (KG)</td>
                 </tr>
 
                 @foreach($order->items as $okey=>$order_item)
                     <tr>
-                        <td>{{ $order_item->product_name }}</td>
-                        <td>{{ $order_item->quantity }}</td>
-                        <td>{{ $order_item->cbm }}</td>
-                        <td>{{ $order_item->unit_price_net }}</td>
-                        <td align="right">{{ $order_item->amount_net }} </td>
+                        <td>
+                            {{ $order_item->product_code }}
+                            <br />
+                            {{ $order_item->product_name }}
+                            @if( $order_item->remark != "")
+                            <br />
+                            Remark: {{ $order_item->remark }}
+                            @endif
+                        </td>
+                        <td>
+                            {{ $order_item->quantity }}
+                        </td>
+                        <td>
+                            {{ getUom($order_item) }}
+                        </td>
+                        <td>
+                            {{ ($order->container_type != 4) ? $order_item->product->pluck('pack_unit')[0] : $order_item->product->pluck('pack_unit_hq')[0] }}
+                        </td>
+                        <td>
+                            {{ getNumberOfItemPackages($order_item) }}
+                        </td>
+                        <td>
+                            {{ number_format(getItemNetWeight($order_item),2) }}
+                        </td>
+                        <td>
+                            {{ number_format(getItemGrossWeight($order_item),2) }}
+                        </td>
                     </tr>
                 @endforeach
-
-                <tr>
-                    <td colspan="5" align="right">Subtotal {{ $order->currency_code }}: {{ number_format($order->getLineTotal(),2) }}</td>
-                </tr>
-                @if($order->discount != 0)
-                    <tr>
-                        <td colspan="5" align="right">Discount: {{ $order->discount }}%</td>
-                    </tr>
-                    <tr>
-                        <td colspan="5" align="right">Subtotal: {{ number_format($order->sub_total_net,2) }}</td>
-                    </tr>
-                @endif
-                @if($order->shipping_cost > 0)
-                    <tr>
-                        <td colspan="5" align="right">Freight Charge: {{ number_format($order->shipping_cost,2) }}</td>
-                    </tr>
-                @endif
-                @if($order->taxcode->percent > 0)
-                    <tr>
-                        <td colspan="5" align="right">{{ $order->taxcode->name }} {{ $order->tax_total }}</td>
-                    </tr>
-                @endif
-                <tr>
-                    <td colspan="5" align="right" >Total amount: {{ number_format($order->total_gross,2) }}</td>
-                </tr>
-
             </table>
-
             @if(count($order->orderitems) > 8)
                 <div class="row-fluid" id="inv_oi_line"></div>
                 <div style="page-break-after:always"></div>
             @else
                 <div class="row-fluid" id="inv_oi_line"></div>
             @endif
-
         </div>
     </div>
     <footer>

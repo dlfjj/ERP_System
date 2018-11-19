@@ -213,19 +213,18 @@ class PDFController extends Controller
         $order    = Order::findOrFail($id);
         $customer = Customer::findOrFail($order->customer_id);
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
-        $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get()->toArray();
+//        $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get();
         $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
-        // PDF::SetTitle('packing PDF');
-        // PDF::AddPage();
-        // PDF::writeHTML(view('printouts.package_list',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
-        // ob_end_clean();
-        // PDF::Output('packing.pdf');
+
+//        return $order->items->first();
+//        return getNumberOfPackages($order->items->first());
+
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.package_list',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
+        $dompdf->loadHtml(view('printouts.packing_list',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
         // ob_end_clean(););
 
 // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->setPaper('A4', 'portrait');
 
 // Render the HTML as PDF
         $dompdf->render();
