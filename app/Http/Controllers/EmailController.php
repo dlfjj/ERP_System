@@ -120,10 +120,7 @@ class EmailController extends Controller
         // print_r($order_items);die;
         $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
         $pdf = PDF::loadView('printouts.quotation', compact('order','customer','customers_details','order_items','payment_terms'));
-
-
         $mail_subject = "American Dunnage Order Info for Order #$order_no";
-
 
         if($inform_customer == 1){
             $mail_data = array(

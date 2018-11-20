@@ -215,12 +215,15 @@ class PDFController extends Controller
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
 //        $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get();
         $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
+        $nt_weight_total = getNetWeight($order);
+        $gr_weight_total =  getGrossWeight($order);
 
-//        return $order->items->first();
+
+//        return $order->items->first()->product;
 //        return getNumberOfPackages($order->items->first());
 
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.packing_list',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
+        $dompdf->loadHtml(view('printouts.packing_list',compact('order','customer','customers_details','order_items','order_status','payment_terms','nt_weight_total','gr_weight_total')));
         // ob_end_clean(););
 
 // (Optional) Setup the paper size and orientation

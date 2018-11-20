@@ -1248,7 +1248,14 @@ function getCbm($order){
 function getUom($orderItem){
     return $orderItem->product->pluck('uom')[0];
 }
+
+function getNumberOfPallets($order){
+    $no_of_pallets = $order->number_of_pallettes;
+    return $no_of_pallets;
+}
+
 /*
+ *
 |--------------------------------------------------------------------------
 | Maintenance Mode Handler
 |--------------------------------------------------------------------------

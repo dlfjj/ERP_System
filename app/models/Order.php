@@ -254,10 +254,10 @@ class Order extends Model {
 //    }
 
 
-    public function getNumberOfPallets(){
-        $no_of_pallets = $this->number_of_pallettes;
-        return $no_of_pallets;
-    }
+//    public function getNumberOfPallets(){
+//        $no_of_pallets = $this->number_of_pallettes;
+//        return $no_of_pallets;
+//    }
 
 //    public function getCbm(){
 //        $cbm_total = 0;
