@@ -29,7 +29,7 @@ use App\Models\Company;
 class PDFController extends Controller
 {
     /* function for purchase details pdf*/
-    public function samplePDF($id)
+    public function purchasePDF($id)
     {
 
         $purchase = Purchase::findOrFail($id);
@@ -118,7 +118,7 @@ class PDFController extends Controller
         $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
 
-
+        $i=0;
         $net_weight = getNetWeight($order);
         $gross_weight =  getGrossWeight($order);
         $package_count = getNumberOfPackages($order);
@@ -189,11 +189,7 @@ class PDFController extends Controller
         $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
 
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
-        // PDF::SetTitle('acknowledgement PDF');
-        // PDF::AddPage();
-        // PDF::writeHTML(view('printouts.acknowledgement',compact('order','customer','customers_details','order_items','order_status')));
-        // ob_end_clean();
-        // PDF::Output('acknowledgement.pdf');
+
         $dompdf = new Dompdf();
         $dompdf->loadHtml(view('printouts.acknowledgement',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
         // ob_end_clean(););
@@ -242,11 +238,7 @@ class PDFController extends Controller
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
         $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get()->toArray();
         $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
-        // PDF::SetTitle('performa_invoice PDF');
-        // PDF::AddPage();
-        // PDF::writeHTML(view('printouts.performa_invoice',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
-        // ob_end_clean();
-        // PDF::Output('performa_invoice.pdf');
+
         $dompdf = new Dompdf();
         $dompdf->loadHtml(view('printouts.proforma_invoice',compact('order','customer','customers_details','order_items','order_status','payment_terms')));
         // ob_end_clean(););

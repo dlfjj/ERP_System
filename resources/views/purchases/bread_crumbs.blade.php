@@ -18,7 +18,7 @@ $uri_segment = Request::segment(2);
         </li>
     @endif
 </ul>
-<ul class="crumb-buttons" style="padding-top: 10px;padding-bottom: 2rem;">
+<ul class="crumb-buttons">
     <li>
         <a href="/purchases/change-vendor/{{$purchase->id}}" class="" title=""><i class="icon-pencil"></i><span>Change Vendor</span></a>
     </li>
@@ -26,7 +26,7 @@ $uri_segment = Request::segment(2);
         <a href="/purchases/change-status/{{$purchase->id}}" class="" title=""><i class="icon-pencil"></i><span>Change Status</span></a>
     </li>
     <li>
-        <a href="/purchases/duplicate/{{$purchase->id}}" class="conf" title=""><i class="icon-print"></i><span>Duplicate</span></a>
+        {{--<a href="/purchases/duplicate/{{$purchase->id}}" class="conf" title=""><i class="icon-print"></i><span>Duplicate</span></a>--}}
     </li>
     <li>
         <a target="_new" href="/pdf/purchase-pdf/{{$purchase->id}}" class="" title=""><i class="icon-print"></i><span>Print</span></a>

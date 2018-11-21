@@ -1,3 +1,4 @@
+
 <div class="page-header">
     <div class="page-title">
         @if(Request::segment(2) == "payments")

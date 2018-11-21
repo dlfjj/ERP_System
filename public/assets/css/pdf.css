@@ -166,5 +166,10 @@ hr{
     color: white;
 }
 
+.page-break {
+    /*page-break-before: always;*/
+    page-break-inside: auto;
+}
+
 /*thead:before, thead:after { display: none; }*/
 /*tbody:before, tbody:after { display: none; }*/

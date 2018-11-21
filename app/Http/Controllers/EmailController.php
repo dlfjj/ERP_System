@@ -18,7 +18,6 @@ use Mail;
 use Auth;
 use App\Models\OrderStatus;
 use Illuminate\Support\Facades\Redirect;
-//use Dompdf\Dompdf;
 use PDF;
 
 
@@ -65,6 +64,7 @@ class EmailController extends Controller
         $comment = str_replace("<<ESTIMATED_FINISH_DATE>>",$order->estimated_finish_date,$comment);
 
         $preserve_current_order_status = false;
+
         if($request->status_id == 9){
             $preserve_current_order_status = true;
             $original_order_status = $order->status_id;
@@ -84,15 +84,15 @@ class EmailController extends Controller
             $inform_customer = 0;
         }
 
-//        $order_id = $id;
         $order_no = $order->order_no;
 
+        //book the stock from inventory when order shipped out
         if($status->id == 7){
             if($order->stock_booked == 0){
                 // Check first...
                 foreach($order->items as $oi){
-                    if($oi->product->track_stock == 0){ continue; }
-                    if($oi->product->stock - $oi->quantity < 0){
+                    if($oi->product[0]->track_stock == 0){ continue; }
+                    if($oi->product[0]->stock - $oi->quantity < 0){
                         return redirect('orders/records/'.$id)
                             ->with('flash_error','Insufficient stock')
                             ->withInput()
@@ -101,7 +101,7 @@ class EmailController extends Controller
                 }
                 // Now book stock
                 foreach($order->items as $oi){
-                    if($oi->product->track_stock == 0){ continue; }
+                    if($oi->product[0]->track_stock == 0){ continue; }
                     warehouse_transaction($oi->product_id, -$oi->quantity,"Booked for order {$order->order_no}");
                     $order->stock_booked = 1;
                     $order->save();
@@ -109,18 +109,63 @@ class EmailController extends Controller
             }
         }
 
-
-
 //      everytime send a email, system will generate the pdf file attach with the email without saving on server
         $customer = Customer::findOrFail($order->customer_id);
-
         $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
         $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get()->toArray();
-        // echo "<pre>";
-        // print_r($order_items);die;
         $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
-        $pdf = PDF::loadView('printouts.quotation', compact('order','customer','customers_details','order_items','payment_terms'));
-        $mail_subject = "American Dunnage Order Info for Order #$order_no";
+        $net_weight = getNetWeight($order);
+        $gross_weight =  getGrossWeight($order);
+        $package_count = getNumberOfPackages($order);
+        $volumn = getCbm($order);
+
+
+//        $pdf = PDF::loadView('printouts.quotation', compact('order','customer','customers_details','order_items','payment_terms'));
+//        $mail_subject = "American Dunnage Order Info for Order #$order_no";
+        $timestamp = time();
+        if(stristr($order_status,"quotation")){
+            $filename = "quotation-{$order_no}-{$timestamp}.pdf";
+            $pdf = PDF::loadView('printouts.quotation', compact('order','customer','customers_details','order_items','payment_terms'));
+            $mail_subject = "American Dunnage Order Info for Order #$order_no";
+        } elseif(stristr($order_status,"confirmation")){
+            $pdf = PDF::loadView('printouts.order_confirmation', compact('order','customer','payment_terms'));
+            $filename = "sc-{$order_no}-{$timestamp}.pdf";
+            $mail_subject = "American Dunnage Order Info for Order #$order_no";
+        } elseif(stristr($order_status,"acknowledged")){
+            $pdf = PDF::loadView('printouts.acknowledgement',compact('order','customer','customers_details','order_items','order_status','payment_terms'));
+            $filename = "acknowledged-{$order_no}-{$timestamp}.pdf";
+            $mail_subject = "American Dunnage Order Info for Order #$order_no";
+        } elseif(stristr($order_status,"pending")){
+            $pdf = PDF::loadView('printouts.acknowledgement',compact('order','customer','customers_details','order_items','order_status','payment_terms'));
+            $filename = "pending-{$order_no}-{$timestamp}.pdf";
+            $mail_subject = "American Dunnage Pending Order Info for Order #$order_no";
+        } elseif(stristr($order_status,"processing")){
+            $filename = "processing-{$order_no}-{$timestamp}.pdf";
+            $pdf = PDF::loadView('printouts.order_confirmation', compact('order','customer','payment_terms'));
+            $mail_subject = "American Dunnage Order Info for Order #$order_no";
+        } elseif(stristr($order_status,"proforma invoice")){
+            $filename = "pi-{$order_no}-{$timestamp}.pdf";
+            $pdf = PDF::loadView('printouts.proforma_invoice',compact('order','customer','customers_details','order_items','order_status','payment_terms'));
+            $mail_subject = "American Dunnage Order Info for Order #$order_no";
+        } elseif(stristr($order_status,"shipped out")){
+            $pdf = PDF::loadView('printouts.commercial_invoice',compact('order','volumn','customer','customers_details','order_status','payment_terms','package_count','net_weight','gross_weight'));
+            $filename = "ci-{$order_no}-{$timestamp}.pdf";
+            $mail_subject = "American Dunnage Order Info for Order #$order_no";
+        } elseif(stristr($order_status,"canceled")){
+            $pdf = PDF::loadView('printouts.commercial_invoice',compact('order','volumn','customer','customers_details','order_status','payment_terms','package_count','net_weight','gross_weight'));
+            $filename = "canceled-{$order_no}-{$timestamp}.pdf";
+            $mail_subject = "American Dunnage Order Info for Order #$order_no";
+        } elseif(stristr($order_status,"overdue")){
+            $pdf = PDF::loadView('printouts.commercial_invoice',compact('order','volumn','customer','customers_details','order_status','payment_terms','package_count','net_weight','gross_weight'));
+            $filename = "reminder-{$order_no}-{$timestamp}.pdf";
+            $mail_subject = "American Dunnage Inc. Gentle Payment Reminder #$order_no";
+        } else {
+            $filename = md5($timestamp) . ".pdf";
+            $mail_subject = "American Dunnage Inc. Info for Order #$order_no";
+        }
+
+
+
 
         if($inform_customer == 1){
             $mail_data = array(
@@ -131,7 +176,7 @@ class EmailController extends Controller
                 'to_email' => $customer_contact->username,
                 'subject' => $mail_subject,
                 'mail_body' => $comment,
-//                'file' => $pdf,
+                'order_status' => $order_status,
 //                'signature' => Auth::user()->signature,
                 'mail_to'  => $mail_to,
                 'order' => $order
@@ -150,11 +195,11 @@ class EmailController extends Controller
 
         //after sending the email, if user choose to store file, the file system will save the file afterward
 //        $file_to_store = "";
-        if(stristr($order_status,"quotation")){
-            $timestamp = time();
-            $filename = "quotation-{$order_no}-{$timestamp}.pdf";
+//        if(stristr($order_status,"quotation")){
+//            $timestamp = time();
+//            $filename = "quotation-{$order_no}-{$timestamp}.pdf";
 //            $file_to_store = Storage::url($filename);
-        }
+//        }
 
 //        return $file_to_store;
 
@@ -163,12 +208,10 @@ class EmailController extends Controller
             $record_file = 1;
             Storage::put('/public/pdf_files/'.$filename, $pdf->output());
 //            $url = Storage::url($filename);
-
         } else {
             $record_file = 0;
             $filename = "";
         }
-
 
         $record = New OrderHistory;
         $record->order_id = $id;
@@ -185,11 +228,10 @@ class EmailController extends Controller
         if($preserve_current_order_status){
             $order->status_id = $original_order_status;
         }
+
         $order->save();
 
         return redirect("/orders/records/$id")
             ->with('flash_success','Operation success');
-
-
     }
 }

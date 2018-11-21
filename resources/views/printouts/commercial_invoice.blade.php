@@ -20,9 +20,7 @@
 					<li align="left" >Customer Order: {{ $order->customer_order_number }}</li>
 					<li align="left">Ship by: {{ $order->container->name }}</li>
                     <li align="left">Tax ID: {{ $order->customer->tax_id }}</li>
-
-					{{--<li>Number: {{$order->order_no}} </li>--}}
-				</ul>
+                </ul>
 			</div>
 			<div class="col-xs-6">
 				<table class="order-info">
@@ -101,7 +99,7 @@
 					</tr>
 				@endif
 			</table>
-			<table class="table table-bordered table-condensed table-invoice">
+			<table class="table table-bordered table-condensed table-invoice" style="page-break-after: always">
 				<tr style="background-color:#e5e3e3; color:black; font-weight: bold;">
 					<td align="left">Item</td>
 					<td  align="left">Qty</td>
@@ -169,17 +167,10 @@
 
 			</table>
 
-			@if(count($order->orderitems) > 8)
-				<div class="row-fluid" id="inv_oi_line"></div>
-				<div style="page-break-after:always"></div>
-			@else
-				<div class="row-fluid" id="inv_oi_line"></div>
-			@endif
-
 		</div>
 	</div>
 	<footer>
-		<div class="row">
+		<div class="row" >
 			<div class="col-xs-5 footer-section1">
 				<p>{{ $order->company->name }}</p>
 				<p>{!! nl2br($order->company->ship_to) !!}</p>

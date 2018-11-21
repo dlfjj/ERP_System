@@ -111,7 +111,6 @@
 				<tr>
 					<td colspan="5" align="right" >Total amount: {{ number_format($order->total_gross,2) }}</td>
 				</tr>
-
 			</table>
 
 			@if(count($order->orderitems) > 8)

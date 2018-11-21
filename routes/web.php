@@ -224,7 +224,7 @@ Route::group(['prefix' => 'reports'], function () {
 
 
 /** PDF Generator */
-Route::get('/pdf/purchase-pdf/{id}','PDFController@samplePDF');
+Route::get('/pdf/purchase-pdf/{id}','PDFController@purchasePDF');
 Route::get('/pdf/quotation/{id}','PDFController@quotation');
 Route::get('/pdf/acknowledgement/{id}','PDFController@order_acknowledgement');
 Route::get('/pdf/order-confirmation/{id}','PDFController@order_confirmation');
