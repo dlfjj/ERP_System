@@ -16,14 +16,14 @@
 
 @section('content')
     <div class="row">
-        {{ Form::open(array("url"=>"/purchases/destroy/$purchase->id","method"=>"post","class"=>"form-inline","id"=>"delete")) }}
-        </form>
+        {{--{{ Form::open(array("url"=>"/purchases/destroy/$purchase->id","method"=>"post","class"=>"form-inline","id"=>"delete")) }}--}}
+        {{--</form>--}}
 
-        <form class="form-inline" id="create" action="/purchases/create" method="POST">
-        </form>
+        {{--<form class="form-inline" id="create" action="/purchases/create" method="POST">--}}
+        {{--</form>--}}
 
-        <form class="form-inline" id="print_pdf" action="/purchases/{{$purchase->id}}/print_pdf" method="POST">
-        </form>
+        {{--<form class="form-inline" id="print_pdf" action="/purchases/{{$purchase->id}}/print_pdf" method="POST">--}}
+        {{--</form>--}}
 
         <form class="form-inline" id="post" action="/purchases/{{$purchase->id}}/change_status" method="POST">
             {{ Form::hidden('id', $purchase->id, array("class"=>"", 'readonly')) }}
@@ -117,7 +117,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label class="control-label">Message Body:</label>
-                                                {{ Form::textarea('mail_body', $mail_body, array("rows"=>"3","cols"=>"5","class"=>"form-control")) }}
+                                                {{ Form::textarea('mail_body', $mail_body, array("rows"=>"12","cols"=>"5","class"=>"form-control")) }}
                                             </div>
                                         </div>
                                         <div class="form-actions">

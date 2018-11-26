@@ -86,7 +86,6 @@
 						<td align="right">{{ $order_item->amount_net }} </td>
 					</tr>
 				@endforeach
-
 				<tr>
 					<td colspan="5" align="right">Subtotal {{ $order->currency_code }}: {{ number_format($order->getLineTotal(),2) }}</td>
 				</tr>

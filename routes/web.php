@@ -217,9 +217,71 @@ Route::get('orders/changelog/invoices/{id}','OrderController@getInvoices');
 
 
 /** Report */
-Route::group(['prefix' => 'reports'], function () {
+//Route::group(['prefix' => 'reports'], function () {
+//
+//    Route::resource('/','ReportController');
+//});
+
+Route::group( [ 'prefix' => 'reports' ], function()
+{
+    //routes for ReportController
+//    Route::get('getOrderbacklog','ReportController@getOrderbacklog')->middleware('auth');
+//    Route::get('getExports','ReportController@getExports')->middleware('auth');
+//    Route::get('getDownloads','ReportController@getDownloads')->middleware('auth');
+
+    Route::get('getStocklist','ReportController@getStocklist')->middleware('auth');
+//    Route::get('postStocklist','ReportController@postStocklist')->middleware('auth');
+    Route::get('getTopCustomer','ReportController@getTopCustomer')->middleware('auth');
+//    Route::get('getTest','ReportController@getTest')->middleware('auth');
+    Route::get('getTopProducts','ReportController@getTopProducts')->middleware('auth');
+//    Route::post('postTopProducts','ReportController@postTopProducts')->middleware('auth');
+//    Route::get('getCustomerProducts','ReportController@getCustomerProducts')->middleware('auth');
+//    Route::post('postTopCustomer','ReportController@postTopCustomer')->middleware('auth');
+
+//    Route::get('postCustomerProducts','ReportController@postCustomerProducts')->middleware('auth');
+//    Route::get('getProductsCustomer','ReportController@getProductsCustomer')->middleware('auth');
+//    Route::get('postProductsCustomer','ReportController@postProductsCustomer')->middleware('auth');
+//    Route::get('getEmployeeBasicData','ReportController@getEmployeeBasicData')->middleware('auth');
+//    Route::get('getDailysales','ReportController@getDailysales')->middleware('auth');
+//    Route::get('anyCustomerTurnoverInvoices','ReportController@anyCustomerTurnoverInvoices')->middleware('auth');
+//    Route::get('anyCustomerTurnoverOrders','ReportController@anyCustomerTurnoverOrders')->middleware('auth');
+//    Route::get('anyVendorTurnover','ReportController@anyVendorTurnover')->middleware('auth');
+//    Route::get('getMonthlyTurnover','ReportController@getMonthlyTurnover')->middleware('auth');
+//    Route::get('getGeneralHealth','ReportController@getGeneralHealth')->middleware('auth');
+//    Route::get('getPurchasesEarlyDeliveries','ReportController@getPurchasesEarlyDeliveries')->middleware('auth');
+//    Route::get('getProduction','ReportController@getProduction')->middleware('auth');
+//    Route::post('postDownloads','ReportController@postDownloads')->middleware('auth');
+
+    Route::get('/dashboard','ReportController@getDashboard')->middleware('auth');
+
+    Route::get('kpi','ReportController@getKpi')->middleware('auth');
+
+//    Route::get('anyExpensesByCategory','ReportController@anyExpensesByCategory')->middleware('auth');
+//    Route::post('/save_downloads','ReportController@saveDownloads');//new route
+//    Route::post('/dashboard',"ReportController@postAnyDashboard");//new route for reclaculate fucntion
+//    Route::get('/total_gross_profit/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@total_gross_profit');
+//    Route::get('/detailed_gross/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@detailed_gross_profit');
+//    Route::get("/details_get_pos_placed/start_date={date_start}/end_date={date_end}/currency_code={currency_code}","ReportController@detailed_get_pos_placed");
+//    Route::get("/details_po_payments/start_date={date_start}/end_date={date_end}/currency_code={currency_code}","ReportController@details_po_payments");
+//    Route::get("/detailed_expenses/start_date={date_start}/end_date={date_end}/currency_code={currency_code}","ReportController@detailed_expenses");
+//    Route::get("/detailed_invoices_written/start_date={date_start}/end_date={date_end}/currency_code={currency_code}","ReportController@detailed_invoices_written");
+//    Route::get("/details_invoices_shipped/start_date={date_start}/end_date={date_end}/currency_code={currency_code}","ReportController@details_invoices_shipped");
+//    Route::get("/details_invoices_payment_recieved/start_date={date_start}/end_date={date_end}/currency_code={currency_code}","ReportController@details_invoices_payment_recieved");
+//    Route::get('/get-export-StockList','ReportController@getExportDownloads');
+//    Route::get('/exportGrossProfit/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@exportGrossProfit');
+//    Route::get('/exportPoPlaced/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@exportPoPlaced');
+//    Route::get('/exportPoPayments/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@exportPoPayments');
+//    Route::get('/exportExpenses/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@exportExpenses');
+//    Route::get('/export_invoices_written/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_invoices_written');
+//    Route::get('/export_invoices_shipped/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_invoices_shipped');
+//    Route::get('/export_invoices_payment_recieved/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_invoices_payment_recieved');
+//    Route::post('/turnover_0','ReportController@get_turnover_0');
+//    Route::get('/export_top_customers/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_top_customers');
+//    Route::get('/export_top_products/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_top_products');
+//    Route::get('/export_kpis','ReportController@export_kpis');
 
     Route::resource('/','ReportController');
+
 });
 
 

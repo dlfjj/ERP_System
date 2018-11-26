@@ -58,15 +58,13 @@
 					</div>
 					<div class="title">KPIs</div>
 					<div class="value">&nbsp;</div>
-					<a class="more" href="/reports/kpis">View <i class="pull-right icon-angle-right"></i></a>
+					<a class="more" href="/reports/kpi">View <i class="pull-right icon-angle-right"></i></a>
 				</div>
 			</div> <!-- /.smallstat -->
 		</div> <!-- /.col-md-3 -->
 
 	</div> <!-- /.row -->
 	<!-- /Statboxes -->
-
-
 
 	<div class="row">
 		<div class="col-md-6">
@@ -81,12 +79,12 @@
 				</div>
 				<div class="widget-content">
                     @if(has_role('products'))
-                        <a href="/reports/customer-products">Product by Customer (Orders)</a><br />
-                        <a href="/reports/products-customer">Customer by Product (Orders)</a><br />
-                        <a href="/reports/top-customer">Top 50 Customer (Orders)</a><br />
-                        <a href="/reports/top-products">Top 50 Products (Order value)</a><br />
-                        <a href="/reports/top-products/q">Top 50 Products (Quantities)</a><br />
-                        <a href="/reports/stocklist">Stocklist</a><br />
+                        {{--<a href="/reports/customer-products">Product by Customer (Orders)</a><br />--}}
+                        {{--<a href="/reports/products-customer">Customer by Product (Orders)</a><br />--}}
+                        <a href="/reports/getTopCustomer">Top 50 Customer (Orders)</a><br />
+                        <a href="/reports/getTopProducts">Top 50 Products (Order value)</a><br />
+                        {{--<a href="/reports/top-products/q">Top 50 Products (Quantities)</a><br />--}}
+                        <a href="/reports/getStocklist">Stocklist</a><br />
                         <a href="/reports/expenses-by-category">Expenses by category</a><br />
                     @endif
 				</div>

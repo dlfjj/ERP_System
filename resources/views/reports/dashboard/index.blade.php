@@ -1,4 +1,4 @@
-@layout('layouts.default')
+@extends('layouts.default')
 
 @section('page-module-menu')
 	<li><a href="/reports">Reports</a></li>
@@ -6,9 +6,15 @@
 
 @section('page-crumbs')
 	<ul id="breadcrumbs" class="breadcrumb">
-		<li class="current">
+		<li>
 			<i class="icon-home"></i>
 			<a href="/">Dashboard</a>
+		</li>
+		<li>
+			<a href="/reports">Reports</a>
+		</li>
+		<li class="current">
+			<a>Overview</a>
 		</li>
 	</ul>
 
@@ -23,7 +29,7 @@
 @section('page-header')
 	<div class="page-header">
 		<div class="page-title">
-			<h3>Dashboard</h3>
+			<h3>Overview</h3>
 			<span>Business KPI's {{ $date_start }} - {{ $date_end }}</span>
 		</div>
 	</div>

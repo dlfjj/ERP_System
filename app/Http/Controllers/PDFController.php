@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -50,6 +51,8 @@ class PDFController extends Controller
         $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
         $select_vendor_contacts = $vendor->contacts->pluck('name','name');
         $select_taxcodes  	   = Taxcode::orderBy('sort_no', 'asc')->pluck('name','id');
+
+
         $select_status = array(
             "DRAFT" => "DRAFT",
             "OPEN" => "OPEN",
@@ -66,7 +69,6 @@ class PDFController extends Controller
 
         // PDF::SetTitle('purchase PDF');
         // PDF::AddPage();
-        // PDF::writeHTML(view('printouts.purchase_details',compact('purchase','vendor','select_vendor_contacts','select_currency_codes','select_users','select_payment_terms','select_taxcodes','created_by_user','updated_by_user','company_details')));
         // ob_end_clean();
         // PDF::Output('purchase.pdf');
         $dompdf = new Dompdf();
@@ -74,7 +76,10 @@ class PDFController extends Controller
         // ob_end_clean(););
 
 // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+
+//        $customPaper = array(0,0,500,1000);
+
+        $dompdf->setPaper('A4', 'portrait');
 
 // Render the HTML as PDF
         $dompdf->render();
