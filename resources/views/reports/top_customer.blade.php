@@ -1,8 +1,8 @@
 @extends('layouts.default')
 @section('page-module-menu')
     <li><a href="/reports">Reports</a></li>
-    <li><a href="/reports/downloads">Downloads</a></li>
-    <li><a href="/reports/exports">Exports</a></li>
+    {{--<li><a href="/reports/downloads">Downloads</a></li>--}}
+    <li><a href="/reports/export_top_customers/start_date={{$date_start}}/end_date={{$date_end}}/currency_code={{$currency_code}}">Exports Current Table</a></li>
 @stop
 
 @section('page-crumbs')

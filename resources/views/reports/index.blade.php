@@ -2,8 +2,8 @@
 
 @section('page-module-menu')
 	<li><a href="/reports">Reports</a></li>
-	<li><a href="/reports/downloads">Downloads</a></li>
-	<li><a href="/reports/exports">Exports</a></li>
+	{{--<li><a href="/reports/downloads">Downloads</a></li>--}}
+	{{--<li><a href="/reports/exports">Exports</a></li>--}}
 @stop
 
 @section('page-crumbs')
@@ -16,6 +16,7 @@
 	</ul>
 
 	<ul class="crumb-buttons">
+		<li><a href="/reports/downloads">Downloads Reports</a></li>
 		<li>
 			<a href="javascript:void(0);" title=""><i class="icon-calendar"></i><span><?=date('F d, Y \(\K\W:W) H:i:s');?></span></a>
 		</li>
@@ -34,7 +35,7 @@
 @section('content')
 
 	<!--=== Statboxes ===-->
-	<div class="row row-bg"> <!-- .row-bg -->
+	<div class="row"> <!-- .row-bg -->
 
 		<div class="col-sm-6 col-md-3">
 			<div class="statbox widget box box-shadow">
@@ -71,11 +72,6 @@
 			<div class="widget box">
 				<div class="widget-header">
 					<h4><i class="icon-reorder"></i> Basic Reports</h4>
-					{{--<div class="toolbar no-padding">--}}
-						{{--<div class="btn-group">--}}
-							{{--<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
-						{{--</div>--}}
-					{{--</div>--}}
 				</div>
 				<div class="widget-content">
                     @if(has_role('products'))

@@ -76,10 +76,7 @@
 
 			<div class="widget box">
 
-				<div class="widget-content no-padding">
-
-                    <?php
-                    ?>
+				<div class="widget-content">
 
 					<table class="table table-striped table-bordered table-hover kpi">
 

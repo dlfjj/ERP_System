@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\ReportSubscription;
 use App\Models\ValueList;
 use App\User;
 use Illuminate\Http\Request;
@@ -435,11 +436,84 @@ class ReportController extends Controller
                 ->whereIn('account_id', $category_ids)
                 ->sum('amount_conv');
         }
-
         return view('reports.expenses.category',compact('categories','date_start','date_end','company_id','expenses','category_ids','expense_total','category_total','expenses_category'));
     }
 
+//    history reports files
+    public function getDownloads(){
+        // $file_path  = app_path().'/'. return_company_id() . "/reports/";
+        $file_path = storage_path().'/app/reports_downloads/';
+        // echo $file_path;die;
+        if(file_exists($file_path)){
+            $files      = scandir($file_path);
+            array_shift($files);
+            array_shift($files);
+        } else {
+            $files = array();
+        }
+        foreach($files as $filename){
+            $subscription = ReportSubscription::where('user_id',Auth::user()->id)->where('file_name',$filename)->first();
+        }
+        return view('reports.downloads',compact('files','file_path','subscription'));
 
+    }
+
+
+    public function export_top_customers($date_start,$date_end,$currency_code){
+        $select_currency_codes 	= Order::groupBy('currency_code')->pluck('currency_code','currency_code');
+        // $date_start = Input::get('date_start',date("Y-01-01"));
+        // $date_end = Input::get('date_end',date("Y-m-d"));
+//        $date_start = $date_start;
+//        $date_end = $date_end;
+        $results = array();
+        $customer_id = array();
+        $currency_code = User::leftjoin('companies','companies.id','=','users.company_id')->where('users.id',Auth::user()->id)->pluck('companies.currency_code');
+        // $orders  	 = Order::where('company_id',return_company_id())
+        // 		->where('order_date','>=',$date_start)
+        // 		->where('order_date','<=',$date_end)
+        // 		->get();
+        // print_r($orders);die;
+        $customers = Customer::select('customers.id','order_items.quantity','order_items.amount_gross','orders.currency_code','customers.customer_name')
+            ->leftJoin('orders','orders.customer_id','=','customers.id')
+            ->leftjoin('order_items','order_items.order_id','orders.id')
+            ->whereBetween('order_date',[$date_start,$date_end])
+            ->groupBy('customers.id')
+            ->orderBy('order_items.amount_gross','DESC')
+            ->offset(1)
+            ->limit(50)
+            ->get()->toArray();
+        for($i=0;$i<count($customers);$i++){
+            if(!in_array($customers[$i]['id'], $customer_id)){
+                $customer_id[] = $customers[$i]['id'];
+                $results[$customers[$i]['id']] = 0;
+                $quantitys[$customers[$i]['id']] = 0;
+            }
+            $results[$customers[$i]['id']] = convert_currency($customers[$i]['currency_code'], $currency_code[0], $customers[$i]['amount_gross']);
+            $quantitys[$customers[$i]['id']]+= $customers[$i]['quantity'];
+            $customers[$i]['calculated_amount'] = $results[$customers[$i]['id']] ;
+        }
+        $res_array = [];
+        $data = [];
+        foreach($customers as $key=>$value){
+            $res_array[$key] = $value['calculated_amount'];
+            $data[$key] = [$value['id'],$value['customer_name'],$value['calculated_amount']];
+        }
+        array_multisort($res_array,SORT_DESC,$customers);
+        // print_r($data);die;
+        $name = time().'_'.'top_customers.csv';
+        $file_path = storage_path('app/reports_downloads/'.$name);
+        return $file_path;
+        $file = fopen($file_path, 'w') or die("Can't create file");
+        foreach ($data as $row) {
+            fputcsv($file, $row);
+        }
+        fclose($file);
+        $headers = array(
+            'Content-Type' => 'text/csv',
+        );
+        // $path = storage_path('test.csv');
+        return response()->download($file_path, 'top_customers.csv', $headers);
+    }
 
 
 
