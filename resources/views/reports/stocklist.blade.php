@@ -15,7 +15,7 @@
 	</ul>
 
 	<ul class="crumb-buttons">
-		<li><a href="#modal_set_dates" data-toggle="modal" class="" title=""><i class="icon-cog"></i><span>Report Scope</span></a></li>
+		{{--<li><a href="#modal_set_dates" data-toggle="modal" class="" title=""><i class="icon-cog"></i><span>Report Scope</span></a></li>--}}
 		<li>
 			<a href="javascript:void(0);" title=""><i class="icon-calendar"></i><span><?=date('F d, Y \(\K\W:W) H:i:s');?></span></a>
 		</li>
@@ -109,47 +109,47 @@
 	</div>
 
 
-	<div class="modal fade" id="modal_set_dates" style="overflow:hidden;">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">Adjust report parameters</h4>
-				</div>
-				<form autocomplete="off" enctype="multipart/form-data" class="" action="" method="POST">
+	{{--<div class="modal fade" id="modal_set_dates" style="overflow:hidden;">--}}
+		{{--<div class="modal-dialog">--}}
+			{{--<div class="modal-content">--}}
+				{{--<div class="modal-header">--}}
+					{{--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>--}}
+					{{--<h4 class="modal-title">Adjust report parameters</h4>--}}
+				{{--</div>--}}
+				{{--<form autocomplete="off" enctype="multipart/form-data" class="" action="" method="POST">--}}
 
-					<div class="modal-body">
-						<div class="form-group">
-							<div class="row" style="display: none;">
-								<div class="col-md-6">
-									{{ Form::hidden('date_start',$date_start, array("class"=>"form-control datepicker")) }}
-									<span class="help-block">Date start</span>
-								</div>
-								<div class="col-md-6">
-									{{ Form::hidden('date_end',$date_end, array("class"=>"form-control datepicker")) }}
-									<span class="help-block">Date end</span>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="row">
-								<div class="col-md-6">
-									{{ Form::hidden('currency_code',Auth::user()->company->currency_code, array("class"=>"form-control")) }}
-								</div>
-							</div>
-						</div>
+					{{--<div class="modal-body">--}}
+						{{--<div class="form-group">--}}
+							{{--<div class="row" style="display: none;">--}}
+								{{--<div class="col-md-6">--}}
+									{{--{{ Form::hidden('date_start',$date_start, array("class"=>"form-control datepicker")) }}--}}
+									{{--<span class="help-block">Date start</span>--}}
+								{{--</div>--}}
+								{{--<div class="col-md-6">--}}
+									{{--{{ Form::hidden('date_end',$date_end, array("class"=>"form-control datepicker")) }}--}}
+									{{--<span class="help-block">Date end</span>--}}
+								{{--</div>--}}
+							{{--</div>--}}
+						{{--</div>--}}
+						{{--<div class="form-group">--}}
+							{{--<div class="row">--}}
+								{{--<div class="col-md-6">--}}
+									{{--{{ Form::hidden('currency_code',Auth::user()->company->currency_code, array("class"=>"form-control")) }}--}}
+								{{--</div>--}}
+							{{--</div>--}}
+						{{--</div>--}}
 
 
-					</div>
+					{{--</div>--}}
 
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-						<input type="submit" class="btn btn-primary" value="Generate">
-					</div>
+					{{--<div class="modal-footer">--}}
+						{{--<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>--}}
+						{{--<input type="submit" class="btn btn-primary" value="Generate">--}}
+					{{--</div>--}}
 
-				</form>
+				{{--</form>--}}
 
-			</div>
-		</div>
-	</div>
+			{{--</div>--}}
+		{{--</div>--}}
+	{{--</div>--}}
 @stop

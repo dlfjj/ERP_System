@@ -85,7 +85,7 @@
                         <a href="/reports/getTopProducts">Top 50 Products (Order value)</a><br />
                         {{--<a href="/reports/top-products/q">Top 50 Products (Quantities)</a><br />--}}
                         <a href="/reports/getStocklist">Stocklist</a><br />
-                        <a href="/reports/expenses-by-category">Expenses by category</a><br />
+                        <a href="/reports/getExpensesByCategory">Expenses by category</a><br />
                     @endif
 				</div>
 			</div>

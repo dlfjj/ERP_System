@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\ChartOfAccount;
+use App\Expense;
 use App\Models\Company;
 use App\Models\Customer;
 use App\Models\Order;
@@ -79,7 +81,7 @@ class ReportController extends Controller
     public function getKpi(){
         $company_id 	= return_company_id();
         $time_start 	 = time();
-        $date_start 	 = Input::get('date_start',date("Y-m-01"));
+        $date_start 	 = Input::get('date_start',date("Y-01-01"));
         $date_end 		 = Input::get('date_end',date("Y-m-t"));
         $currency_code 	 = Input::get('currency_code','USD');
         $year_0 	= date("Y");
@@ -378,11 +380,13 @@ class ReportController extends Controller
     }
 
 
+//    stocklist rendering
     public function getStocklist(){
 
+//        $date_start = date("2016-01-01");
         $select_currency_codes 	= Order::groupBy('currency_code')->pluck('currency_code','currency_code');
 //        $date_start 			= Input::get('date_start',date("Y-01-01"));
-        $date_start 			= Input::get('date_start',date("2017-01-01"));
+//        $date_start 			= Input::get('date_start',date("2017-01-01"));
         //get current day
         $date_end 				= Input::get('date_end',date("Y-m-d", time()));
         $currency_code = User::leftjoin('companies','companies.id','=','users.company_id')->where('users.id',Auth::user()->id)->pluck('companies.currency_code')[0];
@@ -390,7 +394,49 @@ class ReportController extends Controller
             ->where('stock','>',0)
             ->get();
 
-        return view('reports.stocklist',compact('date_start','date_start','date_end','product_code','products','currency_code','select_currency_codes'));
+        return view('reports.stocklist',compact('date_start','date_end','product_code','products','currency_code','select_currency_codes'));
+    }
+
+
+//    rendering expenses table
+    public function getExpensesByCategory(){
+        $date_start 	 = Input::get('date_start',date("Y-01-01"));
+        $date_end 		 = Input::get('date_end',date("Y-m-t"));
+        $company_id 	 = return_company_id();
+
+        $categories 	 = ChartOfAccount::where('company_id', $company_id)
+            ->where('type', 'Expense')
+            ->orderBy('name')
+            ->get();
+        $expenses   = Expense::where('company_id',$company_id)
+
+            ->where('amount_conv',0)
+            ->get();
+
+        $category_ids = ChartOfAccount::where('company_id', return_company_id())
+            ->where('type','Expense')
+            ->pluck('id');
+        $expense_total = Expense::where('company_id', return_company_id())
+            ->where('date_created','>=',$date_start)
+            ->where('date_created','<=',$date_end)
+            ->whereIn('account_id', $category_ids)
+            ->sum('amount_conv');
+        foreach($categories as $category){
+            $expenses_category = Expense::where('account_id',$category->id)
+                ->where('company_id', return_company_id())
+                ->where('date_created','>=',$date_start)
+                ->where('date_created','<=',$date_end)
+                ->whereIn('account_id', $category_ids)
+                ->get();
+            $category_total = Expense::where('account_id',$category->id)
+                ->where('company_id', return_company_id())
+                ->where('date_created','>=',$date_start)
+                ->where('date_created','<=',$date_end)
+                ->whereIn('account_id', $category_ids)
+                ->sum('amount_conv');
+        }
+
+        return view('reports.expenses.category',compact('categories','date_start','date_end','company_id','expenses','category_ids','expense_total','category_total','expenses_category'));
     }
 
 

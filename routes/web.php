@@ -256,7 +256,7 @@ Route::group( [ 'prefix' => 'reports' ], function()
 
     Route::get('kpi','ReportController@getKpi')->middleware('auth');
 
-//    Route::get('anyExpensesByCategory','ReportController@anyExpensesByCategory')->middleware('auth');
+    Route::get('getExpensesByCategory','ReportController@getExpensesByCategory')->middleware('auth');
 //    Route::post('/save_downloads','ReportController@saveDownloads');//new route
 //    Route::post('/dashboard',"ReportController@postAnyDashboard");//new route for reclaculate fucntion
 //    Route::get('/total_gross_profit/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@total_gross_profit');
