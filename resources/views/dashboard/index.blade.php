@@ -1,4 +1,4 @@
-@layout('layouts.default')
+@extends('layouts.default')
 
 @section('page-crumbs')
 	<ul id="breadcrumbs" class="breadcrumb">

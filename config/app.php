@@ -162,11 +162,14 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+//        RSmalc\Noty\NotyServiceProvider::class,
+
 
 
         'Collective\Html\HtmlServiceProvider',
         'Barryvdh\Debugbar\ServiceProvider',
-        'Baum\Providers\BaumServiceProvider'
+        'Baum\Providers\BaumServiceProvider',
+
 
 
     ],

@@ -278,7 +278,7 @@ Route::group( [ 'prefix' => 'reports' ], function()
 //    Route::post('/turnover_0','ReportController@get_turnover_0');
     Route::get('/export_top_customers/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_top_customers');
 //    Route::get('/export_top_products/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_top_products');
-//    Route::get('/export_kpis','ReportController@export_kpis');
+    Route::get('/export_kpis','ReportController@export_kpis');
 
     Route::resource('/','ReportController');
 

@@ -150,7 +150,6 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 
 
 
-
     <!-- DataTables -->
     {{--<script type="text/javascript" src="/plugins/datatables/jquery.dataTables.min.js"></script>--}}
     <script  src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
@@ -201,7 +200,7 @@ if(Session::get('browser_name') == 'Internet Explorer'){
 {{--    <img src="{{asset('/assets/img/loader.gif')}}" id="loading_image">--}}
     <!-- <input type="hidden" value="" class="loading_img"> -->
 {{--</div>--}}
-@if (Session::has('flash_error'))
+@if (session()->has('flash_error'))
 <script type="text/javascript">
     noty({
         text: "{{ Session::get('flash_error') }}",
@@ -209,13 +208,21 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         timeout: 500
     });
 </script>
-@endif
-@if (Session::has('flash_success'))
+{{--@endif--}}
+@elseif (session()->has('flash_success'))
     <script type="text/javascript">
         noty({
             text: "{{ Session::get('flash_success') }}",
             type: 'success',
             timeout: 500
+        });
+    </script>
+@elseif(session()->has('message'))
+    <script type="text/javascript">
+        noty({
+            text: "{{ session()->get('message')  }}",
+            type: 'information',
+            timeout: 700
         });
     </script>
 @endif
@@ -225,7 +232,11 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     <!-- Top Navigation Bar -->
     <div class="container-fluid">
 
-
+        {{--@if($flash = session('Homepage message'))--}}
+        {{--<div class="alert alert-success homepage-flash-message" id="alert-success" role="alert" style="position: absolute; margin-left: 82%; margin-top:35%;">--}}
+            {{--{{ $flash }}--}}
+        {{--</div>--}}
+        {{--@endif--}}
         <!-- Sidebar Toggler -->
         {{--<a href="#" class="toggle-sidebar"><i class="icon-reorder"></i></a>--}}
         <!-- /Sidebar Toggler -->
@@ -336,9 +347,11 @@ if(Session::get('browser_name') == 'Internet Explorer'){
         <!--=== Navigation ===-->
             <ul id="nav">
                 <li class="<?=($segment == 'dashboard' ? "current" : "");?>">
-                    <a href="/dashboard">
+                    <a href="/home">
+                    {{--<a href="/dashboard">--}}
                         <i class="icon-dashboard"></i>
-                        <div class="sidebar-text">Dashboard</div>
+                        <div class="sidebar-text">Home</div>
+                        {{--<div class="sidebar-text">Dashboard</div>--}}
                     </a>
                 </li>
 
@@ -487,6 +500,9 @@ if(Session::get('browser_name') == 'Internet Explorer'){
     // $(window).load(function(){
     //     $("#dvLoading").hide();
     // })
+
+    // controll flash message
+    $('#alert-success').delay(500).fadeOut(500);
 </script>
 {{--<script src="{{ asset('js/app.js') }}" defer></script>--}}
 @stack('scripts')

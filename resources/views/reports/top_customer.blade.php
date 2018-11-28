@@ -2,7 +2,10 @@
 @section('page-module-menu')
     <li><a href="/reports">Reports</a></li>
     {{--<li><a href="/reports/downloads">Downloads</a></li>--}}
-    <li><a href="/reports/export_top_customers/start_date={{$date_start}}/end_date={{$date_end}}/currency_code={{$currency_code}}">Exports Current Table</a></li>
+    <li>
+        <a href="/reports/export_top_customers/start_date={{$date_start}}/end_date={{$date_end}}/currency_code={{$currency_code}}"><i class="icon-download-alt"></i>&nbsp Exports Current Table</a>
+
+    </li>
 @stop
 
 @section('page-crumbs')
@@ -78,7 +81,7 @@
                                 </tr>
 
                             @endforeach
-                            <tr>
+                            <tr style="font-weight: bold;">
                                 <td></td>
                                 <td>Total:</td>
                                 <td>{{ number_format($grand_total,2) }}</td>

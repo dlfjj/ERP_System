@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -37,7 +38,9 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout')->except('login');
+//        $this->middleware('guest')->except('logout')->except('login');
+        $this->middleware('guest', ['except' => ['logout']]);
+
     }
 
     public function login(Request $request)
@@ -51,13 +54,23 @@ class LoginController extends Controller
             $user->save();
             setupCompany($user->company_id);
 
-            return Redirect::to('dashboard');
+            if (session()->has('link')){
+                $previous_url  = session()->get('link');
+                session()->forget('link');
+                return \redirect($previous_url)->with('message', 'Welcome Back '.Auth::user()->first_name);
+            }
+            else{
+                return Redirect::to('home')->with('message', 'Login Successful');
+            }
+//            session()->flash('message', 'You did it too');
+//            return Redirect::to('dashboard');
         }
 
         return redirect('login');
     }
 
     public function showLoginForm(){
+//        store the previous url in the session
         session(['link'=> url()->previous()]);
         return view('auth.login');
     }
@@ -78,5 +91,6 @@ class LoginController extends Controller
     {
         return $request->only('username', 'company_id', 'password');
     }
+
 
 }

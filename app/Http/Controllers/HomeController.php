@@ -21,8 +21,18 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('dashboard.blank');
+//        $request->session()->put(['Homepage message'=>'Welcome to Homepage']);
+//        $request->session()->forget('jacky');
+//        $request->session()->flush();
+//        return  $request->session()->all();
+
+
+//        $request->session()->flash('message', 'login successful');
+//        return session()->get('message');
+
+//        return session()->all();
+        return view('dashboard.index');
     }
 }

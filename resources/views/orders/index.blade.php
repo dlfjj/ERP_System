@@ -2,9 +2,9 @@
 
 @section('page-module-menu')
     <li><a href="/orders">Orders</a></li>
-    @if(has_role('orders_export'))
-        <li><a href="/orders/export">Export</a></li>
-    @endif
+{{--    @if(has_role('orders_export'))--}}
+        {{--<li><a href="/orders/export">Export</a></li>--}}
+    {{--@endif--}}
 @stop
 
 @section('page-crumbs')

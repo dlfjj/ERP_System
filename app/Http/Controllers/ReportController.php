@@ -239,9 +239,47 @@ class ReportController extends Controller
         $seconds_used = time() - $time_start;
         $company_currency_code = User::with('company')->where('users.id',Auth::user()->id)->get()->toArray();
 
+
+        session()->put('kpi',compact('select_currency_codes','currency_code','date_start','date_end','seconds_used','po_payments_total','po_placed_total','expenses_total','expenses_total','invoices_total','invoices_written','invoices_shipped','invoice_payments_received','gross_profit','turnover','turnover_quantities','customer_count_active','customer_count_inactive','product_count_active','product_count_inactive','orders_count_0','orders_count_1','orders_count_2','order_quantities_0','order_quantities_1','order_quantities_2','company_currency_code','turnover_0','turnover_1','turnover_2','unpaid_invoices_0','unpaid_invoices_1','unpaid_invoices_2','overdue_invoices_0','overdue_invoices_1','overdue_invoices_2'));
+
         return view('reports.kpis.index',compact('select_currency_codes','currency_code','date_start','date_end','seconds_used','po_payments_total','po_placed_total','expenses_total','expenses_total','invoices_total','invoices_written','invoices_shipped','invoice_payments_received','gross_profit','turnover','turnover_quantities','customer_count_active','customer_count_inactive','product_count_active','product_count_inactive','orders_count_0','orders_count_1','orders_count_2','order_quantities_0','order_quantities_1','order_quantities_2','company_currency_code','turnover_0','turnover_1','turnover_2','unpaid_invoices_0','unpaid_invoices_1','unpaid_invoices_2','overdue_invoices_0','overdue_invoices_1','overdue_invoices_2'));
     }
-    public function get_turnover_2($currency_code,$year_2){
+
+    public function export_kpis()
+    {
+//        return dd(session()->has('kpi'));
+//        return session()->get('kpi');
+//        $company_currency_code = session()->get('kpi')['company_currency_code'];
+
+        $kpi_data = session()->get('kpi');
+
+//        return $kpi_data;
+        $result_data = [
+            'turnover'=>[$kpi_data['turnover_0'],$kpi_data['turnover_1'],$kpi_data['turnover_2']],
+            'quantites'=>[$kpi_data['order_quantities_0'],$kpi_data['order_quantities_1'],$kpi_data['order_quantities_2']],
+            'order_count'=>[$kpi_data['orders_count_0'],$kpi_data['orders_count_1'],$kpi_data['orders_count_2']],
+            'unpain_invoices'=>[$kpi_data['unpaid_invoices_0'],$kpi_data['unpaid_invoices_1'],$kpi_data['unpaid_invoices_2']],
+            'overdue_invoices'=>[$kpi_data['overdue_invoices_0'],$kpi_data['overdue_invoices_1'],$kpi_data['overdue_invoices_2']],
+            'products'=>[$kpi_data['product_count_active'],$kpi_data['product_count_inactive']],
+            'customers' =>[$kpi_data['customer_count_active'],$kpi_data['customer_count_active']]
+        ];
+
+        $name = time().'_'.'kpis.csv';
+        $file_path = storage_path('app/reports_downloads/'.$name);
+        $file = fopen($file_path, 'w') or die("Can't create file");
+
+        foreach ($result_data as $row) {
+            fputcsv($file, $row);
+        }
+        fclose($file);
+        $headers = array(
+            'Content-Type' => 'text/csv',
+        );
+        session()->flush();
+        return response()->download($file_path, 'kpis.csv', $headers);
+    }
+
+        public function get_turnover_2($currency_code,$year_2){
         $company_id = Auth::user()->company_id;
         $status_id = 7;
         $date_code = null;
@@ -498,11 +536,12 @@ class ReportController extends Controller
             $res_array[$key] = $value['calculated_amount'];
             $data[$key] = [$value['id'],$value['customer_name'],$value['calculated_amount']];
         }
+        $column_title = array('Customer ID', 'CUSTOMER NAME', 'AMOUNT GROSS (USD)');
+        array_unshift($data, $column_title);
         array_multisort($res_array,SORT_DESC,$customers);
         // print_r($data);die;
         $name = time().'_'.'top_customers.csv';
         $file_path = storage_path('app/reports_downloads/'.$name);
-        return $file_path;
         $file = fopen($file_path, 'w') or die("Can't create file");
         foreach ($data as $row) {
             fputcsv($file, $row);
@@ -511,6 +550,7 @@ class ReportController extends Controller
         $headers = array(
             'Content-Type' => 'text/csv',
         );
+
         // $path = storage_path('test.csv');
         return response()->download($file_path, 'top_customers.csv', $headers);
     }

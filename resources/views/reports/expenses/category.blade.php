@@ -113,7 +113,7 @@
                                         ->whereIn('account_id', $category_ids)
                                         ->sum('amount_conv');
                                     @endphp
-									<tr class="nohide">
+									<tr class="nohide" style="font-weight: 500;">
 										<td>{{ $category->name }}</td>
 										<td></td>
 										<td class='text-right'>

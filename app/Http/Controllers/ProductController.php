@@ -48,7 +48,6 @@ class ProductController extends Controller {
     public function index()
     {
 //        $products = $this->productService->getAllProductsByCompanyId(return_company_id());
-
         return view('products.index');
 
 //        return view('products.index', ['products' => $products]);
@@ -73,7 +72,6 @@ class ProductController extends Controller {
 //        $select_categories = printSelect($tree,$product->category_id);
 
         $contents = $this->productService->getProductById($id);
-
         return view('products.show', $contents);
     }
 
