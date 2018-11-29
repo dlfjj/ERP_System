@@ -283,8 +283,17 @@ Route::group( [ 'prefix' => 'reports' ], function()
 //    Route::get('/download_test_excel','ExportExcelController@export');
 //
 //    kpi export routes
-
     Route::get('/createKpiExcel','ExportExcelController@downloadKpiExcel');
+
+    //    topProduct export routes
+    Route::get('/createTopProductExcel','ExportExcelController@downloadTopProductExcel');
+
+    //export Expenses routes
+    Route::get('/createExpensesExcel','ExportExcelController@downloadExpensesByCategory');
+
+    //export stocklist routes
+    Route::get('/createInventoryExcel','ExportExcelController@downloadStockList');
+
 
     Route::resource('/','ReportController');
 });

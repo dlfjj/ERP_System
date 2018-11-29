@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\ChartOfAccount;
+use App\Components\Report\Services\expensesByCategory;
+use App\Components\Report\Services\stocklist;
 use App\Components\Report\Services\topProduct;
 use App\Expense;
 use App\Models\Company;
@@ -20,21 +22,23 @@ use Auth;
 use App\Components\Report\Services\KpiService;
 use App\Components\Report\Services\topCustomer;
 
-
 class ReportController extends Controller
 {
     private $kpiService;
     private $topCustomer;
     private $topProduct;
+    private $expensesByCategory;
+    private $stockList;
 
-    public function __construct(KpiService $KpiService, topCustomer $TopCustomer, topProduct $TopProduct){
+    public function __construct(KpiService $KpiService, topCustomer $TopCustomer, topProduct $TopProduct, expensesByCategory $ExpensesByCategory, stocklist $StockList){
         $this->middleware('auth');
         has_role('reports',1);
 
         $this->kpiService = $KpiService;
         $this->topCustomer = $TopCustomer;
         $this->topProduct = $TopProduct;
-
+        $this->expensesByCategory = $ExpensesByCategory;
+        $this->stockList = $StockList;
     }
     /**
      * Display a listing of the resource.
@@ -98,96 +102,22 @@ class ReportController extends Controller
         return view('reports.kpis.index',$this->kpiService->getKpiByCompany());
     }
 
-//    public function export_kpis()
-//    {
-////        return dd(session()->has('kpi'));
-////        return session()->get('kpi');
-////        $company_currency_code = session()->get('kpi')['company_currency_code'];
-//
-//        $kpi_data = session()->get('kpi');
-//
-////        return $kpi_data;
-//        $result_data = [
-//            'turnover'=>[$kpi_data['turnover_0'],$kpi_data['turnover_1'],$kpi_data['turnover_2']],
-//            'quantites'=>[$kpi_data['order_quantities_0'],$kpi_data['order_quantities_1'],$kpi_data['order_quantities_2']],
-//            'order_count'=>[$kpi_data['orders_count_0'],$kpi_data['orders_count_1'],$kpi_data['orders_count_2']],
-//            'unpain_invoices'=>[$kpi_data['unpaid_invoices_0'],$kpi_data['unpaid_invoices_1'],$kpi_data['unpaid_invoices_2']],
-//            'overdue_invoices'=>[$kpi_data['overdue_invoices_0'],$kpi_data['overdue_invoices_1'],$kpi_data['overdue_invoices_2']],
-//            'products'=>[$kpi_data['product_count_active'],$kpi_data['product_count_inactive']],
-//            'customers' =>[$kpi_data['customer_count_active'],$kpi_data['customer_count_active']]
-//        ];
-//
-//        $name = time().'_'.'kpis.csv';
-//        $file_path = storage_path('app/reports_downloads/'.$name);
-//        $file = fopen($file_path, 'w') or die("Can't create file");
-//
-//        foreach ($result_data as $row) {
-//            fputcsv($file, $row);
-//        }
-//        fclose($file);
-//        $headers = array(
-//            'Content-Type' => 'text/csv',
-//        );
-//        session()->flush();
-//        return response()->download($file_path, 'kpis.csv', $headers);
-//    }
-//
-
 
     public function getTopCustomer(){
 
         return view('reports.top_customer',$this->topCustomer->topCustomerByCompany());
     }
 
+    public function export_top_customers($date_start,$date_end){
+
+        $downloadable_file =  $this->topCustomer->export_top_customers($date_start,$date_end);
+
+        return response()->download($downloadable_file[0], 'top_customers.csv', $downloadable_file[1]);
+
+    }
+
 
     public function getTopProducts($report_type="value"){
-        // $purchase_items = Product::leftJoin('purchase_items','products.id','=','purchase_items.product_id')->orderBy('gross_total','DESC')->offset(1)
-        // ->limit(50)->get();
-        $currency_code = User::leftjoin('companies','companies.id','=','users.company_id')->where('users.id',Auth::user()->id)->pluck('companies.currency_code');
-
-        $select_currency_codes = Order::groupBy('currency_code')->pluck('currency_code','currency_code');
-        // $date_start=Input::get('date_start',date("Y-01-01"));
-        // $date_end=Input::get('date_end',date("Y-m-d"));
-        $date_start = '2018-02-01';
-        $date_end = '2018-06-30';
-        $report_type = 'value';
-        $currency_code = User::leftjoin('companies','companies.id','=','users.company_id')->where('users.id',Auth::user()->id)->pluck('companies.currency_code');
-        $results = array();
-        $product_id = array();
-        $quantities = array();
-        $products = Product::select('products.id','order_items.amount_gross','orders.currency_code','products.product_name','order_items.quantity')
-            ->leftJoin('order_items','order_items.product_id','=','products.id')
-            ->leftjoin('orders','order_items.order_id','orders.id')
-            ->whereBetween('orders.order_date',[$date_start,$date_end])
-            ->groupBy('products.id')
-            ->orderBy('order_items.amount_gross','DESC')
-            ->offset(1)
-            ->limit(50)
-            ->get()->toArray();
-        for($i=0;$i<count($products);$i++){
-            if(!in_array($products[$i]['id'], $product_id)){
-                $product_id[] = $products[$i]['id'];
-                $results[$products[$i]['id']] = 0;
-                $quantities[$products[$i]['id']] = 0;
-            }
-            $results[$products[$i]['id']] = convert_currency($products[$i]['currency_code'], $currency_code[0], $products[$i]['amount_gross']);
-            $quantities[$products[$i]['id']] += $products[$i]['quantity'];
-            $products[$i]['calculated_amount'] = $results[$products[$i]['id']];
-            $products[$i]['calculated_quantity'] = $quantities[$products[$i]['id']];
-        }
-        $res_array = [];
-        $res_array2 = [];
-        foreach($products as $key=>$value){
-            $res_array[$key] = $value['calculated_amount'];
-            // $res_array2[$key] = $value['calculated_quantity'];
-        }
-        array_multisort($res_array,SORT_DESC,$products);
-        $quantity_array = [];
-        foreach($products as $key=>$value){
-            $quantity_array[$key] = $value['calculated_quantity'];
-        }
-        rsort($quantity_array );
-        $top = 0;
 
         return view('reports.top_products', $this->topProduct->topProductByCompany());//change view calling syntax
     }
@@ -196,59 +126,15 @@ class ReportController extends Controller
 //    stocklist rendering
     public function getStocklist(){
 
-//        $date_start = date("2016-01-01");
-        $select_currency_codes 	= Order::groupBy('currency_code')->pluck('currency_code','currency_code');
-//        $date_start 			= Input::get('date_start',date("Y-01-01"));
-//        $date_start 			= Input::get('date_start',date("2017-01-01"));
-        //get current day
-        $date_end 				= Input::get('date_end',date("Y-m-d", time()));
-        $currency_code = User::leftjoin('companies','companies.id','=','users.company_id')->where('users.id',Auth::user()->id)->pluck('companies.currency_code')[0];
-        $products 	= Product::where('company_id',return_company_id())
-            ->where('stock','>',0)
-            ->get();
+        return view('reports.inventory.stocklist', $this->stockList->getStocklist());
 
-        return view('reports.stocklist',compact('date_start','date_end','product_code','products','currency_code','select_currency_codes'));
     }
 
 
 //    rendering expenses table
     public function getExpensesByCategory(){
-        $date_start 	 = Input::get('date_start',date("Y-01-01"));
-        $date_end 		 = Input::get('date_end',date("Y-m-t"));
-        $company_id 	 = return_company_id();
 
-        $categories 	 = ChartOfAccount::where('company_id', $company_id)
-            ->where('type', 'Expense')
-            ->orderBy('name')
-            ->get();
-        $expenses   = Expense::where('company_id',$company_id)
-
-            ->where('amount_conv',0)
-            ->get();
-
-        $category_ids = ChartOfAccount::where('company_id', return_company_id())
-            ->where('type','Expense')
-            ->pluck('id');
-        $expense_total = Expense::where('company_id', return_company_id())
-            ->where('date_created','>=',$date_start)
-            ->where('date_created','<=',$date_end)
-            ->whereIn('account_id', $category_ids)
-            ->sum('amount_conv');
-        foreach($categories as $category){
-            $expenses_category = Expense::where('account_id',$category->id)
-                ->where('company_id', return_company_id())
-                ->where('date_created','>=',$date_start)
-                ->where('date_created','<=',$date_end)
-                ->whereIn('account_id', $category_ids)
-                ->get();
-            $category_total = Expense::where('account_id',$category->id)
-                ->where('company_id', return_company_id())
-                ->where('date_created','>=',$date_start)
-                ->where('date_created','<=',$date_end)
-                ->whereIn('account_id', $category_ids)
-                ->sum('amount_conv');
-        }
-        return view('reports.expenses.category',compact('categories','date_start','date_end','company_id','expenses','category_ids','expense_total','category_total','expenses_category'));
+        return view('reports.expenses.category',$this->expensesByCategory->getExpensesByCategory());
     }
 
 //    history reports files
@@ -271,13 +157,7 @@ class ReportController extends Controller
     }
 
 
-    public function export_top_customers($date_start,$date_end){
 
-        $downloadable_file =  $this->topCustomer->export_top_customers($date_start,$date_end);
-
-        return response()->download($downloadable_file[0], 'top_customers.csv', $downloadable_file[1]);
-
-    }
 
 
 

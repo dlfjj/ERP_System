@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('page-module-menu')
-	<li><a href="/reports/downloads">Downloads</a></li>
-	<li><a href="/reports/exports">Exports</a></li>
+	{{--<li><a href="/reports/downloads">Downloads</a></li>--}}
+    <li><a href="/reports/createInventoryExcel"><i class="icon-download-alt"></i>&nbsp Exports Current Table</a></li>
 @stop
 
 @section('page-crumbs')
@@ -84,7 +84,7 @@
 								</tr>
 
 							@endforeach
-							<tr>
+							<tr style="font-weight: bold">
 								<td></td>
 								<td></td>
 								<td></td>

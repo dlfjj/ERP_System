@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('page-module-menu')
 	{{--<li><a href="/reports/downloads">Downloads</a></li>--}}
-	<li><a href="/reports/exports"><i class="icon-download-alt"></i>&nbsp Exports Current Table</a></li>
+	<li><a href="/reports/createTopProductExcel"><i class="icon-download-alt"></i>&nbsp Exports Current Table</a></li>
 @stop
 
 @section('page-crumbs')

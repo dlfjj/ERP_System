@@ -216,4 +216,40 @@ class KpiService
         $turnover_0 = convert_turnover_currency($turnover_0_rows1,$date_code,$currency_code);
         return $turnover_0;
     }
+
+
+    //    public function export_kpis()
+//    {
+////        return dd(session()->has('kpi'));
+////        return session()->get('kpi');
+////        $company_currency_code = session()->get('kpi')['company_currency_code'];
+//
+//        $kpi_data = session()->get('kpi');
+//
+////        return $kpi_data;
+//        $result_data = [
+//            'turnover'=>[$kpi_data['turnover_0'],$kpi_data['turnover_1'],$kpi_data['turnover_2']],
+//            'quantites'=>[$kpi_data['order_quantities_0'],$kpi_data['order_quantities_1'],$kpi_data['order_quantities_2']],
+//            'order_count'=>[$kpi_data['orders_count_0'],$kpi_data['orders_count_1'],$kpi_data['orders_count_2']],
+//            'unpain_invoices'=>[$kpi_data['unpaid_invoices_0'],$kpi_data['unpaid_invoices_1'],$kpi_data['unpaid_invoices_2']],
+//            'overdue_invoices'=>[$kpi_data['overdue_invoices_0'],$kpi_data['overdue_invoices_1'],$kpi_data['overdue_invoices_2']],
+//            'products'=>[$kpi_data['product_count_active'],$kpi_data['product_count_inactive']],
+//            'customers' =>[$kpi_data['customer_count_active'],$kpi_data['customer_count_active']]
+//        ];
+//
+//        $name = time().'_'.'kpis.csv';
+//        $file_path = storage_path('app/reports_downloads/'.$name);
+//        $file = fopen($file_path, 'w') or die("Can't create file");
+//
+//        foreach ($result_data as $row) {
+//            fputcsv($file, $row);
+//        }
+//        fclose($file);
+//        $headers = array(
+//            'Content-Type' => 'text/csv',
+//        );
+//        session()->flush();
+//        return response()->download($file_path, 'kpis.csv', $headers);
+//    }
+//
 }
