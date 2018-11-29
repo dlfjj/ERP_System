@@ -1,7 +1,7 @@
 @extends('layouts.default')
 @section('page-module-menu')
-	<li><a href="/reports/downloads">Downloads</a></li>
-	<li><a href="/reports/exports">Exports</a></li>
+	{{--<li><a href="/reports/downloads">Downloads</a></li>--}}
+	<li><a href="/reports/exports"><i class="icon-download-alt"></i>&nbsp Exports Current Table</a></li>
 @stop
 
 @section('page-crumbs')
@@ -38,11 +38,11 @@
 			<div class="widget box">
 				<div class="widget-header">
 					<h4><i class="icon-reorder"></i> Query results</h4>
-					<div class="toolbar no-padding">
-						<div class="btn-group">
-							<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>
-						</div>
-					</div>
+					{{--<div class="toolbar no-padding">--}}
+						{{--<div class="btn-group">--}}
+							{{--<span class="btn btn-xs widget-collapse"><i class="icon-angle-down"></i></span>--}}
+						{{--</div>--}}
+					{{--</div>--}}
 				</div>
 				<div class="widget-content">
 					<table class="table table-hover">
@@ -74,7 +74,7 @@
 
 								@endphp
 								<tr class="stockorder-form-row">
-									<td class="cell-tight"><a href="/products/show/{{$product->id}}">{{$product->product_name }}</a></td>
+									<td class="cell-tight"><a href="/products/{{$product->id}}">{{$product->product_name }}</a></td>
 									<td class="cell-tight">{{ $quantities[$k]}}</td>
 									<td class="cell-tight">{{ number_format($results[$k],2) }}</td>
 								</tr>
@@ -83,9 +83,11 @@
 								@endif
 
 							@endforeach
-							<td>Total:</td>
-							<td>{{array_sum($quantities)}}</td>
-							<td>{{ number_format($grand_total,2) }}</td>
+                            <tr style="font-weight: bold;">
+							    <td>Total:</td>
+							    <td>{{array_sum($quantities)}}</td>
+							    <td>{{ number_format($grand_total,2) }}</td>
+                            </tr>
 
 						@else
 							<tr class="stockorder-form-row">

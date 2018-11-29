@@ -1762,11 +1762,7 @@ class ProductController extends Controller {
 	    $linked_downloads = Product::find($id)->downloads;
         */
         return view('products.downloads',compact('product','downloads','select_yesno'));
-        // $this->layout->content = View::make('products.downloads')
-        //     ->with('product', $product)
-        //     ->with('downloads', $downloads)
-        //     ->with('select_yesno', $select_yesno)
-        // ;
+
     }
 
     public function postImages($id){

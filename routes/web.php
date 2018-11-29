@@ -253,9 +253,7 @@ Route::group( [ 'prefix' => 'reports' ], function()
 //    Route::post('postDownloads','ReportController@postDownloads')->middleware('auth');
 
     Route::get('/dashboard','ReportController@getDashboard')->middleware('auth');
-
     Route::get('kpi','ReportController@getKpi')->middleware('auth');
-
     Route::get('getExpensesByCategory','ReportController@getExpensesByCategory')->middleware('auth');
 //    Route::post('/save_downloads','ReportController@saveDownloads');//new route
 //    Route::post('/dashboard',"ReportController@postAnyDashboard");//new route for reclaculate fucntion
@@ -276,12 +274,19 @@ Route::group( [ 'prefix' => 'reports' ], function()
 //    Route::get('/export_invoices_shipped/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_invoices_shipped');
 //    Route::get('/export_invoices_payment_recieved/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_invoices_payment_recieved');
 //    Route::post('/turnover_0','ReportController@get_turnover_0');
+
     Route::get('/export_top_customers/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_top_customers');
 //    Route::get('/export_top_products/start_date={date_start}/end_date={date_end}/currency_code={currency_code}','ReportController@export_top_products');
-    Route::get('/export_kpis','ReportController@export_kpis');
+//    Route::get('/export_kpis','ReportController@export_kpis');
+    Route::get('/export_excel/excel','ExportExcelController@excel')->name('export_excel.excel');
+//    testing route
+//    Route::get('/download_test_excel','ExportExcelController@export');
+//
+//    kpi export routes
+
+    Route::get('/createKpiExcel','ExportExcelController@downloadKpiExcel');
 
     Route::resource('/','ReportController');
-
 });
 
 

@@ -4,9 +4,10 @@
 
 	{{--<li><a href="/report/">Reports</a></li>--}}
 
-	<li><a href="/reports/getDownloads">Downloads</a></li>
+	{{--<li><a href="/reports/getDownloads">Downloads</a></li>--}}
 
-	<li><a href="/reports/export_kpis">Exports</a></li>
+	{{--<li><a href="/reports/export_kpis"><i class="icon-download-alt"></i>&nbsp Exports KPI Table</a></li>--}}
+	<li><a href="/reports/createKpiExcel"><i class="icon-download-alt"></i>&nbsp Exports KPI Table</a></li>
 
 @stop
 
@@ -143,25 +144,32 @@
 							<td class="overdue_invoices_0">{{ number_format($overdue_invoices_0,2) }}</td>
 							<input type="hidden" value="" name="overdue_invoices" id="overdue_invoices">
 						</tr>
-
-						<tr>
-							<td></td>
-							<td></td>
-						</tr>
-
-						<tr>
-							<td><a  href="javascript:void(0)" class="product_link">Products (Active / Inactive)</a></td>
-							<td  class ="products"colspan="3">{{ $product_count_active }} / {{ $product_count_inactive }}</td>
-							<input type="hidden" value="" name="product" id="product">
-						</tr>
-						<tr>
-							<td><a  href="javascript:void(0)" class="customer_link">Customers (Active / Inactive)</a></td>
-							<td class="customers" colspan="3">{{ $customer_count_active }} / {{ $customer_count_inactive }}</td>
-							<input type="hidden" value="" name="customer" id="customer">
-						</tr>
 						<tr>
 							<td colspan="4"><strong>All monetary amounts are displayed in   {{$company_currency_code[0]['company']['currency_code']}}</strong></td>
 						</tr>
+						<tr>
+							<td colspan="4"></td>
+							{{--<td></td>--}}
+						</tr>
+						<tr>
+
+							<th>-</th>
+							<th><a href="javascript:void(0)"  class="kpi_previous_last">ACTIVE</a></th>
+							<th><a href="javascript:void(0)"  class="kpi_last_year">INACTIVE</a></th>
+
+						</tr>
+
+						<tr>
+							<td><a  href="javascript:void(0)" class="product_link">Products</a></td>
+							<td  class ="products">{{ $product_count_active }}</td><td> {{ $product_count_inactive }}</td>
+							<input type="hidden" value="" name="product" id="product">
+						</tr>
+						<tr>
+							<td><a  href="javascript:void(0)" class="customer_link">Customers</a></td>
+							<td class="customers">{{ $customer_count_active }}</td><td> {{ $customer_count_inactive }}</td>
+							<input type="hidden" value="" name="customer" id="customer">
+						</tr>
+
 						</tbody>
 
 					</table>
