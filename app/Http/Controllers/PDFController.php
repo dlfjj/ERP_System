@@ -58,36 +58,36 @@ class PDFController extends Controller
 //    }
 
 
-    public function pdfview($id)
-    {
-        $purchase = Purchase::findOrFail($id);
-
-        $vendor = Vendor::findOrFail($purchase->vendor_id);
-
-//        foreach($purchase->items as $oi){
-//            return $oi->product->product_name;
-//        }
-
-//        view()->share(compact('purchase','vendor'));
-
-        $headerHtml = view()->make('printouts.purchases.header')
-            ->render();
-
-        $footerHtml = view()->make('printouts.purchases.footer')
-            ->with('purchase',  $purchase)
-            ->render();
-
-        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))
-            ->setOption('header-html', $headerHtml)
-            ->setOption('footer-html', $footerHtml)
-            ->setOption('footer-center',"Page [page] of [toPage]")
-            ->setPaper('A4')
-            ->setOrientation('portrait');
-//        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))->setPaper('a4')->setOrientation('portrait')->setOption('margin-bottom', 0);
-        return $pdf->inline();
-//        return view('printouts.purchases.po');
-
-    }
+//    public function pdfview($id)
+//    {
+//        $purchase = Purchase::findOrFail($id);
+//
+//        $vendor = Vendor::findOrFail($purchase->vendor_id);
+//
+////        foreach($purchase->items as $oi){
+////            return $oi->product->product_name;
+////        }
+//
+////        view()->share(compact('purchase','vendor'));
+//
+//        $headerHtml = view()->make('printouts.purchases.header')
+//            ->render();
+//
+//        $footerHtml = view()->make('printouts.purchases.footer')
+//            ->with('purchase',  $purchase)
+//            ->render();
+//
+//        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))
+//            ->setOption('header-html', $headerHtml)
+//            ->setOption('footer-html', $footerHtml)
+//            ->setOption('footer-center',"Page [page] of [toPage]")
+//            ->setPaper('A4')
+//            ->setOrientation('portrait');
+////        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))->setPaper('a4')->setOrientation('portrait')->setOption('margin-bottom', 0);
+//        return $pdf->inline();
+////        return view('printouts.purchases.po');
+//
+//    }
 
     public function purchasePDF($id)
     {
@@ -96,42 +96,29 @@ class PDFController extends Controller
 
         $vendor = Vendor::findOrFail($purchase->vendor_id);
 
-        if($purchase->company_id != return_company_id()){
-            die("Access violation. Click <a href='/purchases'>here</a> to get back.");
-        }
-        $company_details = Company::leftJoin('purchases','purchases.company_id','=','companies.id')->where('purchases.id',$id)->get()->toArray();
-        // echo "<pre>";
-        // print_r($company_details);die;
+        $headerHtml = view()->make('printouts.purchases.header')
+            ->render();
 
-        $select_users = User::pluck('username','id');
-        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
-        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
-        $select_taxcodes  	   = Taxcode::orderBy('sort_no', 'asc')->pluck('name','id');
+        $footerHtml = view()->make('printouts.purchases.footer')
+            ->with('purchase',  $purchase)
+            ->render();
 
 
-        $select_status = array(
-            "DRAFT" => "DRAFT",
-            "OPEN" => "OPEN",
-            "CLOSED" => "CLOSED",
-            "VOID" => "VOID"
-        );
-
-        $created_by_user = User::find($purchase->created_by)->username;
-        $updated_by_user = User::find($purchase->updated_by)->username;
-
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.purchase_details',compact('purchase','vendor','select_vendor_contacts','select_currency_codes','select_users','select_payment_terms','select_taxcodes','created_by_user','updated_by_user','company_details')));
-
-        $dompdf->setPaper('A4', 'portrait');
-
-        $dompdf->render();
-
-        $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
-
-        exit(0);
+        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))
+            ->setOption('header-html', $headerHtml)
+            ->setOption('footer-html', $footerHtml)
+//            ->setOption('footer-center',"Page [page] of [toPage]")
+//            ->setOption('footer-font-size','9')
+//            ->setOption('footer-right','www.americandunnage.com')
+//            ->setOption('footer-left', $purchase->company->bill_to)
+            ->setOption('footer-line',true)
+//            ->setOption('footer-spacing',0)
+            ->setPaper('A4')
+            ->setOrientation('portrait');
+//        return dd($pdf);
+//        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))->setPaper('a4')->setOrientation('portrait')->setOption('margin-bottom', 0);
+        return $pdf->inline();
+//        return view('printouts.purchases.po');
     }
     // function for order confrimation
     public function order_confirmation($id){

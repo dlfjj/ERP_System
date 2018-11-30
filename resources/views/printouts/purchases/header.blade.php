@@ -6,8 +6,8 @@
     <link href="{{ asset('assets/css/pdf.css') }}" rel="stylesheet"/>
 </head>
 <body>
-<div class="row">
-    <img src="{{ asset('/public/global/companies/8.png') }}"/>
+<div class="container">
+    <img src="{{ asset('/public/global/companies/8.png') }}" style="margin-right: 7px;"/>
 </div>
 
 </body>

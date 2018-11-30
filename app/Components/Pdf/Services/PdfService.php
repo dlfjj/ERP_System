@@ -48,4 +48,8 @@ class PdfService
 
         return compact('order','customer','customers_details','order_items','payment_terms','order_status','net_weight','gross_weight','package_count','volumn','nt_weight_total','gr_weight_total');
     }
+
+    public function getPurchaseOrderPdf(int $id){
+
+    }
 }

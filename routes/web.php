@@ -309,7 +309,7 @@ Route::get('/pdf/commercial_invoice/{id}','PDFController@commercial_invoice');
 Route::get('/pdf/packing_list/{id}','PDFController@package_list');
 
 //snappy pdf testing
-Route::get('/pdf/purchase_order/{id}', 'PDFController@pdfview');
+Route::get('/pdf/purchase_order/{id}', 'PDFController@purchasePDF');
 
 
 /** email */
