@@ -308,6 +308,8 @@ Route::get('/pdf/proforma_invoice/{id}','PDFController@proforma_invoice');
 Route::get('/pdf/commercial_invoice/{id}','PDFController@commercial_invoice');
 Route::get('/pdf/packing_list/{id}','PDFController@package_list');
 
+//snappy pdf testing
+Route::get('/pdf/purchase_order/{id}', 'PDFController@pdfview');
 
 
 /** email */
@@ -318,6 +320,8 @@ Route::get('testmailpreview', function(){
 });
 
 Route::post('orders/records/{id}/sendEmail','EmailController@sendOrderEmail');
+
+
 
 
 

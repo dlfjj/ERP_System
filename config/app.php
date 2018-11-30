@@ -162,8 +162,10 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
 //        RSmalc\Noty\NotyServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+
 
 
 
@@ -227,6 +229,7 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'SnappyPdf' => Barryvdh\Snappy\Facades\SnappyPdf::class,
 
 
         'SoftDeletes' => 'Illuminate\Database\Eloquent\SoftDeletes::class',

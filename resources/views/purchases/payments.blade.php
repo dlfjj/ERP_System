@@ -79,7 +79,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Record new Expense</h4>
+                    <h4 class="modal-title">Record new Purchase Payment</h4>
                 </div>
                 <form autocomplete="off" enctype="multipart/form-data" id="customer_contact" class="form-validate1" action="/purchases/payment-add/{{ $purchase->id }}" method="POST">
                     <div class="modal-body">

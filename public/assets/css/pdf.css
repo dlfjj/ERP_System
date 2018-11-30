@@ -50,9 +50,9 @@ footer {
 /*}*/
 
 
-.container{
-    padding:20px;
-}
+/*.container{*/
+    /*padding:20px;*/
+/*}*/
 .content{
     padding:0px 10px 10px 10px;
 }
@@ -175,11 +175,111 @@ hr{
 /*tbody:before, tbody:after { display: none; }*/
 
 
+
+
+
+
+
 /*purchase order style*/
 
-.purchase_header{
-    width:300px;
-    height: auto;
-    /*padding-bottom:100px;*/
-    /*padding-top:10px;*/
+
+#printout_header_line {
+    border: 1px solid black;
 }
+
+.table-invoice {
+    padding: 3px !important;
+    font-size: 11px;
+}
+
+.table-invoice th {
+    white-space:nowrap;
+}
+
+.table-invoice-header tr td {
+    margin: 0px;
+}
+
+.table-invoice-header tr td:first-child{
+    font-weight: bold;
+}
+
+.table-invoice-footer tr:nth-child(1) td,
+.table-invoice-footer tr:nth-child(3) td {
+    font-weight: bold;
+}
+
+.table-invoice tr td {
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+.width-1 {
+    width: 1%;
+}
+
+.cell-tight {
+    width: 1%;
+    white-space: nowrap;
+}
+.cell-wide{
+    width: 30%;
+    white-space: nowrap;
+}
+
+table.table-last-right tr td:last-child {
+    text-align: right;
+}
+
+table.table-chooser tr th:last-child,
+table.table-chooser tr td:last-child {
+    text-align: right;
+    width: 1%;
+    white-space: nowrap;
+}
+
+table.table-chooser tr th,
+table.table-chooser tr td {
+    width: 1%;
+    white-space: nowrap;
+}
+
+table.table-chooser tr td input {
+    border: 1px solid #EEE;
+    padding: 2px !important;
+    font-size: 11px !important;
+}
+
+table.table-chooser tr td:last-child {
+    text-align:center;
+    white-space: nowrap;
+    width: 1%;
+}
+
+#printout_header_line {
+    /*margin-top: 30px;*/
+    /*width: 885px;*/
+    border: 1px solid black;
+}
+#printout_footer_line {
+    margin-bottom: 10px;
+    /*width: 885px;*/
+    border: 1px solid black;
+}
+
+p,
+table
+{
+    text-transform: uppercase;
+}
+.purchase_order_font{
+    font-size: 15px;
+}
+.table-font{
+    font-size: 13px;
+}
+/*#footer-center{*/
+    /*margin-top: 10px;*/
+/*}*/

@@ -256,7 +256,7 @@ class PurchaseController extends Controller
         );
 
         $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toHierarchy();
-        $select_accounts = printSelect($tree,setting_get('purchase_account_id'),'account_id');
+        $select_accounts = printSelect($tree, setting_get('purchase_account_id'),'account_id');
 
 //        $this->layout->module_title = "vendor Details";
 //        $this->layout->module_sub_title = "vendor Details";

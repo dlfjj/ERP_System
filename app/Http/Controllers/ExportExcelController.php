@@ -21,8 +21,8 @@ class ExportExcelController extends Controller
     private $stockList;
 
     public function __construct(KpiService $KpiService, topProduct $TopProduct, expensesByCategory $ExpensesByCategory, stocklist $Stocklist){
-//        $this->middleware('auth');
-//        has_role('reports',1);
+        $this->middleware('auth');
+        has_role('reports',1);
 
         $this->kpiService = $KpiService;
         $this->topProduct = $TopProduct;
