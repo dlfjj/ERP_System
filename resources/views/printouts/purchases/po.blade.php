@@ -1,7 +1,7 @@
 @extends('layouts.print')
 
 @section('content')
-    <div class="container" style="padding-top: 5px;">
+    <div class="container">
         {{--header section--}}
         {{--<div class="row">--}}
             {{--<div class="col-xs-4">--}}
@@ -30,13 +30,13 @@
                 {{--<p>&nbsp;</p>--}}
             {{--</div>--}}
         {{--</div>--}}
-        <h2 align="center">Purchase Order</h2>
-        <div class="row">
-            <div class="col-xs-12">
-                <div id="printout_header_line"></div>
-                <p>&nbsp;</p>
-            </div>
-        </div>
+        {{--<h2 align="center">Purchase Order</h2>--}}
+        {{--<div class="row">--}}
+            {{--<div class="col-xs-12">--}}
+                {{--<div id="printout_header_line"></div>--}}
+                {{--<p>&nbsp;</p>--}}
+            {{--</div>--}}
+        {{--</div>--}}
 
         <div class="row">
             <div class="col-xs-4 pull-left">
@@ -58,11 +58,14 @@
                 </p>
             </div>
             <div class="col-xs-4 pull-left">
-                <p style="text-decoration: underline;">Deliver To:</p>
                 @if($purchase->ship_to != "")
+                    <p style="text-decoration: underline;">Deliver To:</p>
                     <p class="purchase_order_font">{{ nl2br($purchase->ship_to) }}</p>
-                @else
+                @elseif($purchase->company->deliver_to != "")
+                    <p style="text-decoration: underline;">Deliver To:</p>
                     <p class="purchase_order_font">{{ nl2br($purchase->company->deliver_to) }}</p>
+                @else
+                    <p>&nbsp;</p>
                 @endif
             </div>
 
@@ -72,7 +75,7 @@
             <div class="col-xs-4 pull-right">
                 <table class="table table-bordered table-invoice table-invoice-header table-no-break table-font">
                     <tr>
-                        <td>Purchase No 文档编号</td>
+                        <td>Purchase No</td>
                         <td>
                             {{$purchase->id}}
                         </td>
@@ -81,19 +84,20 @@
                         <td>Date printed</td>
                         <td>{{ date("Y-m-d") }}</td>
                     </tr>
-                    <tr>
-                        <td>Order Status</td>
-                        @if($purchase->status == "DRAFT")
-                            <td>DRAFT ONLY!</td>
-                        @elseif ($purchase->status == "OPEN")
-                        @elseif ($purchase->status == "CLOSED")
-                            <td>CLOSED</td>
-                        @elseif ($purchase->status == "VOID")
-                           <td>VOID</td>
-                        @else
-                            <td></td>
-                        @endif
-                    </tr>
+                    {{--order status for internal use only--}}
+                    {{--<tr>--}}
+                        {{--<td>Order Status</td>--}}
+                        {{--@if($purchase->status == "DRAFT")--}}
+                            {{--<td>DRAFT ONLY!</td>--}}
+                        {{--@elseif ($purchase->status == "OPEN")--}}
+                        {{--@elseif ($purchase->status == "CLOSED")--}}
+                            {{--<td>CLOSED</td>--}}
+                        {{--@elseif ($purchase->status == "VOID")--}}
+                           {{--<td>VOID</td>--}}
+                        {{--@else--}}
+                            {{--<td></td>--}}
+                        {{--@endif--}}
+                    {{--</tr>--}}
                 </table>
             </div>
         </div>
@@ -103,11 +107,11 @@
                 <table class="table table-bordered table-condensed table-invoice table-font">
                     <thead>
                     <tr>
-                        <th>Placed 发行日期</th>
-                        <th>Required 需要日期</th>
-                        <th>Confirmed 确定日期</th>
-                        <th>Payment Terms 付款条款</th>
-                        <th>Your Contact 您的联系人</th>
+                        <th>Placed</th>
+                        <th>Required</th>
+                        <th>Confirmed</th>
+                        <th>Payment Terms</th>
+                        <th>Your Contact</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -131,12 +135,12 @@
                 <table class="table table-bordered table-highlight-head table-invoice table-font">
                     <thead>
                     <tr>
-                        <th>Part # 零件号</th>
-                        <th class="cell-wide">SKU / Description 描述</th>
-                        <th>UOM 单位</th>
-                        <th>QTY 数量</th>
-                        <th>Net Price 净价</th>
-                        <th>Net Amount 净额</th>
+                        <th>Part #</th>
+                        <th class="cell-wide">SKU / Description</th>
+                        <th>UOM</th>
+                        <th>QTY</th>
+                        <th>Net Price</th>
+                        <th>Net Amount</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -158,7 +162,7 @@
                     <tr>
                         <td colspan="4"></td>
                         <td><strong>Sub Total</strong></td>
-                        <td><strong>{{$purchase->currency_code}} {{$purchase->net_sub_total}}</strong></td>
+                        <td><strong>{{$purchase->currency_code}} {{number_format($purchase->net_sub_total)}}</strong></td>
                     </tr>
                     @if($purchase->net_shipping_amount > 0)
                         <tr>
@@ -219,13 +223,13 @@
             </div>
         @endif
 
-        <div class="row padding-top-10px">
-            <div class="col-xs-12">
-                <p class="purchase_order_font">
-                    {!! nl2br($purchase->company->po_footer) !!}
-                </p>
-            </div>
-        </div>
+        {{--<div class="row padding-top-10px">--}}
+            {{--<div class="col-xs-12">--}}
+                {{--<p class="purchase_order_font">--}}
+                    {{--{!! nl2br($purchase->company->po_footer) !!}--}}
+                {{--</p>--}}
+            {{--</div>--}}
+        {{--</div>--}}
 
     </div>
 @endsection

@@ -212,6 +212,15 @@ hr{
 .table-invoice tr td {
 }
 
+.table-invoice {
+    padding: 3px !important;
+    font-size: 11px;
+}
+
+.table-invoice th {
+    white-space:nowrap;
+}
+
 .no-wrap {
     white-space: nowrap;
 }
@@ -274,6 +283,9 @@ table
 {
     text-transform: uppercase;
 }
+
+table tr {page-break-inside: avoid}
+
 .purchase_order_font{
     font-size: 15px;
 }

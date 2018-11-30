@@ -40,7 +40,7 @@
         }
     </script>
 </head>
-<body style="border:0; margin: 0;" onload="subst()">
+<body style="border:0; margin: 0;padding-bottom: 60px;" onload="subst()">
 {{--<table style="width: 100%; padding-bottom: 60px;">--}}
 <table style="width: 100%;">
     <tr>

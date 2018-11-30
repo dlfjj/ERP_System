@@ -36,9 +36,11 @@ class PDFController extends Controller
     private $pdfService;
 
     public function __construct(PdfService $PdfService){
+
         $this->middleware('auth');
 
         $this->pdfService = $PdfService;
+
     }
 
 
@@ -58,137 +60,44 @@ class PDFController extends Controller
 //    }
 
 
-//    public function pdfview($id)
-//    {
-//        $purchase = Purchase::findOrFail($id);
-//
-//        $vendor = Vendor::findOrFail($purchase->vendor_id);
-//
-////        foreach($purchase->items as $oi){
-////            return $oi->product->product_name;
-////        }
-//
-////        view()->share(compact('purchase','vendor'));
-//
-//        $headerHtml = view()->make('printouts.purchases.header')
-//            ->render();
-//
-//        $footerHtml = view()->make('printouts.purchases.footer')
-//            ->with('purchase',  $purchase)
-//            ->render();
-//
-//        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))
-//            ->setOption('header-html', $headerHtml)
-//            ->setOption('footer-html', $footerHtml)
-//            ->setOption('footer-center',"Page [page] of [toPage]")
-//            ->setPaper('A4')
-//            ->setOrientation('portrait');
-////        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))->setPaper('a4')->setOrientation('portrait')->setOption('margin-bottom', 0);
-//        return $pdf->inline();
-////        return view('printouts.purchases.po');
-//
-//    }
-
     public function purchasePDF($id)
     {
-
-        $purchase = Purchase::findOrFail($id);
-
-        $vendor = Vendor::findOrFail($purchase->vendor_id);
-
-        $headerHtml = view()->make('printouts.purchases.header')
-            ->render();
-
-        $footerHtml = view()->make('printouts.purchases.footer')
-            ->with('purchase',  $purchase)
-            ->render();
-
-
-        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))
-            ->setOption('header-html', $headerHtml)
-            ->setOption('footer-html', $footerHtml)
-//            ->setOption('footer-center',"Page [page] of [toPage]")
-//            ->setOption('footer-font-size','9')
-//            ->setOption('footer-right','www.americandunnage.com')
-//            ->setOption('footer-left', $purchase->company->bill_to)
-            ->setOption('footer-line',true)
-//            ->setOption('footer-spacing',0)
-            ->setPaper('A4')
-            ->setOrientation('portrait');
-//        return dd($pdf);
-//        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))->setPaper('a4')->setOrientation('portrait')->setOption('margin-bottom', 0);
-        return $pdf->inline();
-//        return view('printouts.purchases.po');
+        return $this->pdfService->getPurchaseOrderPdf($id)->inline();
     }
+
     // function for order confrimation
     public function order_confirmation($id){
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.order_confirmation',$this->pdfService->getSamplePDF($id)));
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
+        $this->pdfService->getSamplePDF('printouts.order_confirmation',$id);
 
     }
-    public function commercial_invoice($id){
+    public function commercial_invoice($id)
+    {
+        $this->pdfService->getSamplePDF('printouts.commercial_invoice', $id);
+    }
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.commercial_invoice',$this->pdfService->getSamplePDF($id)));
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
 
-        exit(0);}
-
-    /**
-     * @param $id
-     */
     public function quotation($id){
 
-
-        $dompdf = new Dompdf();
-
-        $dompdf->loadHtml(view('printouts.quotation',$this->pdfService->getSamplePDF($id)));
-
-// (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'portrait');
-
-// Render the HTML as PDF
-        $dompdf->render();
-
-// Output the generated PDF to Browser
-        $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
-        exit(0);
+         $this->pdfService->getSamplePDF('printouts.quotation',$id);
 
     }
 
     public function order_acknowledgement($id){
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.acknowledgement',$this->pdfService->getSamplePDF($id)));
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
-        exit(0);
+        $this->pdfService->getSamplePDF('printouts.acknowledgement',$id);
+
 
     }
     public function package_list($id){
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.packing_list',$this->pdfService->getSamplePDF($id)));
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
-        exit(0);
+        $this->pdfService->getSamplePDF('printouts.packing_list',$id);
+
     }
     public function proforma_invoice($id){
 
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('printouts.proforma_invoice',$this->pdfService->getSamplePDF($id)));
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
-        $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
-        exit(0);
+        $this->pdfService->getSamplePDF('printouts.proforma_invoice',$id);
+
     }
 
 

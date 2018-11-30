@@ -300,17 +300,19 @@ Route::group( [ 'prefix' => 'reports' ], function()
 
 
 /** PDF Generator */
-Route::get('/pdf/purchase-pdf/{id}','PDFController@purchasePDF');
-Route::get('/pdf/quotation/{id}','PDFController@quotation');
-Route::get('/pdf/acknowledgement/{id}','PDFController@order_acknowledgement');
-Route::get('/pdf/order-confirmation/{id}','PDFController@order_confirmation');
-Route::get('/pdf/proforma_invoice/{id}','PDFController@proforma_invoice');
-Route::get('/pdf/commercial_invoice/{id}','PDFController@commercial_invoice');
-Route::get('/pdf/packing_list/{id}','PDFController@package_list');
+
+Route::group( [ 'prefix' => 'pdf' ], function() {
+    Route::get('/purchase-pdf/{id}', 'PDFController@purchasePDF');
+    Route::get('/quotation/{id}', 'PDFController@quotation');
+    Route::get('/acknowledgement/{id}', 'PDFController@order_acknowledgement');
+    Route::get('/order-confirmation/{id}', 'PDFController@order_confirmation');
+    Route::get('/proforma_invoice/{id}', 'PDFController@proforma_invoice');
+    Route::get('/commercial_invoice/{id}', 'PDFController@commercial_invoice');
+    Route::get('/packing_list/{id}', 'PDFController@package_list');
 
 //snappy pdf testing
-Route::get('/pdf/purchase_order/{id}', 'PDFController@purchasePDF');
-
+    Route::get('/purchase_order/{id}', 'PDFController@purchasePDF');
+});
 
 /** email */
 Route::get('testmail','TestController@testmail');

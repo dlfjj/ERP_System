@@ -8,48 +8,66 @@
 
 namespace App\Components\Pdf\Services;
 
+use App\Components\Pdf\Repositories\PdfRepository;
 use PDF;
 use Dompdf\Dompdf;
-use App\Models\PurchaseItem;
-use App\Models\Purchase;
-use App\Models\PurchaseDelivery;
-use App\Models\Vendor;
-use App\Models\User;
-use App\Models\ValueList;
-use App\Models\Taxcode;
-use App\Models\ChartOfAccount;
-use App\Models\Product;
-use App\Models\Customer;
-use Yajra\Datatables\Datatables;
 use Validator;
 use Auth;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\OrderStatus;
-use App\Models\PaymentTerm;
+use SnappyPdf;
 
 
 
 class PdfService
 {
-    public function getSamplePDF(int $id){
-        $order    = Order::findOrFail($id);
-        $order_status = OrderStatus::leftJoin('orders','orders.status_id','=','order_status.id')->where('orders.id',$id)->get()->toArray();
-        $customer = Customer::findOrFail($order->customer_id);
-        $customers_details = Customer::leftJoin('orders','orders.customer_id','=','customers.id')->join('companies','companies.id','=','customers.company_id')->where('orders.id',$id)->get()->toArray();
-        $order_items  = OrderItem::LeftJoin('orders','orders.id','=','order_items.order_id')->where('orders.id',$id)->get()->toArray();
-        $payment_terms = PaymentTerm::leftjoin('orders','orders.payment_term_id','=','payment_terms.id')->where('orders.id',$id)->get()->toArray();
-        $net_weight = getNetWeight($order);
-        $gross_weight =  getGrossWeight($order);
-        $package_count = getNumberOfPackages($order);
-        $volumn = getCbm($order);
-        $nt_weight_total = getNetWeight($order);
-        $gr_weight_total =  getGrossWeight($order);
+    private $pdfRepository;
 
-        return compact('order','customer','customers_details','order_items','payment_terms','order_status','net_weight','gross_weight','package_count','volumn','nt_weight_total','gr_weight_total');
+    public function __construct(PdfRepository $PdfRepository)
+    {
+        $this->pdfRepository = $PdfRepository;
+    }
+
+    public function getSamplePDF($view, int $id){
+
+        $dompdf = new Dompdf();
+
+        $dompdf->loadHtml(view($view,$this->pdfRepository->getSamplePdfData($id)));
+
+// (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'portrait');
+
+// Render the HTML as PDF
+        $dompdf->render();
+
+// Output the generated PDF to Browser
+        $dompdf->stream("dompdf_out.pdf", array("Attachment" => false));
+
+        exit(0);
+
+
     }
 
     public function getPurchaseOrderPdf(int $id){
+
+
+        //        return $this->pdfService->getPurchaseOrderPdf($id)['purchase']->company->po_footer;
+        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',$this->pdfRepository->getPurchaseOrderPdfData($id)))
+            ->setOption('header-html', $this->pdfRepository->getPurchaseOrderPdfData($id)['headerHtml'])
+            ->setOption('footer-html', $this->pdfRepository->getPurchaseOrderPdfData($id)['footerHtml'])
+//            ->setOption('footer-center',"Page [page] of [toPage]")
+//            ->setOption('footer-font-size','9')
+//            ->setOption('footer-right','www.americandunnage.com')
+//            ->setOption('footer-left', $purchase->company->bill_to)
+            ->setOption('footer-line',true)
+            ->setOption('footer-spacing',4)
+            ->setOption('header-spacing', 3)
+            ->setOption('header-line',true)
+            ->setPaper('A4')
+            ->setOrientation('portrait');
+//        $pdf = SnappyPdf::loadHTML(view('printouts.purchases.po',compact('purchase','vendor')))->setPaper('a4')->setOrientation('portrait')->setOption('margin-bottom', 0);
+        return $pdf;
+//        return view('printouts.purchases.po');
+
+
 
     }
 }
