@@ -168,27 +168,37 @@ Route::get('expenses/getdata', 'ExpenseController@getExpenseData')->name('expens
 Route::resource('expenses','ExpenseController');
 
 /** Purchase */
-Route::get('purchases/getdata', 'PurchaseController@getPurchaseData')->name('purchase/getdata');
 
-Route::delete('purchases/{id}/lineItem/{item}','PurchaseController@lineItemDelete');
-Route::get('purchases/update_line_item/{item}','PurchaseController@getLineItemUpdate');
-Route::patch('purchases/update_line_item/{item}','PurchaseController@postLineItemUpdate');
+Route::group(['prefix' => 'purchases'], function () {
 
-Route::get('purchases/line_item_add/{id}','PurchaseController@showLineItemAdd');
-Route::get('purchases/line_item_add/{id}/getdata', 'PurchaseController@anyDtAvailableProducts')->name('purchase_line_items/getdata');
-Route::post('purchases/line_item_add/','PurchaseController@postLineItemAdd')->name('add_line_items');
+    Route::get('/getdata', 'PurchaseController@getPurchaseData')->name('purchase/getdata');
 
+    Route::delete('/{id}/lineItem/{item}','PurchaseController@lineItemDelete');
+    Route::get('/update_line_item/{item}','PurchaseController@getLineItemUpdate');
+    Route::patch('/update_line_item/{item}','PurchaseController@postLineItemUpdate');
 
-Route::get('purchases/receive/{id}', 'PurchaseController@getReceive')->name('purchase.getReceive');
-Route::post('purchases/receive/{id}', 'PurchaseController@postReceive')->name('purchase.postReceive');
-Route::get('purchases/payments/{id}', 'PurchaseController@getPayments')->name('purchase.getPayments');
-Route::get('purchases/records/{id}', 'PurchaseController@getRecords')->name('purchase.getRecords');
+    Route::get('/line_item_add/{id}','PurchaseController@showLineItemAdd');
+    Route::get('/line_item_add/{id}/getdata', 'PurchaseController@anyDtAvailableProducts')->name('purchase_line_items/getdata');
+    Route::post('/line_item_add/','PurchaseController@postLineItemAdd')->name('add_line_items');
 
-Route::get('purchases/vendorsList','PurchaseController@vendorsList');
-Route::get('purchases/vendorsList/getdata', 'PurchaseController@getVendorslist')->name('vendorsList/getdata');
+    Route::get('/receive/{id}', 'PurchaseController@getReceive')->name('purchase.getReceive');
+    Route::post('/receive/{id}', 'PurchaseController@postReceive')->name('purchase.postReceive');
 
+    Route::get('/payments/{id}', 'PurchaseController@getPayments')->name('purchase.getPayments');
+    Route::post('/payment-add/{id}', 'PurchaseController@postPaymentAdd');
+    Route::delete('/payments-delete/{id}','PurchaseController@getPaymentDelete');
 
+    Route::get('/records/{id}', 'PurchaseController@getRecords')->name('purchase.getRecords');
+    Route::delete('/receive-delivery-delete/{id}','PurchaseController@getDeliveryDelete');
+
+    Route::get('/vendorsList','PurchaseController@vendorsList');
+    Route::get('/vendorsList/getdata', 'PurchaseController@getVendorslist')->name('vendorsList/getdata');
+
+//    Route::resource('','PurchaseController');
+
+});
 Route::resource('purchases','PurchaseController');
+
 
 
 /** Order */
@@ -312,6 +322,8 @@ Route::group( [ 'prefix' => 'pdf' ], function() {
 
 //snappy pdf testing
     Route::get('/purchase_order/{id}', 'PDFController@purchasePDF');
+    Route::get('/download_saved_pdf_file/{id}', 'PDFController@downloadPdfFile')->name('pdf.download');
+
 });
 
 /** email */
@@ -322,6 +334,7 @@ Route::get('testmailpreview', function(){
 });
 
 Route::post('orders/records/{id}/sendEmail','EmailController@sendOrderEmail');
+Route::post('purchases/records/{id}/sendEmail','EmailController@sendPurchaseEmail');
 
 
 

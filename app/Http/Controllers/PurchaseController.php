@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Purchase\Repositories\PurchaseRepository;
+use App\Components\Purchase\Services\PurchaseService;
 use App\Models\PurchaseItem;
+use App\Models\PurchasePayment;
 use Illuminate\Http\Request;
 use App\Models\Purchase;
 use App\Models\PurchaseDelivery;
@@ -15,12 +18,19 @@ use App\Models\Product;
 use Yajra\Datatables\Datatables;
 use Validator;
 use Auth;
+use Redirect;
 
 class PurchaseController extends Controller
 {
-    public function __construct(){
+    private $purchaseRepository;
+    private $purchaseService;
+
+    public function __construct(PurchaseRepository $PurchaseRepository, PurchaseService $PurchaseService){
         $this->middleware('auth');
         has_role('purchases',1);
+
+        $this->purchaseRepository = $PurchaseRepository;
+        $this->purchaseService = $PurchaseService;
     }
     public $layout = 'layouts.default';
 
@@ -28,8 +38,6 @@ class PurchaseController extends Controller
     {
 //        $purchase_index_msg = "Purchase Index";
 //        return view('purchases.index',compact('purchase_index_msg','index_type'));
-
-
         /*
             $index_type 0 == Default
             $index_type 1 == Waiting for Approval
@@ -39,50 +47,40 @@ class PurchaseController extends Controller
             $index_type 5 == P.O placed TODAY
         */
 
-
-
         $purchase_index_msg = "Purchases Record";
         return view('purchases.index',compact(array('purchase_index_msg',$purchase_index_msg),array('index_type',$index_type)));
     }
 
-    public function getPurchaseData($index_type=0){
-        $purchases = Purchase::Leftjoin('vendors','vendors.id','=','purchases.vendor_id')
-            ->select(
-                'purchases.id',
-                'purchases.status',
-                'purchases.date_placed',
-                'purchases.date_required',
-                'vendors.company_name',
-                'purchases.currency_code',
-                'purchases.gross_total'
-            )->where('purchases.company_id',return_company_id());
-        return Datatables::of($purchases)
-            ->addColumn('action', function ($purchase) {
-                return '<a href="/purchases/'.$purchase->id.'" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
-            })
-            ->make(true);
+    public function getPurchaseData(){
+
+        try {
+            return Datatables::of($this->purchaseRepository->getPurchaseOrderData())
+                ->addColumn('action', function ($purchase) {
+                    return '<a href="/purchases/' . $purchase->id . '" class="bs-tooltip" title="View"><i class="icon-search"></i></a>';
+                })
+                ->make(true);
+        } catch (\Exception $e) {
+            echo $e;
+            return redirect('/home');
+        }
     }
 
     public function anyDtAvailableProducts(){
-        $products = Product::select(
-            array(
-                'products.id',
-                'products.product_code',
-                'products.product_name',
-                'products.pack_unit',
-                'products.pack_unit_hq'
-            ))
-            ->where('products.status','Active')
-            ->where('products.company_id',return_company_id());
-        return Datatables::of($products)
-            ->removeColumn('id')
-            ->addColumn('action',function($product){
-                return \Form::open(['method'=>'POST','action'=>['PurchaseController@postLineItemAdd'],'class'=>'form']).'
-            <input type="hidden" name="product_id" value="'.$product->id.'" />
-            <input type="number" class="qty_picker_input" name="quantity" value="" step="1" min="0" size="3"/>
-            <input type="submit" name="submit" value="Add" class="btn pull-right add_this_item" />
-            '.\Form::close();
-            })->make(true);
+
+        try {
+            return Datatables::of($this->purchaseRepository->getPurchaseProduct())
+                ->removeColumn('id')
+                ->addColumn('action', function ($product) {
+                    return \Form::open(['method' => 'POST', 'action' => ['PurchaseController@postLineItemAdd'], 'class' => 'form']) . '
+                <input type="hidden" name="product_id" value="' . $product->id . '" />
+                <input type="number" class="qty_picker_input" name="quantity" value="" step="1" min="0" size="3"/>
+                <input type="submit" name="submit" value="Add" class="btn pull-right add_this_item" />
+                ' . \Form::close();
+                })->make(true);
+        } catch (\Exception $e) {
+            echo $e;
+            return redirect('/home');
+        }
     }
 
     //    before creating a new purchase, you will get a list of vendor
@@ -91,64 +89,42 @@ class PurchaseController extends Controller
     }
 
     public function getVendorslist(){
-        $vendors = Vendor::Select(
-            array(
-                'vendors.id',
-                'vendors.company_name'
-            ))
-            ->where('vendors.company_id',return_company_id())
-            ->where('status','Active')
-        ;
 
-        return Datatables::of($vendors)
-            ->addColumn('action',function($vendor){
-                return \Form::open(['method'=>'GET','action'=>'PurchaseController@create','class'=>'form']).'
-				<input type="hidden" name="id" value="'.$vendor->id.'" />
-				<input type="submit" name="submit" value="Create" class="btn center-block" />
-		        '.\Form::close();
-            })
-            ->make(true);
+        try {
+            return Datatables::of($this->purchaseRepository->getVendorListData())
+                ->addColumn('action', function ($vendor) {
+                    return \Form::open(['method' => 'GET', 'action' => 'PurchaseController@create', 'class' => 'form']) . '
+                    <input type="hidden" name="id" value="' . $vendor->id . '" />
+                    <input type="submit" name="submit" value="Create" class="btn center-block" />
+                    ' . \Form::close();
+                })
+                ->make(true);
+        } catch (\Exception $e) {
+            echo $e;
+            return redirect('/home');
+        }
     }
 
 
     public function getReceive($id) {
-        $purchase = Purchase::findOrFail($id);
 
-        $vendor = Vendor::findOrFail($purchase->vendor_id);
-
-        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
-        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
-        $select_status = array(
-            "DRAFT" => "DRAFT",
-            "OPEN" => "OPEN",
-            "CLOSED" => "CLOSED",
-            "VOID" => "VOID"
-        );
 //        $user =User::where('id',$delivery->created_by)->first()->username;
 
-        return view('purchases.receive',compact(['select_status',$select_status],['select_vendor_contacts',$select_vendor_contacts],
-            ['select_payment_terms',$select_payment_terms],['select_currency_codes',$select_currency_codes],['select_shipping_methods',$select_shipping_methods],
-            ['select_shipping_terms',$select_shipping_terms],['purchase', $purchase],['vendor',$vendor]));
+        return view('purchases.receive',$this->purchaseRepository->getProductReceive($id));
 
     }
+
+
     public function postReceive(Request $request, $purchase_id){
 
-        return $request;
-        $purchasedeliveries = PurchaseDelivery::where('purchase_id','=',$purchase_id)->get();
-
-//        return $purchasedeliveries[0];
+//        $purchasedeliveries = PurchaseDelivery::where('purchase_id','=',$purchase_id)->get();
 
         $purchase_item_ids 	= $request->purchase_item_ids;
         $delivered_quantities 	= $request->delivered_quantities;
         $reconciled_quantities  = $request->reconciled_quantities;
         $remark 			= $request->remark;
-//        $date               = Input::get('date',date('Y-m-d'));
         $date               = $request->date;
 
-//        return $request;
         if(array_sum($delivered_quantities) + array_sum($reconciled_quantities) == 0){
             return redirect("/purchases/receive/{$purchase_id}")
                 ->with('flash_error',"Nothing to do");
@@ -157,6 +133,11 @@ class PurchaseController extends Controller
         if(!is_array($purchase_item_ids)){
             return Redirect::to("/purchases/receive/{$purchase_id}")
                 ->with('flash_error','Invalid Data');
+        }
+
+        if($remark == null){
+            return redirect()->back()
+                ->with('flash_error','Remark cannot let it blank');
         }
 
         $uid = time();
@@ -170,7 +151,8 @@ class PurchaseController extends Controller
         }
 
         // Loop trough data and do validation
-        foreach($purchase_item_ids as $i=>$purchase_item_id){
+        foreach($purchase_item_ids as $i=> $purchase_item_id){
+
             $delivered              = $delivered_quantities[$i];
             $reconciled             = $reconciled_quantities[$i];
 
@@ -226,65 +208,28 @@ class PurchaseController extends Controller
 
     public function getPayments($id) {
 
-        $purchase = Purchase::findOrFail($id);
-        $vendor = Vendor::findOrFail($purchase->vendor_id);
-
-        $select_bank_accounts  = ValueList::where('uid','=','BANK_ACCOUNTS')->orderBy('name', 'asc')->pluck('name','name');
-
-        $open_balance = $purchase->total;
-        foreach($purchase->payments as $payment){
-            $payment_amount = convert_currency($payment->currency_code,$purchase->currency_code,$payment->amount,$payment->payment_date);
-            $open_balance -= $payment_amount;
-        }
-        $open_balance = round($open_balance,2);
-        if($open_balance < 0){
-            $open_balance = 0;
-        }
-
-
-
-        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
-        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
-        $select_status = array(
-            "DRAFT" => "DRAFT",
-            "OPEN" => "OPEN",
-            "CLOSED" => "CLOSED",
-            "VOID" => "VOID"
-        );
-
-        $tree = ChartOfAccount::where('company_id',return_company_id())->get()->toHierarchy();
-        $select_accounts = printSelect($tree, setting_get('purchase_account_id'),'account_id');
-
-//        $this->layout->module_title = "vendor Details";
-//        $this->layout->module_sub_title = "vendor Details";
-
-        return view('purchases.payments',compact('select_status','select_vendor_contacts','select_payment_terms',
-            'select_currency_codes','select_shipping_methods', 'select_shipping_terms','select_accounts','select_bank_accounts',
-            'purchase','open_balance','vendor'));
+        return view('purchases.payments', $this->purchaseRepository->getPayments($id));
 
     }
 
     public function getRecords($id){
-        $purchase = Purchase::findOrFail($id);
-        $vendor   = Vendor::findOrFail($purchase->vendor_id);
 
-        $mail_to  = $purchase->vendor->email;
-        $mail_cc  = "";
-        $mail_bcc = Auth::user()->email;
-        $mail_subject = "PO #$purchase->id";
-        $mail_body = <<<EOT
-Hello $purchase->vendor_contact,
-
-please find your purchase order #$purchase->id attached.
-
-Let me know if you have any questions,
-EOT;
-        $mail_body .= "\n".$purchase->user->signature;
-
-        return view('purchases.records',compact('mail_to','mail_cc','mail_bcc','mail_subject','mail_body','purchase','vendor'));
+//        $a = array();
+//        $b = array();
+//         $purchase_history = $this->purchaseRepository->getEmailRecords($id)['purchase_history'];
+//        foreach($purchase_history as $history)
+//
+//            if($history->attach_pdf == 1 && $history->file_name !== ""){
+//                array_push($a, $history->file_name);
+//            }else {
+//                array_push($b, $history->file_name);
+//            };
+//
+//        return dd($b);
+//            array_push($a, $history->file_name);
+//        return dd($a[2]);
+//        return dd($a[2] !== "" && 2 != 3);
+        return view('purchases.records',$this->purchaseRepository->getEmailRecords($id));
 
     }
 
@@ -353,7 +298,56 @@ EOT;
         //
     }
 
-    public function postLineItemAdd(Request $request){
+    public function postPaymentAdd(Request $request,$id)
+    {
+        $rules = array(
+            'amount' => 'required|numeric',
+            'account_id' => 'required|numeric',
+            'currency_code' => 'required|max:255',
+            'date_created' => 'required|date',
+            'transaction_reference' => 'max:255',
+            'remark' => 'max:255',
+        );
+        $input = $request->all();
+        $validation = Validator::make($input, $rules);
+
+        if($validation->fails()){
+            return Redirect::to("/purchases/payments/".$id)
+                ->with('flash_error','Operation failed')
+                ->witherrors($validation->messages())
+                ->withinput();
+        } else {
+
+            $purchase = Purchase::findOrFail($id);
+
+            if($purchase->company_id != return_company_id()){
+                die("Access Violation");
+            }
+
+            if($request->transaction_reference === NULL) {
+                $transaction_reference = '';
+            }else{
+                $transaction_reference = $request->transaction_reference;
+            }
+
+            $new = new PurchasePayment();
+            $new->fill($input);
+            $new->transaction_reference = $transaction_reference;
+            $new->created_by = Auth::user()->id;
+            $new->updated_by = Auth::user()->id;
+            $new->purchase_id= $purchase->id;
+            $new->company_id = return_company_id();
+            $new->save();
+
+            updatePurchaseStatus($id);
+
+            return Redirect::to("/purchases/payments/".$id)
+                ->with('flash_success','Operation success');
+        }
+//        $this->purchaseService->postPaymentAdd($request,$id);
+    }
+
+        public function postLineItemAdd(Request $request){
 
         $purchase_id = $request->purchase_id;
         $purchase = Purchase::findOrFail($purchase_id);
@@ -400,54 +394,16 @@ EOT;
      */
     public function show($id)
     {
-        $purchase = Purchase::findOrFail($id);
-
-        $vendor = Vendor::findOrFail($purchase->vendor_id);
-
-        if($purchase->company_id != return_company_id()){
+        if($this->purchaseRepository->getPurchaseDataById($id)->company_id != return_company_id()){
             die("Access violation. Click <a href='/purchases'>here</a> to get back.");
         }
 
-        $select_users = User::pluck('username','id');
-        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
-        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
-        $select_taxcodes  	   = Taxcode::orderBy('sort_no', 'asc')->pluck('name','id');
-        $select_status = array(
-            "DRAFT" => "DRAFT",
-            "OPEN" => "OPEN",
-            "CLOSED" => "CLOSED",
-            "VOID" => "VOID"
-        );
-        $created_by_user = User::find($purchase->created_by)->username;
-        $updated_by_user = User::find($purchase->updated_by)->username;
-
-
-        return view('purchases.show',compact('select_status','select_vendor_contacts',
-            'select_payment_terms','select_currency_codes','select_shipping_methods','select_shipping_terms',
-            'select_users','select_taxcodes','purchase','vendor','created_by_user','updated_by_user'));
+        return view('purchases.show',$this->purchaseRepository->getPurchasesDetail($id));
     }
 
     public function showLineItemAdd($id){
 
-        $purchase = Purchase::findOrFail($id);
-        $vendor = Vendor::findOrFail($purchase->vendor_id);
-
-        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
-        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
-        $select_status = array(
-            "DRAFT" => "DRAFT",
-            "OPEN" => "OPEN",
-            "CLOSED" => "CLOSED",
-            "VOID" => "VOID"
-        );
-        return view('purchases.lineItem.add_line_item',compact('select_status','select_vendor_contacts','select_payment_terms',
-            'select_currency_codes','select_shipping_methods','select_shipping_terms','purchase','vendor'));
+        return view('purchases.lineItem.add_line_item',$this->purchaseRepository->getPurchasesDetail($id));
 
     }
 
@@ -632,6 +588,53 @@ EOT;
             return redirect('purchases/'.$purchase_item->purchase_id)
                 ->with('flash_success','Operation success');
         }
+    }
+
+    public function getDeliveryDelete($id){
+
+        $delivery = PurchaseDelivery::findOrFail($id);
+
+//        $product_id = $delivery->product_id;
+        $purchase_id = $delivery->purchase_id;
+        $purchase = Purchase::findOrFail($purchase_id);
+        $purchase_item = PurchaseItem::findOrFail($delivery->purchase_item_id);
+
+        if(!has_role('admin')){
+            if($delivery->created_by != Auth::user()->id){
+                return Redirect::to('purchases/receive/'.$purchase->id)
+                    ->with('flash_error','User Issue');
+            }
+        }
+//        $quantity_delivered  = $purchase_item->getQuantityDelivered();
+//        $quantity_reconciled = $purchase_item->getQuantityReconciled();
+
+        if($delivery->delivered > 0){
+            warehouse_transaction($purchase_item->product_id,-$delivery->delivered,"(Received - P.O " . $purchase_id . ")");
+        }
+
+
+        $delivery->delete();
+
+        updatePurchaseStatus($purchase_id);
+
+        return Redirect::to('purchases/receive/'.$purchase_id)
+            ->with('flash_success','Operation success');
+    }
+
+    public function getPaymentDelete($id){
+        $payment = PurchasePayment::findOrFail($id);
+        $purchase = Purchase::FindOrFail($payment->purchase_id);
+
+        if($purchase->company_id != return_company_id()){
+            die("Access violation!");
+        }
+
+        $payment->delete();
+
+        updatePurchaseStatus($purchase->id);
+
+        return Redirect::to('purchases/payments/'.$purchase->id)
+            ->with('flash_success','operation success');
     }
 
 //    Receive Modules within Purchase

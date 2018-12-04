@@ -21,7 +21,6 @@
                     <h4><i class="icon-reorder"></i> Payment history</h4>
                 </div>
                 <div class="widget-content no-padding">
-                    <form style="margin: 0px; padding: 0px;" action="/purchases/{{$purchase->id}}/receive" method="POST">
                         <table class="table table-hover table-bordered table-highlight-head">
                             <thead>
                             <tr>
@@ -31,12 +30,13 @@
                                 <th>Remark</th>
                                 <th>CUR</th>
                                 <th>Amount</th>
-                                <th></th>
+                                <th class="cell-tight"></th>
                             </tr>
                             </thead>
                             <tbody>
                             @if(count($purchase->payments)>0)
                                 @foreach($purchase->payments as $payment)
+                                    {!! Form::open(['method'=>'DELETE', 'action'=> ['PurchaseController@getPaymentDelete', $payment->id], 'enctype'=>'multipart/form-data']) !!}
                                     <tr>
                                         <td>
                                             {{$payment->date_created }}
@@ -56,10 +56,13 @@
                                         <td>
                                             {{$payment->amount}}
                                         </td>
-                                        <td class="align-right">
-                                            <a href="/purchases/payment-delete/{{$payment->id}}" class="btn btn-xs btn-danger conf">X</a>
+                                        <td>
+                                            {{--<a href="/purchases/payment-delete/{{$payment->id}}" class="btn btn-xs btn-danger conf">X</a>--}}
+                                            {{ Form::button('<i class="icon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm conf'] )  }}
+
                                         </td>
                                     </tr>
+                                    {{ Form::close() }}
                                 @endforeach
                             @else
                                 <tr>
@@ -68,7 +71,6 @@
                             @endif
                             </tbody>
                         </table>
-                    </form>
                 </div>
             </div>
         </div>
@@ -81,8 +83,8 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     <h4 class="modal-title">Record new Purchase Payment</h4>
                 </div>
-                <form autocomplete="off" enctype="multipart/form-data" id="customer_contact" class="form-validate1" action="/purchases/payment-add/{{ $purchase->id }}" method="POST">
-                    <div class="modal-body">
+                {!! Form::open(['method'=>'POST','action'=>['PurchaseController@postPaymentAdd',$purchase->id],'files' =>false], array('enctype'=>'multipart/form-data','id'=>'customer_contact','class' => 'form-validate1', 'autocomplete'=>'off')) !!}
+                 <div class="modal-body">
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-6">
@@ -133,7 +135,8 @@
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <input type="submit" class="btn btn-primary" value="Submit">
                     </div>
-                </form>
+                {{--</form>--}}
+                {{ Form::close() }}
             </div>
         </div>
     </div>

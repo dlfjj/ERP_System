@@ -94,23 +94,27 @@ if(has_role('purchases_pass_goods')){
                             </tr>
                             </thead>
                             <tbody>
-                            <?php
+                            @php
                             $product_ids = array();
-                            ?>
+                            @endphp
                             @if(count($purchase->items)>0)
                                 @foreach($purchase->items as $purchase_item)
                                     <tr>
                                         <td class="no-wrap">
-                                            <a href="/products/show/{{ $purchase_item->product_id }}">{{$purchase_item->product->product_code }}</a>
-                                            {{ Form::hidden('purchase_item_ids[]', $purchase_item->id, array("class"=>"form-control")) }}
+                                            <a href="/products/{{ $purchase_item->product_id }}">{{$purchase_item->product->product_code }}</a>
+                                            @if(!empty($purchase_item->product->track_stock))
+                                                {{ Form::hidden('purchase_item_ids[]', $purchase_item->id, array("class"=>"form-control")) }}
+                                            @endif
                                         </td>
                                         <td class="no-wrap">{{ $purchase_item->getQuantityOrdered() }}</td>
                                         @if($purchase_item->product->track_stock)
                                             <td>{{ $purchase_item->getQuantityDelivered() }}</td>
                                             <td>{{ $purchase_item->getQuantityReconciled() }}</td>
                                             <td>{{ $purchase_item->getQuantityOpen() }}</td>
-                                            <td>{{ Form::text('delivered_quantities[]', "", array("class"=>"form-control","tabindex" => 3)) }}</td>
-                                            <td>{{ Form::text('reconciled_quantities[]', "", array("class"=>"form-control","tabindex" => 4)) }}</td>
+{{--                                            <td>{{ Form::text('delivered_quantities[]', "", array("class"=>"form-control","tabindex" => 3)) }}</td>--}}
+                                            <td>{{ Form::input('number', 'delivered_quantities[]',"0",['class' => 'form-control','tabindex' => 3, 'step'=>'1']) }}</td>
+                                            <td>{{ Form::input('number', 'reconciled_quantities[]',"0",['class' => 'form-control','tabindex' => 4, 'step'=>'1']) }}</td>
+                                            {{--<td>{{ Form::text('reconciled_quantities[]', "0", array("class"=>"form-control","tabindex" => 4)) }}</td>--}}
                                         @else
                                             <td colspan="7">
                                                 No Stock Tracking for this Line Item
@@ -134,7 +138,6 @@ if(has_role('purchases_pass_goods')){
         <!-- /Vertical Forms -->
 
 
-
         <!--=== Vertical Forms ===-->
         <div class="col-md-12">
             <div class="widget box">
@@ -142,7 +145,7 @@ if(has_role('purchases_pass_goods')){
                     <h4><i class="icon-reorder"></i> DELIVERIES FOR THIS P.O</h4>
                 </div>
                 <div class="widget-content no-padding">
-                    <form style="margin: 0px; padding: 0px;" action="/purchases/receive/{{$purchase->id}}" method="POST">
+                    {{--<form style="margin: 0px; padding: 0px;" action="/purchases/receive/{{$purchase->id}}" method="POST">--}}
                         <table class="table table-hover table-bordered table-highlight-head">
                             <thead>
                             <tr>
@@ -156,13 +159,15 @@ if(has_role('purchases_pass_goods')){
                             </tr>
                             </thead>
                             <tbody>
-                            <?php
-                            $old_uid = "";
-                            ?>
+                            @php
+                                $old_uid = "";
+                            @endphp
                             @foreach($purchase->deliveries as $delivery)
+                                {!! Form::open(['method'=>'DELETE', 'action'=> ['PurchaseController@getDeliveryDelete', $delivery->id], 'enctype'=>'multipart/form-data','style'=>'margin: 0px; padding: 0px;']) !!}
+
                                 <tr>
                                     @if($delivery->uid != $old_uid)
-                                        <?php $old_uid = $delivery->uid; ?>
+                                        @php $old_uid = $delivery->uid; @endphp
                                         <td style="width: 1%; white-space:nowrap;">
                                             <a href="/pdf/purchases-goods-receipt/{{$delivery->uid}}" class="btn btn-sm btn-default">Receipt</a>
                                         </td>
@@ -185,16 +190,20 @@ if(has_role('purchases_pass_goods')){
                                     <td>{{ $delivery->reconciled }}</td>
                                     <td class="text-center">
                                         @if(has_role('admin') ||  $delivery->created_by == Auth::user()->id)
-                                            <a href="/purchases/delivery-delete/{{$delivery->id}}" class="btn btn-xs btn-danger">X</a>
+                                            {{--<a href="/purchases/delivery-delete/{{$delivery->id}}" class="btn btn-sm btn-danger">X</a>--}}
+                                            {{ Form::button('<i class="icon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm'] )  }}
+                                            {{--<a href="javascript:void(0);" class="btn btn-xs btn-danger form-submit-conf" type="submit"><i class="icon-trash"></i></a>--}}
                                         @else
                                             -
                                         @endif
                                     </td>
                                 </tr>
+                                {!! Form::close() !!}
+
                             @endforeach
                             </tbody>
                         </table>
-                    </form>
+                    {{--</form>--}}
                 </div>
             </div>
         </div>

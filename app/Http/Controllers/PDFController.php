@@ -29,6 +29,8 @@ use App\Models\PaymentTerm;
 use App\Models\Company;
 use DB;
 use SnappyPdf;
+use Illuminate\Support\Facades\Storage;
+
 
 class PDFController extends Controller
 {
@@ -100,6 +102,9 @@ class PDFController extends Controller
 
     }
 
+    public function downloadPdfFile($filename){
+        return Storage::disk('public')->download('pdf_files/'.$filename);
+    }
 
 
 }

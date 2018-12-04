@@ -14,7 +14,7 @@ $uri_segment = Request::segment(2);
     </li>
     @if($uri_segment != "" && $uri_segment != "show")
         <li class="current">
-            <a href="/purchases/{{$uri_segment}}" title="">{{ $uri_segment }}</a>
+            <a href="/purchases/{{$uri_segment}}/{{$purchase->id}}" title="">{{ $uri_segment }}</a>
         </li>
     @endif
 </ul>

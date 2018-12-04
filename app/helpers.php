@@ -16,6 +16,8 @@ use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\DB;
 use App\Models\WarehouseTransaction;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
+
 
 // use Auth;
 /*
@@ -1249,11 +1251,15 @@ function getUom($orderItem){
     return $orderItem->product->pluck('uom')[0];
 }
 
-function getNumberOfPallets($order){
+function getNumberOfPallets($order)
+{
     $no_of_pallets = $order->number_of_pallettes;
     return $no_of_pallets;
 }
 
+function isPdfFileExist($filename){
+    return Storage::disk('public')->exists('pdf_files/'.$filename);
+}
 
 
 

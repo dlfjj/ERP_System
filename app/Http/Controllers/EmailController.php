@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Pdf\Services\PdfService;
 use App\Mail\OrderEmail;
+use App\Mail\PurchaseEmail;
 use App\Models\Customer;
 use App\Models\CustomerContact;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PaymentTerm;
+use App\Models\Purchase;
+use App\Models\PurchaseHistory1;
 use App\OrderHistory;
+
+use Illuminate\Http\File;
 
 use Illuminate\Http\Request;
 //use Illuminate\Support\Facades\Mail;
@@ -23,9 +29,12 @@ use PDF;
 
 class EmailController extends Controller
 {
-    public function __construct(){
+    private $pdfService;
+    public function __construct(PdfService $PdfService){
         $this->middleware('auth');
 //        has_role('orders',1);
+
+        $this->pdfService = $PdfService;
     }
 
     public function sendOrderEmail(Request $request, $id)
@@ -232,6 +241,84 @@ class EmailController extends Controller
         $order->save();
 
         return redirect("/orders/records/$id")
+            ->with('flash_success','Operation success');
+    }
+
+    public function sendPurchaseEmail(Request $request, $id){
+
+
+//        $private_folder = Config::get('app.private_folder') . "/purchases/";
+//        if(!file_exists($private_folder) || !is_dir($private_folder)){
+//            if(!mkdir($private_folder)){
+//                die("Could not create needed Folder to store Purchase History");
+//            }
+//        }
+
+//        $purchase = Purchase::findOrFail($id);
+//        $vendor = Vendor::findOrFail($purchase->vendor_id)
+//        $filename = "quotation-330002-1542242303.pdf";
+//        $filepath = Storage::url('pdf_files/'.$filename);
+//        $filepath = Storage::url('app/public/pdf_files/'.$filename);
+
+
+
+
+        return dd(Storage::disk('public')->exists('pdf_files/ci-330002-1542830428.pdf'.$filename));
+
+        if($request->get('attach_pdf') == 1){
+            $filename = "po-$id-".time().".pdf";
+            Storage::put('public/pdf_files/'.$filename, $this->pdfService->getPurchaseOrderPdf($id)->inline());
+//            $this->pdfService->getPurchaseOrderPdf($id)->save(Storage::put('public/pdf_files/'.$filename));
+//            $filepath = Storage::url('public/pdf_files/'.$filename);
+        } else {
+            $filepath = "";
+            $filename = "";
+        }
+
+        $mail_to = $request->mail_to;
+        $mail_cc = $request->mail_cc;
+        if(is_array($mail_to) && count($mail_to)>0){
+            $notify_vendor = 1;
+        } else {
+            $notify_vendor = 0;
+            $mail_to = array();
+        }
+
+        if(!is_array($mail_cc)){
+            $mail_cc = array();
+        }
+
+        if($notify_vendor == 1){
+            $mail_data = array(
+                'from_name' => Auth::user()->first_name . " " . Auth::user()->last_name,
+                'from_email' => Auth::user()->email,
+                'to_email' => $mail_to,
+                'cc_email' => $mail_cc,
+                'bcc_email' => $request->mail_bcc,
+                'subject' => $request->mail_subject,
+                'mail_body' => $request->mail_body,
+            );
+
+            $message = new PurchaseEmail($mail_data);
+            $message->attachData(Storage::get('public/pdf_files/'.$filename),$filename);
+            Mail::to('dlfjj123@gmail.com')->send($message);
+
+        }
+
+        $record = New PurchaseHistory1();
+        $record->purchase_id = $id;
+        $record->notify_vendor = $notify_vendor;
+        $record->attach_pdf = $request->attach_pdf;
+        $record->file_name = $filename;
+        $record->mail_body = $request->mail_body;
+        $record->mail_subject = $request->mail_subject;
+        $record->mail_to = implode(",",$mail_to);
+        $record->mail_cc = implode(",",$mail_cc);
+        $record->mail_bcc = $request->mail_bcc;
+        $record->created_by = Auth::user()->id;
+        $record->save();
+
+        return Redirect::to('purchases/records/'.$id)
             ->with('flash_success','Operation success');
     }
 }
