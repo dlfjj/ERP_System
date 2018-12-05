@@ -59,7 +59,6 @@
                                         <td>
                                             {{--<a href="/purchases/payment-delete/{{$payment->id}}" class="btn btn-xs btn-danger conf">X</a>--}}
                                             {{ Form::button('<i class="icon-trash"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-sm conf'] )  }}
-
                                         </td>
                                     </tr>
                                     {{ Form::close() }}

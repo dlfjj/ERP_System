@@ -176,8 +176,7 @@
                                                 </td>
                                                 <td>
                                                     @if($history->attach_pdf == 1 && $history->file_name !== "")
-                                                        <a href='{{ route('pdf.download',$history->file_name) }}'>Download</a>
-{{--                                                        <p>{{ $history->file_name }}</p>--}}
+                                                        <a href="{{ route('pdf.download',urlencode($history->file_name)) }}">Download</a>
                                                     @else
                                                         <p>No</p>
                                                     @endif

@@ -15,6 +15,7 @@ use App\Models\ValueList;
 use App\Models\Taxcode;
 use App\Models\ChartOfAccount;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 use Yajra\Datatables\Datatables;
 use Validator;
 use Auth;
@@ -95,13 +96,29 @@ class PurchaseController extends Controller
                 ->addColumn('action', function ($vendor) {
                     return \Form::open(['method' => 'GET', 'action' => 'PurchaseController@create', 'class' => 'form']) . '
                     <input type="hidden" name="id" value="' . $vendor->id . '" />
-                    <input type="submit" name="submit" value="Create" class="btn center-block" />
+                    <input type="submit" name="submit" value="Choose" class="btn center-block" />
                     ' . \Form::close();
                 })
                 ->make(true);
         } catch (\Exception $e) {
             echo $e;
             return redirect('/home');
+        }
+    }
+
+    public function getVendorslistChange($id){
+
+        try {
+            return Datatables::of($this->purchaseRepository->getVendorListData(),$id)
+                ->addColumn('action', function ($vendor) {
+                    return \Form::open(['method' => 'POST', 'action' => ['PurchaseController@postChangeVendor'], 'class' => 'form']) . '
+                    <input type="hidden" name="id" value="' . $vendor->id . '" />
+                    <input type="submit" name="submit" value="Choose" class="btn center-block" />
+                    ' . \Form::close();
+                })
+                ->make(true);
+        } catch (\Exception $e) {
+            return $this->redirectWithErrors($e);
         }
     }
 
@@ -114,6 +131,240 @@ class PurchaseController extends Controller
 
     }
 
+    public function getChangeStatus($id) {
+
+        $purchase =  $this->purchaseRepository->getPurchaseDataById($id);
+
+        return view('purchases.change_status',compact('purchase'));
+
+    }
+
+
+    public function getPayments($id) {
+
+        return view('purchases.payments', $this->purchaseRepository->getPayments($id));
+
+    }
+
+    public function getRecords($id){
+
+        return view('purchases.records',$this->purchaseRepository->getEmailRecords($id));
+
+    }
+
+    public function getDuplicate($purchase_id){
+
+        return Redirect::to("/purchases/".$this->purchaseService->getDuplicate($purchase_id))
+            ->with('flash_success','Operation success');
+    }
+
+    public function getChangeVendor($id){
+
+        $purchase = $this->purchaseRepository->getPurchaseDataById($id);
+
+        return view('purchases.change_vendor', compact('purchase'));
+
+    }
+
+
+//    create new purchase
+    public function create(Request $request)
+    {
+        $rules = array(
+            'id' => 'Required|integer'
+        );
+        $input = $request->all();
+        $validation = Validator::make($input, $rules);
+
+        if($validation->fails()){
+            return redirect('purchases/vendorsList')
+                ->with('flash_error','Operation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+            $vendor_id = $request->id;
+            $vendor = Vendor::findOrFail($vendor_id);
+
+            if($vendor->taxcode_id == ""){
+                return redirect('purchases/vendorsList')
+                    ->with('flash_error','Illegal Taxcode');
+            }
+
+            $purchase = New Purchase();
+            $purchase->purchase_no = getNewPurchaseNo(return_company_id());
+            $purchase->vendor_id   = $vendor_id;
+            $purchase->status      = 'Draft';
+            $purchase->currency_code = $vendor->currency_code;
+            $purchase->payment_terms = $vendor->payment_terms;
+            $purchase->created_by  = Auth::user()->id;
+            $purchase->updated_by = Auth::user()->id;
+            $purchase->user_id = Auth::user()->id;
+            $purchase->date_placed = date("Y-m-d");
+            $purchase->taxcode_id = $vendor->taxcode_id;
+            $purchase->company_id = return_company_id();
+            $purchase->save();
+
+            $id = $purchase->id;
+            return redirect('purchases/'.$id)
+                ->with('flash_success','Operation success');
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    public function postChangeVendor(Request $request, $id){
+
+        return $id;
+        $id = filter_var(session()->all()['url']['intended'], FILTER_SANITIZE_NUMBER_INT);
+        $vendor_id = $request->id;
+//        if(!is_numeric($request->vendor_id)){
+////            return Redirect::to('purchases/'.$id)
+////                ->with('flash_error','Operation failed');
+////        }
+
+        $purchase = Purchase::findOrFail($id);
+        $purchase->vendor_id = $vendor_id;
+        $purchase->save();
+
+        return Redirect::to('purchases/'.$id)
+            ->with('flash_success','Operation success');
+    }
+
+    public function postPaymentAdd(Request $request,$id)
+    {
+        $rules = array(
+            'amount' => 'required|numeric',
+            'account_id' => 'required|numeric',
+            'currency_code' => 'required|max:255',
+            'date_created' => 'required|date',
+            'transaction_reference' => 'max:255',
+            'remark' => 'max:255',
+        );
+        $input = $request->all();
+        $validation = Validator::make($input, $rules);
+
+        if($validation->fails()){
+            return Redirect::to("/purchases/payments/".$id)
+                ->with('flash_error','Operation failed')
+                ->witherrors($validation->messages())
+                ->withinput();
+        } else {
+
+            $purchase = Purchase::findOrFail($id);
+
+            if($purchase->company_id != return_company_id()){
+                die("Access Violation");
+            }
+
+            if($request->transaction_reference === NULL) {
+                $transaction_reference = '';
+            }else{
+                $transaction_reference = $request->transaction_reference;
+            }
+
+            $new = new PurchasePayment();
+            $new->fill($input);
+            $new->transaction_reference = $transaction_reference;
+            $new->created_by = Auth::user()->id;
+            $new->updated_by = Auth::user()->id;
+            $new->purchase_id= $purchase->id;
+            $new->company_id = return_company_id();
+            $new->save();
+
+            updatePurchaseStatus($id);
+
+            return Redirect::to("/purchases/payments/".$id)
+                ->with('flash_success','Operation success');
+        }
+//        $this->purchaseService->postPaymentAdd($request,$id);
+    }
+
+        public function postLineItemAdd(Request $request){
+
+        $purchase_id = $request->purchase_id;
+        $purchase = Purchase::findOrFail($purchase_id);
+
+        $rules = array(
+            'product_id' => 'required|integer|digits_between:1,6',
+            'quantity'   => 'required|numeric'
+        );
+        $validation = Validator::make($request->all(), $rules);
+        if($validation->fails()){
+            return redirect('purchases/'.$purchase_id)
+                ->with('flash_error','Validation failed')
+                ->withErrors($validation->Messages())
+                ->withInput();
+        } else {
+
+            $product_id = $request->product_id;
+            $product = Product::findOrFail($product_id);
+
+            $purchase_item = New PurchaseItem();
+            $purchase_item->purchase_id = $purchase->id;
+            $purchase_item->product_id = $product->id;
+            $purchase_item->quantity = $request->get('quantity',1);
+            $purchase_item->gross_price = $product->base_price_20;
+            $purchase_item->net_price   = return_net_price($purchase_item->gross_price, $purchase->taxcode->percent);
+            $purchase_item->net_total = $purchase_item->quantity * $purchase_item->net_price;
+            $purchase_item->gross_total = $purchase_item->quantity * $purchase_item->gross_price;
+            $purchase_item->save();
+
+            $purchase->save();
+
+            updatePurchaseStatus($purchase_id);
+
+            return redirect()->back()
+                ->with('flash_success','Operation success');
+        }
+    }
+
+    public function postChangeStatus(Request $request, $purchase_id) {
+
+        $purchase = $this->purchaseRepository->getPurchaseDataById($purchase_id);
+        $new_status = $request->status;
+        $status_allowed = array("VOID");
+
+        #warehouse_transaction(0,1100,$product_id,Input::get('quantity',0),$purchase);
+        #warehouse_transaction(1100,0,$line_item->product_id,$line_item->quantity,$purchase);
+
+        if(!in_array($new_status,$status_allowed)){
+            die("Error - New Status not allowed");
+        }
+
+        if($new_status == "VOID"){
+            if($purchase->deliveries->count() > 0 || $purchase->payments->count() > 0){
+                return Redirect::to('purchases/'.$purchase_id)
+                    ->with('flash_error','Operation failed');
+            }
+            /*
+                foreach($purchase->items as $purchase_item){
+                    warehouse_transaction(1100,0,$purchase_item->product_id,$purchase_item->quantity,$purchase);
+                }
+            */
+        }
+
+        /*
+        if($purchase->date_required == "0000-00-00"){
+            return Redirect::to("/orders/show/{$id}")
+                ->with('flash_error','Invalid Required Date');
+        }
+        */
+
+        $purchase->status = $new_status;
+        $purchase->save();
+
+        return Redirect::to("/purchases/{$purchase_id}")
+            ->with('flash_success','Operation success');
+    }
 
     public function postReceive(Request $request, $purchase_id){
 
@@ -206,186 +457,6 @@ class PurchaseController extends Controller
             ->with('flash_success','Operation success');
     }
 
-    public function getPayments($id) {
-
-        return view('purchases.payments', $this->purchaseRepository->getPayments($id));
-
-    }
-
-    public function getRecords($id){
-
-//        $a = array();
-//        $b = array();
-//         $purchase_history = $this->purchaseRepository->getEmailRecords($id)['purchase_history'];
-//        foreach($purchase_history as $history)
-//
-//            if($history->attach_pdf == 1 && $history->file_name !== ""){
-//                array_push($a, $history->file_name);
-//            }else {
-//                array_push($b, $history->file_name);
-//            };
-//
-//        return dd($b);
-//            array_push($a, $history->file_name);
-//        return dd($a[2]);
-//        return dd($a[2] !== "" && 2 != 3);
-        return view('purchases.records',$this->purchaseRepository->getEmailRecords($id));
-
-    }
-
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-
-
-
-//    create new purchase
-    public function create(Request $request)
-    {
-        $rules = array(
-            'id' => 'Required|integer'
-        );
-        $input = $request->all();
-        $validation = Validator::make($input, $rules);
-
-        if($validation->fails()){
-            return redirect('purchases/vendorsList')
-                ->with('flash_error','Operation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-            $vendor_id = $request->id;
-            $vendor = Vendor::findOrFail($vendor_id);
-
-            if($vendor->taxcode_id == ""){
-                return redirect('purchases/vendorsList')
-                    ->with('flash_error','Illegal Taxcode');
-            }
-
-            $purchase = New Purchase();
-            $purchase->purchase_no = getNewPurchaseNo(return_company_id());
-            $purchase->vendor_id   = $vendor_id;
-            $purchase->status      = 'Draft';
-            $purchase->currency_code = $vendor->currency_code;
-            $purchase->payment_terms = $vendor->payment_terms;
-            $purchase->created_by  = Auth::user()->id;
-            $purchase->updated_by = Auth::user()->id;
-            $purchase->user_id = Auth::user()->id;
-            $purchase->date_placed = date("Y-m-d");
-            $purchase->taxcode_id = $vendor->taxcode_id;
-            $purchase->company_id = return_company_id();
-            $purchase->save();
-
-            $id = $purchase->id;
-            return redirect('purchases/'.$id)
-                ->with('flash_success','Operation success');
-        }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    public function postPaymentAdd(Request $request,$id)
-    {
-        $rules = array(
-            'amount' => 'required|numeric',
-            'account_id' => 'required|numeric',
-            'currency_code' => 'required|max:255',
-            'date_created' => 'required|date',
-            'transaction_reference' => 'max:255',
-            'remark' => 'max:255',
-        );
-        $input = $request->all();
-        $validation = Validator::make($input, $rules);
-
-        if($validation->fails()){
-            return Redirect::to("/purchases/payments/".$id)
-                ->with('flash_error','Operation failed')
-                ->witherrors($validation->messages())
-                ->withinput();
-        } else {
-
-            $purchase = Purchase::findOrFail($id);
-
-            if($purchase->company_id != return_company_id()){
-                die("Access Violation");
-            }
-
-            if($request->transaction_reference === NULL) {
-                $transaction_reference = '';
-            }else{
-                $transaction_reference = $request->transaction_reference;
-            }
-
-            $new = new PurchasePayment();
-            $new->fill($input);
-            $new->transaction_reference = $transaction_reference;
-            $new->created_by = Auth::user()->id;
-            $new->updated_by = Auth::user()->id;
-            $new->purchase_id= $purchase->id;
-            $new->company_id = return_company_id();
-            $new->save();
-
-            updatePurchaseStatus($id);
-
-            return Redirect::to("/purchases/payments/".$id)
-                ->with('flash_success','Operation success');
-        }
-//        $this->purchaseService->postPaymentAdd($request,$id);
-    }
-
-        public function postLineItemAdd(Request $request){
-
-        $purchase_id = $request->purchase_id;
-        $purchase = Purchase::findOrFail($purchase_id);
-
-        $rules = array(
-            'product_id' => 'required|integer|digits_between:1,6',
-            'quantity'   => 'required|numeric'
-        );
-        $validation = Validator::make($request->all(), $rules);
-        if($validation->fails()){
-            return redirect('purchases/'.$purchase_id)
-                ->with('flash_error','Validation failed')
-                ->withErrors($validation->Messages())
-                ->withInput();
-        } else {
-
-            $product_id = $request->product_id;
-            $product = Product::findOrFail($product_id);
-
-            $purchase_item = New PurchaseItem();
-            $purchase_item->purchase_id = $purchase->id;
-            $purchase_item->product_id = $product->id;
-            $purchase_item->quantity = $request->get('quantity',1);
-            $purchase_item->gross_price = $product->base_price_20;
-            $purchase_item->net_price   = return_net_price($purchase_item->gross_price, $purchase->taxcode->percent);
-            $purchase_item->net_total = $purchase_item->quantity * $purchase_item->net_price;
-            $purchase_item->gross_total = $purchase_item->quantity * $purchase_item->gross_price;
-            $purchase_item->save();
-
-            $purchase->save();
-
-            updatePurchaseStatus($purchase_id);
-
-            return redirect()->back()
-                ->with('flash_success','Operation success');
-        }
-    }
-
     /**
      * Display the specified resource.
      *
@@ -408,24 +479,8 @@ class PurchaseController extends Controller
     }
 
     public function getLineItemUpdate($line_item_id){
-        $line_item = PurchaseItem::findOrFail($line_item_id);
-        $purchase = Purchase::findOrFail($line_item->purchase_id);
-        $vendor = Vendor::findOrFail($purchase->vendor_id);
 
-        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
-        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
-        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
-        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
-        $select_status = array(
-            "DRAFT" => "DRAFT",
-            "OPEN" => "OPEN",
-            "CLOSED" => "CLOSED",
-            "VOID" => "void"
-        );
-
-        return view('purchases.lineItem.edit_line_item', compact('select_currency_codes','select_payment_terms','select_shipping_terms',
-            'select_shipping_terms','select_shipping_methods','select_vendor_contacts','select_status','purchase','line_item'));
+        return view('purchases.lineItem.edit_line_item', $this->purchaseRepository->getLineItemUpdateData($line_item_id));
     }
 
     /**
@@ -438,6 +493,8 @@ class PurchaseController extends Controller
     {
         //
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -482,8 +539,9 @@ class PurchaseController extends Controller
     }
 
     public function postLineItemUpdate(Request $request,$purchase_item_id){
-        $purchase_item = PurchaseItem::findOrFail($purchase_item_id);
-        $purchase = Purchase::findOrFail($purchase_item->purchase_id);
+
+        $purchase_item = $this->purchaseRepository->getPurchaseItemDataById($purchase_item_id);
+        $purchase = $this->purchaseRepository->getPurchaseDataById($purchase_item->purchase_id);
 
         /*
             if($purchase->status != "DRAFT"){
@@ -492,7 +550,7 @@ class PurchaseController extends Controller
             }
         */
 
-        $today = date("Y-m-d");
+//        $today = date("Y-m-d");
 
         $rules = array(
             'purchase_id' => 'required|integer',
@@ -550,8 +608,8 @@ class PurchaseController extends Controller
 
     public function lineItemDelete ($purchase_item_id, $purchase_id){
 
-        $purchase_item = PurchaseItem::findOrFail($purchase_item_id);
-        $purchase = Purchase::findOrFail($purchase_item->purchase_id);
+        $purchase_item = $this->purchaseRepository->getPurchaseItemDataById($purchase_item_id);
+        $purchase = $this->purchaseRepository->getPurchaseDataById($purchase_item->purchase_id);
 
         /*
         if($purchase->status != "DRAFT"){
@@ -592,12 +650,10 @@ class PurchaseController extends Controller
 
     public function getDeliveryDelete($id){
 
-        $delivery = PurchaseDelivery::findOrFail($id);
-
-//        $product_id = $delivery->product_id;
+        $delivery = $this->purchaseRepository->getPurchaseDeliveryDataById($id);
         $purchase_id = $delivery->purchase_id;
-        $purchase = Purchase::findOrFail($purchase_id);
-        $purchase_item = PurchaseItem::findOrFail($delivery->purchase_item_id);
+        $purchase = $this->purchaseRepository->getPurchaseDataById($purchase_id);
+        $purchase_item = $this->purchaseRepository->getPurchaseItemDataById($delivery->purchase_item_id);
 
         if(!has_role('admin')){
             if($delivery->created_by != Auth::user()->id){
@@ -622,18 +678,8 @@ class PurchaseController extends Controller
     }
 
     public function getPaymentDelete($id){
-        $payment = PurchasePayment::findOrFail($id);
-        $purchase = Purchase::FindOrFail($payment->purchase_id);
 
-        if($purchase->company_id != return_company_id()){
-            die("Access violation!");
-        }
-
-        $payment->delete();
-
-        updatePurchaseStatus($purchase->id);
-
-        return Redirect::to('purchases/payments/'.$purchase->id)
+        return Redirect::to('purchases/payments/'.$this->purchaseService->getPaymentDelete($id))
             ->with('flash_success','operation success');
     }
 

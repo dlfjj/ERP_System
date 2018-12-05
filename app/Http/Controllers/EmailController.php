@@ -263,7 +263,7 @@ class EmailController extends Controller
 
 
 
-        return dd(Storage::disk('public')->exists('pdf_files/ci-330002-1542830428.pdf'.$filename));
+//        return dd(Storage::disk('public')->exists('pdf_files/ci-330002-1542830428.pdf'.$filename));
 
         if($request->get('attach_pdf') == 1){
             $filename = "po-$id-".time().".pdf";

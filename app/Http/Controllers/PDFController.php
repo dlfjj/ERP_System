@@ -103,7 +103,13 @@ class PDFController extends Controller
     }
 
     public function downloadPdfFile($filename){
-        return Storage::disk('public')->download('pdf_files/'.$filename);
+        try {
+            return Storage::disk('public')->download('pdf_files/'.urldecode($filename));
+        }
+        catch (\Exception $e){
+            return redirect()->back()->with('flash_error','PDF File is too old, did not store at the database anymore');
+        }
+//        return Storage::disk('public')->download('pdf_files/'.urldecode($filename));
     }
 
 

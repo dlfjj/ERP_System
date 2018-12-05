@@ -11,6 +11,9 @@ namespace App\Components\Purchase\Repositories;
 
 use App\Models\Product;
 use App\Models\Purchase;
+use App\Models\PurchaseDelivery;
+use App\Models\PurchaseItem;
+use App\Models\PurchasePayment;
 use App\Models\Taxcode;
 use App\Models\ValueList;
 use App\Models\Vendor;
@@ -27,10 +30,25 @@ class PurchaseRepository
     private $products;
     private $purchases;
     private $vendors;
+    private $purchase_item;
+    private $delivery;
+    private $payment;
 
     public function getPurchaseDataById($id){
         $this->purchases = Purchase::findOrFail($id);
         return $this->purchases;
+    }
+
+    public function getPurchaseItemDataById($purchase_item_id){
+        return $this->purchase_item = PurchaseItem::findOrFail($purchase_item_id);
+    }
+
+    public function getPurchaseDeliveryDataById($id){
+        return $this->delivery = PurchaseDelivery::findOrFail($id);
+    }
+
+    public function getPurchasePaymentById($id){
+        return $this->payment = PurchasePayment::findOrFail($id);
     }
 
     public function getPurchaseOrderData(){
@@ -185,5 +203,25 @@ EOT;
         $updated_by_user = User::find($purchase->updated_by)->username;
 
         return compact('mail_to','mail_cc','mail_bcc','mail_subject','mail_body','purchase','vendor','purchase_history','created_by_user','updated_by_user');
+    }
+
+    public function getLineItemUpdateData($line_item_id){
+        $line_item = PurchaseItem::findOrFail($line_item_id);
+        $purchase = Purchase::findOrFail($line_item->purchase_id);
+        $vendor = Vendor::findOrFail($purchase->vendor_id);
+
+        $select_currency_codes = ValueList::where('uid','=','currency_codes')->orderBy('name', 'asc')->pluck('name','name');
+        $select_payment_terms  = ValueList::where('uid','=','payment_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_terms = ValueList::where('uid','=','shipping_terms')->orderBy('name', 'asc')->pluck('name','name');
+        $select_shipping_methods = ValueList::where('uid','=','shipping_methods')->orderBy('name', 'asc')->pluck('name','name');
+        $select_vendor_contacts = $vendor->contacts->pluck('name','name');
+        $select_status = array(
+            "DRAFT" => "DRAFT",
+            "OPEN" => "OPEN",
+            "CLOSED" => "CLOSED",
+            "VOID" => "void"
+        );
+        return compact('select_currency_codes','select_payment_terms','select_shipping_terms',
+            'select_shipping_terms','select_shipping_methods','select_vendor_contacts','select_status','purchase','line_item');
     }
 }

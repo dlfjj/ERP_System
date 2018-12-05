@@ -194,6 +194,17 @@ Route::group(['prefix' => 'purchases'], function () {
     Route::get('/vendorsList','PurchaseController@vendorsList');
     Route::get('/vendorsList/getdata', 'PurchaseController@getVendorslist')->name('vendorsList/getdata');
 
+    Route::get('/duplicate_order/{id}','PurchaseController@getDuplicate');
+
+    Route::get('/change_vendor/{id}','PurchaseController@getChangeVendor');
+    Route::get('/change_vendor/{id}/getdata', 'PurchaseController@getVendorslistChange')->name('change_vendor/getdata');
+    Route::post('/change_vendor/{id}', 'PurchaseController@postChangeVendor');
+
+    Route::get('/change_status/{id}','PurchaseController@getChangeStatus');
+    Route::post('/change_status/{id}','PurchaseController@postChangeStatus');
+
+
+
 //    Route::resource('','PurchaseController');
 
 });

@@ -20,10 +20,10 @@ $uri_segment = Request::segment(2);
 </ul>
 <ul class="crumb-buttons">
     <li>
-        <a href="/purchases/change-vendor/{{$purchase->id}}" class="" title=""><i class="icon-pencil"></i><span>Change Vendor</span></a>
+        <a href="/purchases/change_vendor/{{$purchase->id}}" class="" title=""><i class="icon-pencil"></i><span>Change Vendor</span></a>
     </li>
     <li>
-        <a href="/purchases/change-status/{{$purchase->id}}" class="" title=""><i class="icon-pencil"></i><span>Change Status</span></a>
+        <a href="/purchases/change_status/{{$purchase->id}}" class="" title=""><i class="icon-pencil"></i><span>Change Status</span></a>
     </li>
     <li>
         {{--<a href="/purchases/duplicate/{{$purchase->id}}" class="conf" title=""><i class="icon-print"></i><span>Duplicate</span></a>--}}
