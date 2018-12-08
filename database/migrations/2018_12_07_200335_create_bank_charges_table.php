@@ -16,7 +16,8 @@ class CreateBankChargesTable extends Migration
         Schema::create('bank_charges', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('account_id')->nullable();
-            $table->integer('amount')->nullable();
+            //make it decimal
+            $table->decimal('amount', 9,2)->nullable();
             $table->integer('created_by');
             $table->integer('customer_payment_id')->unsigned();
             $table->foreign('customer_payment_id')->references('id')->on('customer_payments');

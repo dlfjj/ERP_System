@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\BankCharges;
 use App\Models\Container;
 use App\Models\Customer;
 use App\Models\CustomerContact;
@@ -320,7 +321,9 @@ EOT;
     }
 
     public function postPayments(Request $request,  $id) {
-        return $request;
+
+//        return dd((float) $request->bank_charges);
+
         $order = Order::findOrFail($id);
         $rules = array(
             'amount' => "required",
@@ -342,7 +345,6 @@ EOT;
                 }
             }
         }
-
         if($validation->fails()){
             return redirect('orders/payments/'.$id)
                 ->with('flash_error','Operation failed')
@@ -369,10 +371,25 @@ EOT;
             $payment->amount        = $request->input('amount');
             $payment->bank_charges  = $request->input('bank_charges');
             $payment->created_by    = Auth::user()->id;
-            $payment->account_id    = $request->input('account_id',13);
+            $payment->account_id    = $request->input('account_id',176);
             $payment->remark        = $remark;
             $payment->date          = $request->input('date_created');
             $payment->save();
+
+            //after created a payment record, record the bank_charges
+            if($request->bank_charges != null){
+                $bank_charge = new BankCharges();
+                $bank_charge->bank_customer_id = $payment->id;
+                //set the account categories for accounting purpose
+                $bank_charge->account_id = 186;
+                $bank_charge->amount = (float) $request->bank_charges;
+                $bank_charge->save();
+
+                return $request;
+            }else{
+                return $id;
+            }
+
 
             updateOrderStatus($id);
 

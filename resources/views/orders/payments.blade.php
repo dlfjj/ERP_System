@@ -32,6 +32,18 @@
                                     {{ Form::hidden('account_id', "13", array("class"=>"form-control")) }}
                                 </div>
                                 <div class="col-md-2">
+                                    <label class="control-label">Currency</label>
+                                    {{ Form::select('currency_code', $select_currency_codes, $order->currency_code, array("class"=>"form-control","readonly")) }}
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">Amount</label>
+                                    {{ Form::input('number','amount', "", array("class"=>"form-control","step"=>"1")) }}
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">Bank Charges</label>
+                                    {{ Form::input('number','bank_charges', "", array("class"=>"form-control","step"=>"1")) }}
+                                </div>
+                                <div class="col-md-2">
                                     <label class="control-label">Transaction #</label>
                                     {{ Form::text('transaction_reference', "", array("class"=>"form-control")) }}
                                 </div>
@@ -39,23 +51,10 @@
                                     <label class="control-label">Remark</label>
                                     {{ Form::text('remark', "", array("class"=>"form-control")) }}
                                 </div>
-                                <div class="col-md-2">
-                                    <label class="control-label">Currency</label>
-                                    {{ Form::select('currency_code', $select_currency_codes, $order->currency_code, array("class"=>"form-control","readonly")) }}
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="control-label">Amount</label>
-                                    {{ Form::text('amount', "", array("class"=>"form-control")) }}
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="control-label">Bank Charges</label>
-                                    {{ Form::text('bank_charges', "", array("class"=>"form-control")) }}
-                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3">
                                     <label class="control-label">Payment Type</label>
-
                                     {{ Form::select('bank_account', $select_bank_accounts, "", array("class"=>"form-control")) }}
                                 </div>
                                 {{--<div class="col-md-3">--}}
@@ -124,10 +123,10 @@
                                             {{$payment->amount}}
                                         </td>
                                         <td>
-                                            {{$payment->bank_charges }}
+                                            {{$payment->bankCharge->amount }}
                                         </td>
                                         <td class="align-center">
-                                            {{ Form::submit('X', ['class' => 'btn btn-xs btn-danger']) }}
+                                            {{ Form::submit('DELETE', ['class' => 'btn btn-xs btn-danger']) }}
                                         </td>
                                     </tr>
                                     {!! Form::close() !!}
