@@ -125,6 +125,7 @@ class OrderController extends Controller
     }
 
     public function getPayments($id) {
+
         $order = Order::findOrFail($id);
         $customer = Customer::findOrFail($order->customer_id);
         if(Auth::user()->company_id != $order->company_id){
@@ -334,7 +335,7 @@ EOT;
         if($order->created_by != $uid){
             if($order->customer->salesman_id != $uid){
                 if(!has_role('company_admin')){
-                    return redirect('orders/show/'.$id)
+                    return redirect('orders/'.$id)
                         ->with('flash_error','Permission Denied')
                         ->withErrors($validation->Messages())
                         ->withInput();
@@ -755,8 +756,6 @@ EOT;
         $created_by_user = User::find($order->created_by)->username;
         $updated_by_user =User::find($order->updated_by)->username;
 //        return $created_by_user;
-
-
 
         return view('orders.show',compact('select_status','select_customer_contacts',
             'select_payment_terms','select_currency_codes','select_shipping_methods','select_shipping_terms',

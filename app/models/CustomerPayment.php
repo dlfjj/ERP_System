@@ -17,4 +17,8 @@ class CustomerPayment extends Model {
         return $this->belongsTo('App\Models\User','created_by');
     }
 
+    public function bankCharge(){
+        return $this->hasOne('App\BankCharges','customer_payment_id');
+    }
+
 }

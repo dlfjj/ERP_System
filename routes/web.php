@@ -202,11 +202,6 @@ Route::group(['prefix' => 'purchases'], function () {
 
     Route::get('/change_status/{id}','PurchaseController@getChangeStatus');
     Route::post('/change_status/{id}','PurchaseController@postChangeStatus');
-
-
-
-//    Route::resource('','PurchaseController');
-
 });
 Route::resource('purchases','PurchaseController');
 
@@ -241,6 +236,7 @@ Route::get('orders/changelog/invoices/{id}','OrderController@getInvoices');
 //Route::group(['prefix' => 'reports'], function () {
 //
 //    Route::resource('/','ReportController');
+//
 //});
 
 Route::group( [ 'prefix' => 'reports' ], function()

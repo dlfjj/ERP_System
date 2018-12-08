@@ -1,7 +1,6 @@
 @extends('layouts.default')
 
 @section('page-crumbs')
-
 	<ul id="breadcrumbs" class="breadcrumb">
 		<li>
 			<i class="icon-home"></i>
@@ -25,13 +24,11 @@
 	</ul>
 @stop
 
-
 @section('page-header')
 	<div class="page-header">
 		<div class="page-title">
 			<a class="btn btn-default" href="/purchases/{{ $purchase->id }}">Cancel</a>
 		</div>
-		<!-- Page Stats -->
 		<ul class="page-stats">
 			<li>
 				<div class="summary">
@@ -46,7 +43,6 @@
 				</div>
 			</li>
 		</ul>
-		<!-- /Page Stats -->
 	</div>
 @stop
 

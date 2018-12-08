@@ -41,7 +41,7 @@
 						<div class="panel panel-default">
 							<div class="panel-heading"><i class="icon-reorder"></i> Company Index</div>
 							<div class="panel-body">
-								<table class="table table-striped table-bordered table-hover  datatable">
+								<table class="table table-striped table-bordered table-hover datatable">
 									<thead>
 										<tr>
 											<th>Status</th>

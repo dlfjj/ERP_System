@@ -90,7 +90,7 @@ class PurchaseController extends Controller
     }
 
     public function getVendorslist(){
-
+        //Anonymous and callback function
         try {
             return Datatables::of($this->purchaseRepository->getVendorListData())
                 ->addColumn('action', function ($vendor) {
@@ -110,8 +110,8 @@ class PurchaseController extends Controller
 
         try {
             return Datatables::of($this->purchaseRepository->getVendorListData(),$id)
-                ->addColumn('action', function ($vendor) {
-                    return \Form::open(['method' => 'POST', 'action' => ['PurchaseController@postChangeVendor'], 'class' => 'form']) . '
+                ->addColumn('action', function ($vendor) use ($id) {
+                    return \Form::open(['method' => 'POST', 'action' => ['PurchaseController@postChangeVendor',$id], 'class' => 'form']) . '
                     <input type="hidden" name="id" value="' . $vendor->id . '" />
                     <input type="submit" name="submit" value="Choose" class="btn center-block" />
                     ' . \Form::close();
@@ -223,17 +223,7 @@ class PurchaseController extends Controller
 
     public function postChangeVendor(Request $request, $id){
 
-        return $id;
-        $id = filter_var(session()->all()['url']['intended'], FILTER_SANITIZE_NUMBER_INT);
-        $vendor_id = $request->id;
-//        if(!is_numeric($request->vendor_id)){
-////            return Redirect::to('purchases/'.$id)
-////                ->with('flash_error','Operation failed');
-////        }
-
-        $purchase = Purchase::findOrFail($id);
-        $purchase->vendor_id = $vendor_id;
-        $purchase->save();
+        $this->purchaseService->postChangeVendor($request,$id);
 
         return Redirect::to('purchases/'.$id)
             ->with('flash_success','Operation success');
@@ -291,7 +281,7 @@ class PurchaseController extends Controller
         public function postLineItemAdd(Request $request){
 
         $purchase_id = $request->purchase_id;
-        $purchase = Purchase::findOrFail($purchase_id);
+        $purchase = $this->purchaseRepository->getPurchaseDataById($purchase_id);
 
         $rules = array(
             'product_id' => 'required|integer|digits_between:1,6',
@@ -519,7 +509,7 @@ class PurchaseController extends Controller
                 ->withErrors($validation->Messages())
                 ->withInput();
         } else {
-            $purchase = Purchase::findOrFail($id);
+            $purchase = $this->purchaseRepository->getPurchaseDataById($id);
             $purchase->fill($input);
             $purchase->updated_by = Auth::user()->id;
 //            return $request->input('taxcode_id');

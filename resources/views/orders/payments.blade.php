@@ -23,9 +23,7 @@
                     <h4><i class="icon-reorder"></i> Record new payment</h4>
                 </div>
                 <div class="widget-content">
-                    {{--<form autocomplete="off" enctype="multipart/form-data" id="main" class="form-vertical row-border form-validate" action="" method="POST">--}}
                         {!! Form::open(['method'=>'POST', 'action'=> ['OrderController@postPayments', $order->id], 'class'=>'form-vertical row-border form-validate','id'=>'main','enctype'=>'multipart/form-data','autocomplete'=>'off']) !!}
-
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-md-2">
@@ -60,18 +58,17 @@
 
                                     {{ Form::select('bank_account', $select_bank_accounts, "", array("class"=>"form-control")) }}
                                 </div>
-                                <div class="col-md-3">
-                                <label class="control-label">Account Categories</label>
+                                {{--<div class="col-md-3">--}}
+                                {{--<label class="control-label">Account Categories</label>--}}
 
-                                {!! $select_accounts !!}
-                                </div>
+                                {{--{!! $select_accounts !!}--}}
+                                {{--</div>--}}
                             </div>
                             <div class="form-actions">
                                 <input type="submit" value="Record Payment" class="btn btn-sm btn-success pull-right">
                             </div>
                         </div>
                 </div>
-                {{--</form>--}}
                 {!! Form::close() !!}
 
             </div>

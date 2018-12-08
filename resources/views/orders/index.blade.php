@@ -2,7 +2,7 @@
 
 @section('page-module-menu')
     <li><a href="/orders">Orders</a></li>
-{{--    @if(has_role('orders_export'))--}}
+{{--@if(has_role('orders_export'))--}}
         {{--<li><a href="/orders/export">Export</a></li>--}}
     {{--@endif--}}
 @stop
@@ -42,11 +42,9 @@
             @endif
         </ul>
     </div>
-
 @stop
 
 @section('content')
-
     <form class="form-inline" id="create" action="/orders/create" method="POST">
     </form>
     <div class="row">
@@ -62,7 +60,7 @@
                 {{--</div>--}}
                 <div class="panel-body">
                     {{--<table class="table table-striped table-bordered table-hover datatable" data-dataTable='{"bServerSide": true, "sAjaxSource": "/orders/dt-index", "aaSorting": [[ 0, "desc" ]]}'>--}}
-                    <table class="table table-hover table-bordered table-striped " id="orders-table" style="width: 100%;">
+                    <table class="table table-hover table-bordered table-striped" id="orders-table" style="width: 100%;">
                     <thead>
                         <tr>
                             <th class="cell-tight">ORDER #</th>
@@ -91,9 +89,7 @@
         $(function() {
             $('#orders-table').DataTable({
                 "oLanguage": {
-
                     // "sSearch": "<i class='icon-search icon-large table-search-icon'></i>"
-
                 },
                 processing: true,
                 serverSide: true,
@@ -111,6 +107,5 @@
                 ]
             });
         });
-
     </script>
 @endpush

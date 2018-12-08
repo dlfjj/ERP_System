@@ -67,4 +67,19 @@ class PurchaseService
         updatePurchaseStatus($purchase->id);
         return $purchase->id;
     }
+
+    public function postChangeVendor($request, $id){
+        $vendor_id = $request->id;
+
+//        return dd(is_numeric($request->vendor_id));
+//        if(!is_numeric($request->vendor_id)){
+//            return Redirect::to('purchases/'.$id)
+//                ->with('flash_error','Operation failed');
+//        }
+
+        $purchase = $this->purchaseRepository->getPurchaseDataById($id);
+        $purchase->vendor_id = $vendor_id;
+        $purchase->save();
+
+    }
 }
