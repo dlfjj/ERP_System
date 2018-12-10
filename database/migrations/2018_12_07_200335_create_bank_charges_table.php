@@ -20,7 +20,7 @@ class CreateBankChargesTable extends Migration
             $table->decimal('amount', 9,2)->nullable();
             $table->integer('created_by');
             $table->integer('customer_payment_id')->unsigned();
-            $table->foreign('customer_payment_id')->references('id')->on('customer_payments');
+//            $table->foreign('customer_payment_id')->references('id')->on('customer_payments');
             $table->timestamps();
         });
     }

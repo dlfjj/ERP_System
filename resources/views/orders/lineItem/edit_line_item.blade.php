@@ -104,9 +104,12 @@
                             </div>
                         </div>
                         <div class="form-actions">
+                            <div class="btn-group">
+                                <input type="reset" class="btn btn-default pull-right" value="RESET">
+                                <a href="/orders/{{$order->id}}" class="btn btn-default pull-right">Back</a>
+                            </div>
                             <input type="submit" value="SAVE" class="btn btn-success pull-right">
-                            <a href="/orders/{{$order->id}}" class="btn btn-default pull-right">Back</a>
-                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-warning pull-right'] )  }}
+{{--                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}--}}
 
                         </div>
                     {{ Form::open() }}

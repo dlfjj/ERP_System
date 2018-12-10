@@ -1,7 +1,7 @@
 @extends('layouts.default')
 
 @section('page-module-menu')
-    <li><a href="/orders/show/{{$order->id}}">Details</a></li>
+    <li><a href="/orders/{{$order->id}}">Details</a></li>
 @stop
 
 

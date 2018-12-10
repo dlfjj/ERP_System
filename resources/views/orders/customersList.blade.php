@@ -45,7 +45,7 @@
                             <tr>
                                 <th class="cell-tight">Customer Code</th>
                                 <th class="cell-tight">Customer Name</th>
-                                <th></th>
+                                <th class="cell-tight"></th>
                             </tr>
                         </thead>
                         <tbody>

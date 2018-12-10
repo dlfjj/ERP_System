@@ -112,10 +112,11 @@
                                         </div>
                                     </div>
                                     <div class="form-actions">
-                                        <input type="submit" value="SAVE" class="btn btn-sm btn-success pull-right">
-                                        {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
-                                        {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
-
+                                        <div class="btn-group pull-right">
+                                            {!! Form::submit('Save',['class'=>'btn btn-sm btn-success']) !!}
+                                            {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
+                                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default'] )  }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -134,10 +135,11 @@
                                         </div>
                                     </div>
                                     <div class="form-actions">
-                                        <input type="submit" value="SAVE" class="btn btn-sm btn-success pull-right">
-                                        {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
-                                        {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
-
+                                        <div class="btn-group pull-right">
+                                            {!! Form::submit('Save',['class'=>'btn btn-sm btn-success']) !!}
+                                            {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
+                                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default'] )  }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -234,10 +236,11 @@
                                         </div>
                                     </div>
                                     <div class="form-actions">
-                                        <input type="submit" value="SAVE" class="btn btn-sm btn-success pull-right">
-                                        {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
-                                        {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
-
+                                        <div class="btn-group pull-right">
+                                            {!! Form::submit('Save',['class'=>'btn btn-sm btn-success']) !!}
+                                            {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
+                                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default'] )  }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -281,10 +284,11 @@
                                         </div>
                                     </div>
                                     <div class="form-actions">
-                                        {!! Form::submit('Save',['class'=>'btn btn-sm btn-success pull-right']) !!}
+                                        <div class="btn-group pull-right">
+                                        {!! Form::submit('Save',['class'=>'btn btn-sm btn-success']) !!}
                                         {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
-                                        {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
-
+                                        {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default'] )  }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

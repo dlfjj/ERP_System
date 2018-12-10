@@ -32,7 +32,6 @@
                 <a class="btn btn-success" href="/orders/customersList"><i class="icon-plus-sign"></i> New Order</a>
             @endif
         </div>
-
         <ul class="page-stats">
             @if(has_role('orders_edit'))
                 <li>
@@ -45,8 +44,6 @@
 @stop
 
 @section('content')
-    <form class="form-inline" id="create" action="/orders/create" method="POST">
-    </form>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
