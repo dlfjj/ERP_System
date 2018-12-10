@@ -7,6 +7,7 @@
  */
 
 namespace App\Components\Pdf\Repositories;
+use App\Models\Setting;
 use PDF;
 
 use App\Models\Customer;
@@ -35,8 +36,10 @@ class PdfRepository
         $volumn = getCbm($order);
         $nt_weight_total = getNetWeight($order);
         $gr_weight_total =  getGrossWeight($order);
+        $settings = Setting::pluck('value','name');
 
-        return compact('order','customer','customers_details','order_items','payment_terms','order_status','net_weight','gross_weight','package_count','volumn','nt_weight_total','gr_weight_total');
+
+        return compact('order','customer','customers_details','order_items','payment_terms','order_status','net_weight','gross_weight','package_count','volumn','nt_weight_total','gr_weight_total','settings');
     }
 
     public function getPurchaseOrderPdfData(int $id){

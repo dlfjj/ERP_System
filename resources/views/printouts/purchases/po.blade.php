@@ -135,12 +135,12 @@
                 <table class="table table-bordered table-highlight-head table-invoice table-font">
                     <thead>
                     <tr>
-                        <th>Part #</th>
+                        <th class="cell-tight">Part #</th>
                         <th class="cell-wide">SKU / Description</th>
-                        <th>UOM</th>
-                        <th>QTY</th>
-                        <th>Net Price</th>
-                        <th>Net Amount</th>
+                        <th class="cell-tight">UOM</th>
+                        <th class="cell-tight">QTY</th>
+                        <th class="cell-tight">Net Price</th>
+                        <th class="cell-tight">Net Amount</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -188,8 +188,8 @@
                     @if($purchase->getPaidUntilNow() > 0)
                         <tr>
                             <td colspan="4"></td>
-                            <td class="no-wrap">Paid til now</td>
-                            <td>{{ number_format($purchase->getPaidUntilNow(), 2) }}</td>
+                            <td class="no-wrap"><strong>Paid til now</strong></td>
+                            <td><strong>{{$purchase->currency_code}} {{ number_format($purchase->getPaidUntilNow(), 2) }}</strong></td>
                         </tr>
                     @endif
                     <tr>

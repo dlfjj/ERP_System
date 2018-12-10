@@ -113,7 +113,9 @@
                                 {{ Form::textarea('mail_body', $mail_body, array("rows"=>"12","cols"=>"5","class"=>"form-control")) }}
                             </div>
                         </div>
-                        <div class="form-actions">
+                    </div>
+                    <div class="form-actions">
+                        <div class="btn-group pull-right">
                             <input type="submit" value="Send Email and Record Message" class="btn btn-sm btn-success pull-right">
                             {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
                         </div>

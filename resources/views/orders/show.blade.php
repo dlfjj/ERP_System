@@ -250,7 +250,7 @@
                                         <div class="col-md-2">
                                             <label class="control-label">Order ID</label>
                                             {{ Form::hidden('id', $order->id, array("class"=>"form-control")) }}
-                                            {{ Form::text('', $order->order_no, array("class"=>"form-control", 'readonly')) }}
+                                            {{ Form::text('', $order->id, array("class"=>"form-control", 'readonly')) }}
                                         </div>
                                         <div class="col-md-2">
                                             <label class="control-label">Order Rev.</label>

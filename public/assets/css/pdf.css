@@ -166,6 +166,14 @@ hr{
     color: white;
 }
 
+.table-invoice-header tr td {
+    margin: 0px;
+}
+
+.table-invoice-header tr td:first-child{
+    font-weight: bold;
+}
+
 .page-break {
     /*page-break-before: always;*/
     page-break-inside: auto;

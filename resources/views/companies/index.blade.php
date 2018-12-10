@@ -26,7 +26,6 @@
 			{{--<form class="form-inline" id="create" action="/companies/create" method="POST">--}}
                 {!! Form::open(['method'=>'GET','action'=>'CompanyController@create'], array('enctype'=>'multipart/form-data','class' => 'form-inline')) !!}
                     <input type="submit" value="ADD NEW COMPANY" class="btn btn-success form-submit-conf">
-
                 {{--<a class="btn btn-success form-submit-conf" href="javascript:void(0);" data-target-form="create"><i class="icon-plus-sign"></i> New Company</a>--}}
                 {{ Form::close() }}
 			{{--</form>--}}
@@ -78,8 +77,4 @@
 					</div>
 				</div>
 				<!-- /Normal -->
-
-
-
-
 @stop

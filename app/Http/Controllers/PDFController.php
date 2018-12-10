@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Components\Pdf\Repositories\PdfRepository;
 use App\Components\Pdf\Services\PdfService;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -36,30 +37,45 @@ class PDFController extends Controller
 {
     /* function for purchase details pdf*/
     private $pdfService;
+    private $pdfRepository;
 
-    public function __construct(PdfService $PdfService){
+    public function __construct(PdfService $PdfService, PdfRepository $PdfRepository){
 
         $this->middleware('auth');
 
         $this->pdfService = $PdfService;
-
+        $this->pdfRepository = $PdfRepository;
     }
 
 
-    //for testing and future learning
-//    public function pdfview(Request $request)
-//    {
+    //for testing and future learning, you have to create your own route for this
+    public function pdfview($id)
+    {
 //        $users = DB::table("users")->get();
-//        view()->share('users',$users);
-//
-//        if($request->has('download')) {
-//            // pass view file
-//            $pdf = PDF::loadView('pdfview');
-//            // download pdf
-//            return $pdf->download('userlist.pdf');
-//        }
-//        return view('pdfview');
-//    }
+
+        $quotation = $this->pdfRepository->getSamplePdfData($id);
+        $headerHtml = view()->make('printouts.header')
+            ->render();
+
+        $footerHtml = view()->make('printouts.footer')
+            ->with('order',  $quotation['order'])
+            ->render();
+
+//        view()->share('quotation',$quotation);
+        $pdf = SnappyPdf::loadHTML(view('printouts.quotation_testing',$quotation))
+            ->setOption('header-html', $headerHtml)
+            ->setOption('footer-html', $footerHtml)
+            ->setOption('footer-line',true)
+            ->setOption('footer-spacing',4)
+            ->setOption('header-spacing', 3)
+            ->setOption('header-line',true)
+            ->setPaper('A4')
+            ->setOrientation('portrait')
+            ;
+        return $pdf->inline();
+    }
+
+
 
 
     public function purchasePDF($id)

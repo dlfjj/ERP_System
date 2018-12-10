@@ -327,9 +327,11 @@ Route::group( [ 'prefix' => 'pdf' ], function() {
     Route::get('/commercial_invoice/{id}', 'PDFController@commercial_invoice');
     Route::get('/packing_list/{id}', 'PDFController@package_list');
 
-//snappy pdf testing
     Route::get('/purchase_order/{id}', 'PDFController@purchasePDF');
     Route::get('/download_saved_pdf_file/{id}', 'PDFController@downloadPdfFile')->name('pdf.download');
+
+    //snappy pdf testing
+    Route::get('/order_pdf/{id}','PDFController@pdfview');
 
 });
 

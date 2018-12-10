@@ -106,11 +106,12 @@
                                                 {{ Form::textarea('mail_body', $mail_body, array("rows"=>"12","cols"=>"5","class"=>"form-control", "id" => "history_comment")) }}
                                             </div>
                                         </div>
-                                        <div class="form-actions">
-                                            {{--<a href="/testmail" class="btn btn-info" role="button">Send Mail</a>--}}
-
-                                            <input type="submit" value="Send Email and Record Message" class="btn btn-sm btn-success pull-right">
-                                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default pull-right'] )  }}
+                                    </div>
+                                    <div class="form-actions">
+                                        {{--<a href="/testmail" class="btn btn-info" role="button">Send Mail</a>--}}
+                                        <div class="btn-group pull-right">
+                                            <input type="submit" value="Send Email and Record Message" class="btn btn-sm btn-success">
+                                            {{ Form::button('RESET', ['type' => 'reset', 'class' => 'btn btn-default'] )  }}
                                             {{--<a href="/orders/{{$order->id}}" class="btn btn-sm btn-default pull-right">Cancel</a>--}}
                                         </div>
                                     </div>
@@ -158,8 +159,10 @@
                                                     <td>{{$history->status()->first()->name }}</td>
                                                     <td>{!! ($history->comment) !!}</td>
                                                     <td>
-                                                        @if($history->file_name != "")
-                                                            <a href="/orders/download/{{$history->id}}" class="" rel="{{ $history->id }}">Download</a>
+                                                        @if($history->attach_pdf == 1 && $history->file_name !== "")
+                                                            <a href="{{ route('pdf.download',urlencode($history->file_name)) }}">Download</a>
+                                                        @else
+                                                            <p>No</p>
                                                         @endif
                                                     </td>
                                                     <td>
