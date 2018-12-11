@@ -59,7 +59,7 @@ class EmailController extends Controller
         }
         if(!$customer_contact){
             die("Invalid contact info for this customer");
-        }
+    }
 
 //        convert the text body value
         $comment  = $request->mail_body;
@@ -128,51 +128,65 @@ class EmailController extends Controller
         $package_count = getNumberOfPackages($order);
         $volumn = getCbm($order);
 
-
-//        $pdf = PDF::loadView('printouts.quotation', compact('order','customer','customers_details','order_items','payment_terms'));
+//        $pdf = PDF::loadView('printouts.quotations', compact('order','customer','customers_details','order_items','payment_terms'));
 //        $mail_subject = "American Dunnage Order Info for Order #$order_no";
         $timestamp = time();
-        if(stristr($order_status,"quotation")){
-            $filename = "quotation-{$order_no}-{$timestamp}.pdf";
-            $pdf = PDF::loadView('printouts.quotation', compact('order','customer','customers_details','order_items','payment_terms'));
-            $mail_subject = "American Dunnage Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"confirmation")){
-            $pdf = PDF::loadView('printouts.order_confirmation', compact('order','customer','payment_terms'));
-            $filename = "sc-{$order_no}-{$timestamp}.pdf";
-            $mail_subject = "American Dunnage Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"acknowledged")){
-            $pdf = PDF::loadView('printouts.acknowledgement',compact('order','customer','customers_details','order_items','order_status','payment_terms'));
-            $filename = "acknowledged-{$order_no}-{$timestamp}.pdf";
-            $mail_subject = "American Dunnage Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"pending")){
-            $pdf = PDF::loadView('printouts.acknowledgement',compact('order','customer','customers_details','order_items','order_status','payment_terms'));
-            $filename = "pending-{$order_no}-{$timestamp}.pdf";
-            $mail_subject = "American Dunnage Pending Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"processing")){
-            $filename = "processing-{$order_no}-{$timestamp}.pdf";
-            $pdf = PDF::loadView('printouts.order_confirmation', compact('order','customer','payment_terms'));
-            $mail_subject = "American Dunnage Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"proforma invoice")){
-            $filename = "pi-{$order_no}-{$timestamp}.pdf";
-            $pdf = PDF::loadView('printouts.proforma_invoice',compact('order','customer','customers_details','order_items','order_status','payment_terms'));
-            $mail_subject = "American Dunnage Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"shipped out")){
-            $pdf = PDF::loadView('printouts.commercial_invoice',compact('order','volumn','customer','customers_details','order_status','payment_terms','package_count','net_weight','gross_weight'));
-            $filename = "ci-{$order_no}-{$timestamp}.pdf";
-            $mail_subject = "American Dunnage Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"canceled")){
-            $pdf = PDF::loadView('printouts.commercial_invoice',compact('order','volumn','customer','customers_details','order_status','payment_terms','package_count','net_weight','gross_weight'));
-            $filename = "canceled-{$order_no}-{$timestamp}.pdf";
-            $mail_subject = "American Dunnage Order Info for Order #$order_no";
-        } elseif(stristr($order_status,"overdue")){
-            $pdf = PDF::loadView('printouts.commercial_invoice',compact('order','volumn','customer','customers_details','order_status','payment_terms','package_count','net_weight','gross_weight'));
-            $filename = "reminder-{$order_no}-{$timestamp}.pdf";
-            $mail_subject = "American Dunnage Inc. Gentle Payment Reminder #$order_no";
-        } else {
-            $filename = md5($timestamp) . ".pdf";
-            $mail_subject = "American Dunnage Inc. Info for Order #$order_no";
+        if($request->has('record_file')) {
+            $record_file = 1;
+            if (stristr($order_status, "quotation")) {
+                $filename = "quotations-{$order_no}-{$timestamp}.pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('quotations', $id)->inline());
+//            $pdf = PDF::loadView('printouts.quotations', compact('order','customer','customers_details','order_items','payment_terms'));
+                $mail_subject = "American Dunnage Order Info for Order #$order_no";
+            } elseif (stristr($order_status, "confirmation")) {
+//                $pdf = PDF::loadView('printouts.order_confirmation', compact('order', 'customer', 'payment_terms'));
+                $filename = "sc-{$order_no}-{$timestamp}.pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('confirmation', $id)->inline());
+                $mail_subject = "American Dunnage Order Info for Order #$order_no";
+            } elseif (stristr($order_status, "acknowledged")) {
+//                $pdf = PDF::loadView('printouts.acknowledgement', compact('order', 'customer', 'customers_details', 'order_items', 'order_status', 'payment_terms'));
+                $filename = "acknowledged-{$order_no}-{$timestamp}.pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('acknowledgement', $id)->inline());
+                $mail_subject = "American Dunnage Order Info for Order #$order_no";
+            } elseif (stristr($order_status, "pending")) {
+//                $pdf = PDF::loadView('printouts.acknowledgement', compact('order', 'customer', 'customers_details', 'order_items', 'order_status', 'payment_terms'));
+                $filename = "pending-{$order_no}-{$timestamp}.pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('acknowledgement', $id)->inline());
+                $mail_subject = "American Dunnage Pending Order Info for Order #$order_no";
+            } elseif (stristr($order_status, "processing")) {
+                $filename = "processing-{$order_no}-{$timestamp}.pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('confirmation', $id)->inline());
+//                $pdf = PDF::loadView('printouts.order_confirmation', compact('order', 'customer', 'payment_terms'));
+                $mail_subject = "American Dunnage Order Info for Order #$order_no";
+            } elseif (stristr($order_status, "proforma invoice")) {
+                $filename = "pi-{$order_no}-{$timestamp}.pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('acknowledgement', $id)->inline());
+//                $pdf = PDF::loadView('printouts.proforma_invoice', compact('order', 'customer', 'customers_details', 'order_items', 'order_status', 'payment_terms'));
+                $mail_subject = "American Dunnage Order Info for Order #$order_no";
+            } elseif (stristr($order_status, "shipped out")) {
+//                $pdf = PDF::loadView('printouts.commercial_invoice', compact('order', 'volumn', 'customer', 'customers_details', 'order_status', 'payment_terms', 'package_count', 'net_weight', 'gross_weight'));
+                $filename = "ci-{$order_no}-{$timestamp}.pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('invoice', $id)->inline());
+                $mail_subject = "American Dunnage Order Info for Order #$order_no";
+            } elseif (stristr($order_status, "canceled")) {
+//                $pdf = PDF::loadView('printouts.commercial_invoice', compact('order', 'volumn', 'customer', 'customers_details', 'order_status', 'payment_terms', 'package_count', 'net_weight', 'gross_weight'));
+                $filename = "canceled-{$order_no}-{$timestamp}.pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('invoice', $id)->inline());
+                $mail_subject = "American Dunnage Order Info for Order #$order_no";
+            } elseif (stristr($order_status, "overdue")) {
+//                $pdf = PDF::loadView('printouts.commercial_invoice', compact('order', 'volumn', 'customer', 'customers_details', 'order_status', 'payment_terms', 'package_count', 'net_weight', 'gross_weight'));
+                $filename = "reminder-{$order_no}-{$timestamp}.pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('invoice', $id)->inline());
+                $mail_subject = "American Dunnage Inc. Gentle Payment Reminder #$order_no";
+            } else {
+                $filename = md5($timestamp) . ".pdf";
+                Storage::put('public/pdf_files/' . $filename, $this->pdfService->getOrderPdf('quotations', $id)->inline());
+                $mail_subject = "American Dunnage Inc. Info for Order #$order_no";
+            }
+        }else {
+            $record_file = 0;
+            $filename = "";
         }
-
 
 
 
@@ -191,7 +205,8 @@ class EmailController extends Controller
                 'order' => $order
             );
             $message = new OrderEmail($mail_data);
-            $message->attachData($pdf->output(),'quotation.pdf');
+            $message->attachData(Storage::get('public/pdf_files/'.$filename),$filename);
+//            $message->attachData($pdf->output(),'quotations.pdf');
             Mail::to('dlfjj123@gmail.com')->send($message);
         }
 
@@ -204,23 +219,23 @@ class EmailController extends Controller
 
         //after sending the email, if user choose to store file, the file system will save the file afterward
 //        $file_to_store = "";
-//        if(stristr($order_status,"quotation")){
+//        if(stristr($order_status,"quotations")){
 //            $timestamp = time();
-//            $filename = "quotation-{$order_no}-{$timestamp}.pdf";
+//            $filename = "quotations-{$order_no}-{$timestamp}.pdf";
 //            $file_to_store = Storage::url($filename);
 //        }
 
 //        return $file_to_store;
 
 
-        if($request->has('record_file')){
+/*        if($request->has('record_file')){
             $record_file = 1;
             Storage::put('/public/pdf_files/'.$filename, $pdf->output());
 //            $url = Storage::url($filename);
         } else {
             $record_file = 0;
             $filename = "";
-        }
+        }*/
 
         $record = New OrderHistory;
         $record->order_id = $id;
@@ -244,6 +259,9 @@ class EmailController extends Controller
             ->with('flash_success','Operation success');
     }
 
+
+
+
     public function sendPurchaseEmail(Request $request, $id){
 
 
@@ -256,7 +274,7 @@ class EmailController extends Controller
 
 //        $purchase = Purchase::findOrFail($id);
 //        $vendor = Vendor::findOrFail($purchase->vendor_id)
-//        $filename = "quotation-330002-1542242303.pdf";
+//        $filename = "quotations-330002-1542242303.pdf";
 //        $filepath = Storage::url('pdf_files/'.$filename);
 //        $filepath = Storage::url('app/public/pdf_files/'.$filename);
 
@@ -300,6 +318,7 @@ class EmailController extends Controller
             );
 
             $message = new PurchaseEmail($mail_data);
+            //get the pdf store in the server
             $message->attachData(Storage::get('public/pdf_files/'.$filename),$filename);
             Mail::to('dlfjj123@gmail.com')->send($message);
 

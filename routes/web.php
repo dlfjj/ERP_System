@@ -320,7 +320,7 @@ Route::group( [ 'prefix' => 'reports' ], function()
 
 Route::group( [ 'prefix' => 'pdf' ], function() {
     Route::get('/purchase-pdf/{id}', 'PDFController@purchasePDF');
-    Route::get('/quotation/{id}', 'PDFController@quotation');
+    Route::get('/quotation/{id}', 'PDFController@quotations');
     Route::get('/acknowledgement/{id}', 'PDFController@order_acknowledgement');
     Route::get('/order-confirmation/{id}', 'PDFController@order_confirmation');
     Route::get('/proforma_invoice/{id}', 'PDFController@proforma_invoice');

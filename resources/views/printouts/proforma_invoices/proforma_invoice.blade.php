@@ -20,8 +20,9 @@
                 <p style="text-decoration: underline;">Customer Info:</p>
                 <p>
                     <strong>{{ $customer->customer_name }}</strong><br />
-                    Contact Name: {{ nl2br($order->customerContact->contact_name) }}<br />
-                    {{$order->billing_address}}
+                    <strong>Contact Name</strong>: {{ nl2br($order->customerContact->contact_name) }}<br />
+                    <strong>Billing Address</strong>: {{$order->billing_address}}<br/>
+                    <strong>Ship by</strong>: {{ $order->container->name }}
                 </p>
             </div>
             @if($order->delivery_address != "")
@@ -53,6 +54,10 @@
                     <tr>
                         <td>Payment Term</td>
                         <td>{{$payment_terms[0]['name'] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Finish Date:</td>
+                        <td>{{ $order->estimated_finish_date }}</td>
                     </tr>
                 </table>
             </div>

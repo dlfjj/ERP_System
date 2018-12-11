@@ -20,8 +20,7 @@
                 <p style="text-decoration: underline;">Customer Info:</p>
                 <p>
                     <strong>{{ $customer->customer_name }}</strong><br />
-                    Contact Name: {{ nl2br($order->customerContact->contact_name) }}<br />
-                    {{$order->billing_address}}
+                    <strong>Contact Name</strong>: {{ nl2br($order->customerContact->contact_name) }}<br />
                 </p>
             </div>
             @if($order->delivery_address != "")

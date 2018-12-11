@@ -13,7 +13,7 @@
     <hr>
     <div class="content">
         <div class="row">
-            <div class="col-xs-6" >
+            <div class="col-xs-6">
                 <ul class="company-details">
                     <li align="left">Company Name:<strong> {{ $customer->customer_name }}</strong></li>
                     <li align="left" >Contact Name: {{ $order->customerContact->contact_name }}</li>

@@ -2,26 +2,15 @@
 
 @section('content')
     <div class="container">
-        {{--<div class="row" style="margin-bottom: 0px; padding-bottom: 0px;">--}}
-            {{--<div class="col-xs-4">--}}
-                {{--<img src="/assets/img/logo.png" />--}}
-            {{--</div>--}}
-            {{--<div class="col-xs-4 text-center">--}}
-                {{--<h4>QUOTATION</h4>--}}
-            {{--</div>--}}
-            {{--<div class="col-xs-4 text-right">--}}
-                {{--<h5><strong>{{ $settings['company_name'] }}</strong></h5>--}}
-                {{--<p style="font-size: 11px;">{{ nl2br($settings['company_bill_to']) }}</p>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-
         <div class="row">
             <div class="col-xs-4">
                 <p style="text-decoration: underline;">Customer Info:</p>
                 <p>
                     <strong>{{ $customer->customer_name }}</strong><br />
-                    Contact Name: {{ nl2br($order->customerContact->contact_name) }}<br />
-                    {{$order->billing_address}}
+                    <strong>Contact Name</strong>: {{ nl2br($order->customerContact->contact_name) }}<br />
+                    <strong>Billing Address</strong>: {{$order->billing_address}}<br/>
+                    <strong>Ship by</strong>: {{ $order->container->name }}<br/>
+                    <strong>Tax ID</strong>: {{ $order->customer->tax_id }}
                 </p>
             </div>
             @if($order->delivery_address != "")
@@ -53,6 +42,41 @@
                     <tr>
                         <td>Payment Term</td>
                         <td>{{$payment_terms[0]['name'] }}</td>
+                    </tr>
+                    @if($order->estimated_finish_date != null)
+                        <tr>
+                            <td>Shipping Date:</td>
+                            <td>{{ $order->estimated_finish_date }}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td>Shipping Date:</td>
+                            <td>TBD</td>
+                        </tr>
+                    @endif
+                    @if($order->vessel_etd != "0000-00-00")
+                        <tr>
+                            <td>Vessel ETD</td>
+                            <td>{{ $order->vessel_etd }}</td>
+                        </tr>
+                    @endif
+                    @if($order->vessel_eta != "0000-00-00")
+                        <tr>
+                            <td>Vessel ETA</td>
+                            <td>{{ $order->vessel_eta }}</td>
+                        </tr>
+                    @endif
+                    <tr>
+                        <td>Packages</td>
+                        <td>{{ $package_count }}</td>
+                    </tr>
+                    <tr>
+                        <td>Weight&nbsp;(NT/GR)</td>
+                        <td>{{ number_format($net_weight,2) }}KG / {{ number_format($gross_weight,2) }}KG  </td>
+                    </tr>
+                    <tr>
+                        <td>Volume</td>
+                        <td>{{ number_format($volumn,3) }} m&sup3;</td>
                     </tr>
                 </table>
             </div>
@@ -88,6 +112,13 @@
                         <th align="left">Item</th>
                         <th class="cell-tight" align="left">Qty</th>
                         <th  class="cell-tight" align="left">in ctn/total ctn</th>
+                        @if($order->taxcode->percent > 0)
+                            <td  align="left">Nt Price</td>
+                            <td  align="left">Tax</td>
+                            <td  align="left">Gr Price</td>
+                        @else
+                            <td  align="left">Price</td>
+                        @endif
                         <th  class="cell-tight" align="left">Price</th>
                         <th  class="cell-tight" align="left">Line total</th>
                     </tr>
@@ -98,6 +129,21 @@
                             <td>{{ $order_item->product_name }}</td>
                             <td>{{ $order_item->quantity }}</td>
                             <td>{{ $order_item->cbm }}</td>
+                            @if($order->taxcode->percent > 0)
+                                <td>
+                                    {{ number_format($orderitem->unit_price_net,2) }}
+                                </td>
+                                <td>
+                                    {{ $order->taxcode->perc }} %
+                                </td>
+                                <td>
+                                    {{ number_format($order_item->unit_price_gross,2) }}
+                                </td>
+                            @else
+                                <td>
+                                    {{ number_format($order_item->unit_price_net,2) }}
+                                </td>
+                            @endif
                             <td>{{ $order_item->unit_price_net }}</td>
                             <td align="right">{{ $order_item->amount_net }} </td>
                         </tr>
@@ -114,10 +160,6 @@
                         <td style="font-weight: 300;">{!! $order->company->bill_to !!}</td>
                     </tr>
                 </table>
-                {{--<p style="font-weight: 800;">{{ $order->company->name }}</p>--}}
-                {{--<p>--}}
-                    {{--{{ $order->company->bill_to }}--}}
-                {{--</p>--}}
             </div>
             <div class="col-xs-6">
                 <div class="pull-right">
@@ -157,9 +199,6 @@
                 </div>
             </div>
             <!-- /Table -->
-
-            <div class="row">
-            </div>
         </div>
     </div>
 

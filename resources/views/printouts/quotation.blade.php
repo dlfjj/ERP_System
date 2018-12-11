@@ -14,10 +14,10 @@
         <hr>
         <div class="row">
             {{--<div class="div-left">--}}
-            {{--<img src="{{public_path('public/global/companies/').$order->company->company_logo}}"  class="logo-quotation" align="left">--}}
+            {{--<img src="{{public_path('public/global/companies/').$order->company->company_logo}}"  class="logo-quotations" align="left">--}}
             {{--</div>--}}
             {{--<div class="col-sm-6">--}}
-            {{--<h1 align="left" class="quotation">Quotation</h1>--}}
+            {{--<h1 align="left" class="quotations">Quotation</h1>--}}
             {{--<hr style="width:310px; margin-right: 20px;">--}}
             {{--<hr>--}}
             <div class="col-xs-6">

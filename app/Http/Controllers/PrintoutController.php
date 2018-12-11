@@ -29,10 +29,10 @@ class PrintoutController extends Controller
         $order_total_quantity = 1; //OrderItem::where("order_id","=",$id)->sum('quantity');
         $customer_name = $order->customer->customer_name;
 //        return $order->customer->customer_name;
-//        return view('printouts.orders.quotation',compact('order','document_name','order_total_cbm',
+//        return view('printouts.orders.quotations',compact('order','document_name','order_total_cbm',
 //            'order_total_quantity','customer_name'));
         $this->layout->module_title = "Order details for #$order->id";
-        $this->layout->content = View::make('printouts.orders.quotation')
+        $this->layout->content = View::make('printouts.orders.quotations')
             ->with('order', $order)
             ->with('order_total_cbm',$order_total_cbm)
             ->with('order_total_quantity',$order_total_quantity)

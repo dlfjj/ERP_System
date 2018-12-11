@@ -49,31 +49,32 @@ class PDFController extends Controller
 
 
     //for testing and future learning, you have to create your own route for this
-    public function pdfview($id)
-    {
-//        $users = DB::table("users")->get();
-
-        $quotation = $this->pdfRepository->getSamplePdfData($id);
-        $headerHtml = view()->make('printouts.header')
-            ->render();
-
-        $footerHtml = view()->make('printouts.footer')
-            ->with('order',  $quotation['order'])
-            ->render();
-
-//        view()->share('quotation',$quotation);
-        $pdf = SnappyPdf::loadHTML(view('printouts.quotation_testing',$quotation))
-            ->setOption('header-html', $headerHtml)
-            ->setOption('footer-html', $footerHtml)
-            ->setOption('footer-line',true)
-            ->setOption('footer-spacing',4)
-            ->setOption('header-spacing', 3)
-            ->setOption('header-line',true)
-            ->setPaper('A4')
-            ->setOrientation('portrait')
-            ;
-        return $pdf->inline();
-    }
+//    public function pdfview($id)
+//    {
+////        $users = DB::table("users")->get();
+//
+//        $quotation = $this->pdfRepository->getSamplePdfData($id);
+//
+//        $headerHtml = view()->make('printouts.header')
+//            ->render();
+//
+//        $footerHtml = view()->make('printouts.footer')
+//            ->with('order',  $quotation['order'])
+//            ->render();
+//
+////        view()->share('quotations',$quotations);
+//        $pdf = SnappyPdf::loadHTML(view('printouts.quotation_testing',$quotation))
+//            ->setOption('header-html', $headerHtml)
+//            ->setOption('footer-html', $footerHtml)
+//            ->setOption('footer-line',true)
+//            ->setOption('footer-spacing',4)
+//            ->setOption('header-spacing', 3)
+//            ->setOption('header-line',true)
+//            ->setPaper('A4')
+//            ->setOrientation('portrait')
+//            ;
+//        return $pdf->inline();
+//    }
 
 
 
@@ -86,35 +87,42 @@ class PDFController extends Controller
     // function for order confrimation
     public function order_confirmation($id){
 
-        $this->pdfService->getSamplePDF('printouts.order_confirmation',$id);
+//        $this->pdfService->getSamplePDF('printouts.order_confirmation',$id);
+        return $this->pdfService->getOrderPdf('confirmation',$id)->inline();
 
     }
     public function commercial_invoice($id)
     {
-        $this->pdfService->getSamplePDF('printouts.commercial_invoice', $id);
+//        $this->pdfService->getSamplePDF('printouts.commercial_invoice', $id);
+        return $this->pdfService->getOrderPdf('invoice',$id)->inline();
     }
 
 
-    public function quotation($id){
+    public function quotations($id){
 
-         $this->pdfService->getSamplePDF('printouts.quotation',$id);
+//         $this->pdfService->getSamplePDF('printouts.quotations',$id);
+        return $this->pdfService->getOrderPdf('quotations',$id)->inline();
 
     }
 
     public function order_acknowledgement($id){
 
-        $this->pdfService->getSamplePDF('printouts.acknowledgement',$id);
+        return $this->pdfService->getOrderPdf('acknowledgement',$id)->inline();
+//        $this->pdfService->getSamplePDF('printouts.acknowledgement',$id);
 
 
     }
     public function package_list($id){
 
-        $this->pdfService->getSamplePDF('printouts.packing_list',$id);
+//        $this->pdfService->getSamplePDF('printouts.packing_list',$id);
+
+        return $this->pdfService->getOrderPdf('packing_list',$id)->inline();
 
     }
     public function proforma_invoice($id){
 
-        $this->pdfService->getSamplePDF('printouts.proforma_invoice',$id);
+        return $this->pdfService->getOrderPdf('proforma_invoice',$id)->inline();
+//        $this->pdfService->getSamplePDF('printouts.proforma_invoice',$id);
 
     }
 

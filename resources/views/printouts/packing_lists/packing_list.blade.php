@@ -2,26 +2,15 @@
 
 @section('content')
     <div class="container">
-        {{--<div class="row" style="margin-bottom: 0px; padding-bottom: 0px;">--}}
-            {{--<div class="col-xs-4">--}}
-                {{--<img src="/assets/img/logo.png" />--}}
-            {{--</div>--}}
-            {{--<div class="col-xs-4 text-center">--}}
-                {{--<h4>QUOTATION</h4>--}}
-            {{--</div>--}}
-            {{--<div class="col-xs-4 text-right">--}}
-                {{--<h5><strong>{{ $settings['company_name'] }}</strong></h5>--}}
-                {{--<p style="font-size: 11px;">{{ nl2br($settings['company_bill_to']) }}</p>--}}
-            {{--</div>--}}
-        {{--</div>--}}
 
         <div class="row">
             <div class="col-xs-4">
                 <p style="text-decoration: underline;">Customer Info:</p>
                 <p>
                     <strong>{{ $customer->customer_name }}</strong><br />
-                    Contact Name: {{ nl2br($order->customerContact->contact_name) }}<br />
-                    {{$order->billing_address}}
+                    <strong>Contact Name</strong>: {{ nl2br($order->customerContact->contact_name) }}<br />
+                    <strong>Billing Address</strong>: {{$order->billing_address}}<br/>
+                    <strong>Ship by</strong>: {{ $order->container->name }}
                 </p>
             </div>
             @if($order->delivery_address != "")
@@ -53,6 +42,14 @@
                     <tr>
                         <td>Payment Term</td>
                         <td>{{$payment_terms[0]['name'] }}</td>
+                    </tr>
+                    <tr>
+                        <td>Shipping Date</td>
+                        <td> {{$order->estimated_finish_date}}</td>
+                    </tr>
+                    <tr>
+                        <td>Container Number</td>
+                        <td>{{ $order->container_number }}</td>
                     </tr>
                 </table>
             </div>
@@ -86,22 +83,49 @@
                     <thead>
                     <tr>
                         <th align="left">Item</th>
-                        <th class="cell-tight" align="left">Qty</th>
-                        <th  class="cell-tight" align="left">in ctn/total ctn</th>
-                        <th  class="cell-tight" align="left">Price</th>
-                        <th  class="cell-tight" align="left">Line total</th>
+                        <th class="cell-tight"  align="left">Qty</th>
+                        <th class="cell-tight"  align="left">Unit</th>
+                        <th class="cell-tight" align="left">Unit/Box</th>
+                        <th class="cell-tight" align="left">Pkg</th>
+                        <th class="cell-tight" align="left">N.W (KG)</th>
+                        <th class="cell-tight" align="right">G.W (KG)</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($order->items as $okey=>$order_item)
                         <tr>
-                            <td>{{ $order_item->product_name }}</td>
-                            <td>{{ $order_item->quantity }}</td>
-                            <td>{{ $order_item->cbm }}</td>
-                            <td>{{ $order_item->unit_price_net }}</td>
-                            <td align="right">{{ $order_item->amount_net }} </td>
+                            <td>
+                                {{ $order_item->product_code }}
+                                <br />
+                                {{ $order_item->product_name }}
+                                @if( $order_item->remark != "")
+                                    <br />
+                                    Remark: {{ $order_item->remark }}
+                                @endif
+                            </td>
+                            <td>
+                                {{ $order_item->quantity }}
+                            </td>
+                            <td>
+                                {{ getUom($order_item) }}
+                            </td>
+                            <td>
+                                {{ ($order->container_type != 4) ? $order_item->product->pluck('pack_unit')[0] : $order_item->product->pluck('pack_unit_hq')[0] }}
+                            </td>
+                            <td>
+                                {{ getNumberOfItemPackages($order_item) }}
+                            </td>
+                            <td>
+                                {{ number_format(getItemNetWeight($order_item),2) }}
+                            </td>
+                            <td>
+                                {{ number_format(getItemGrossWeight($order_item),2) }}
+                            </td>
                         </tr>
                     @endforeach
+                    <tr style="font-weight: bold; font-size:12px;">
+                        <td colspan="7">Net Weight Total: {{ number_format(($order->net_weight > 0 ? $order->net_weight : $nt_weight_total), 2)}}KG &nbsp; &nbsp; Gross Weight Total: {{ number_format(($order->gross_weight > 0 ? $order->gross_weight : $gr_weight_total), 2)}}KG &nbsp;&nbsp; Packages: {{ getNumberOfPackages($order) }} &nbsp; &nbsp;Pallets: {{ getNumberOfPallets($order) }} &nbsp;&nbsp; Pallets weight: {{ $order->weight_of_pallets }} KG</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -120,46 +144,8 @@
                 {{--</p>--}}
             </div>
             <div class="col-xs-6">
-                <div class="pull-right">
-                <table class="table table-bordered table-invoice table-invoice-header">
-                    <tr>
-                        <td align="right"> Subtotal: </td>
-                        <td>{{ $order->currency_code }} {{ number_format($order->getLineTotal(),2) }}
-                        </td>
-                    </tr>
-                    @if($order->discount != 0)
-                        <tr>
-                            <td align="right">Discount: </td>
-                            <td>{{ $order->discount }}%</td>
-                        </tr>
-                        <tr>
-                            <td align="right">Subtotal: </td>
-                            <td>{{ $order->currency_code }} {{ number_format($order->sub_total_net,2) }}</td>
-                        </tr>
-                    @endif
-                    @if($order->shipping_cost > 0)
-                        <tr>
-                            <td align="right">Freight Charge:  </td>
-                            <td>{{ $order->currency_code }} {{ number_format($order->shipping_cost,2) }}</td>
-                        </tr>
-                    @endif
-                    @if($order->taxcode->percent > 0)
-                        <tr>
-                            <td align="right">{{ $order->taxcode->name }} </td>
-                            <td>{{ $order->tax_total }}</td>
-                        </tr>
-                    @endif
-                    <tr>
-                        <td align="right" >Total amount: </td>
-                        <td>{{ $order->currency_code }} {{ number_format($order->total_gross,2) }}</td>
-                    </tr>
-                </table>
-                </div>
             </div>
             <!-- /Table -->
-
-            <div class="row">
-            </div>
         </div>
     </div>
 

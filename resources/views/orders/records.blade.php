@@ -159,7 +159,7 @@
                                                     <td>{{$history->status()->first()->name }}</td>
                                                     <td>{!! ($history->comment) !!}</td>
                                                     <td>
-                                                        @if($history->attach_pdf == 1 && $history->file_name !== "")
+                                                        @if($history->record_file == 1 && $history->file_name !== "")
                                                             <a href="{{ route('pdf.download',urlencode($history->file_name)) }}">Download</a>
                                                         @else
                                                             <p>No</p>

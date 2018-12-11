@@ -4,7 +4,7 @@ $(document).ready(function() {
         var msg_body = "";
         if(this.value == '1'){
             msg_body += "Dear <<MAIN_CONTACT>>,\n\n";
-            msg_body += "Thank you very much for your request. Please check on our quotation attached to this mail. If you have any further questions please don’t hesitate to contact me again.";
+            msg_body += "Thank you very much for your request. Please check on our quotations attached to this mail. If you have any further questions please don’t hesitate to contact me again.";
         } else if(this.value == 2){
             msg_body += "Dear <<MAIN_CONTACT>>,\n\n";
             msg_body += "Thank you for the new order <<ORDER_ID>>. Please check on our confirmation attached.\n As soon we have the estimated finish date from our production department, we will send the sales contract to you.";
