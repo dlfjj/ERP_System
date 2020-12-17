@@ -23,7 +23,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free-webfonts": "^1.0.9",
         "bootstrap-vue": "^2.0.0-rc.11",
-        "datatables.net": "^1.10.19",
+        "datatables.net": "^1.10.22",
         "datatables.net-dt": "^1.10.19",
         "select2": "^4.0.6-rc.1",
         "select2-bootstrap-theme": "0.1.0-beta.10"
